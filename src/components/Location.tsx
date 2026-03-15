@@ -3,7 +3,7 @@ import { MapPin, Clock, Phone } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Location = () => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <section id="reserve" className="py-24">
