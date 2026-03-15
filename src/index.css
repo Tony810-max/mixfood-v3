@@ -89,6 +89,20 @@ html {
   scroll-behavior: smooth;
 }
 
+/* NProgress */
+#nprogress .bar {
+  background: hsl(var(--primary));
+  height: 3px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px hsl(var(--primary)), 0 0 5px hsl(var(--primary));
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
