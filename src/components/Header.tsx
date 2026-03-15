@@ -72,7 +72,7 @@ const Header = () => {
           </div>
 
           <a
-            href="#reserve"
+            href="/reserve"
             className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
           >
             {t.reserveTable}
