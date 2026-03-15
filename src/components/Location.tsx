@@ -84,7 +84,7 @@ const Location = () => {
             </div>
 
             <a
-              href={`tel:${t.phone}`}
+              href="/reserve"
               className="inline-block rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95 mt-4"
             >
               {t.reserveTable}
