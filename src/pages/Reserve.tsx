@@ -43,7 +43,7 @@ const ReserveContent = () => {
 
   const fadeUp = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.2, 0.8, 0.2, 1] } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
   return (
