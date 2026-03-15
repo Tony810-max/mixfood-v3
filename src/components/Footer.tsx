@@ -20,8 +20,8 @@ const Footer = () => {
             <h4 className="font-serif text-lg font-semibold text-background/90">Links</h4>
             <nav className="flex flex-col gap-2">
               {[
-                { label: t.home, href: "#home" },
-                { label: t.menu, href: "#menu" },
+                { label: t.home, href: "/" },
+                { label: t.menu, href: "/#menu" },
                 { label: t.reserveTable, href: "/reserve" },
               ].map((link) => (
                 <a

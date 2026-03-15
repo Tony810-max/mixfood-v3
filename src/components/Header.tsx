@@ -31,7 +31,7 @@ const Header = () => {
       }`}
     >
       <div className="container mx-auto flex h-[72px] items-center justify-between px-6">
-        <a href="#home" className="font-serif text-2xl font-bold text-foreground">
+        <a href="/" className="font-serif text-2xl font-bold text-foreground">
           Mix Food
         </a>
 
