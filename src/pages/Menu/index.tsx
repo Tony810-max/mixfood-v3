@@ -62,7 +62,7 @@ const MenuItemCard = ({
   >
     <div className="relative overflow-hidden aspect-[16/10]">
       <img
-        src={item.image ?? "public/iamge-blank.png"}
+        src={item.image ?? "/image-blank.png"}
         alt={item.name[lang]}
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         loading="lazy"
