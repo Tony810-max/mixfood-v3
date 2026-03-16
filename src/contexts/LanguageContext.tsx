@@ -75,7 +75,7 @@ const translations = {
   vi: {
     home: "Trang Chủ",
     menu: "Thực Đơn",
-    reserveTable: "Đặt Bàn",
+    reserveTable: "Đặt Bàn (Sắp Ra Mắt)",
     heroHeadline: "Tinh Hoa Ẩm Thực Thái Giữa Lòng Đà Nẵng",
     heroSub:
       "Từ đường phố Bangkok đến bờ biển Đà Nẵng. Trải nghiệm gia vị đích thực, hải sản tươi sống và lòng hiếu khách truyền thống Thái Lan.",
