@@ -83,12 +83,18 @@ const Location = () => {
               </div>
             </div>
 
-            <a
+            {/* <a
               href="/reserve"
               className="inline-block rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95 mt-4"
             >
               {t.reserveTable}
-            </a>
+            </a> */}
+            <button
+            className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+            disabled
+          >
+            {t.reserveTable}
+          </button>
           </motion.div>
         </div>
       </div>

@@ -71,12 +71,18 @@ const Header = () => {
             </button>
           </div>
 
-          <a
+          {/* <a
             href="/reserve"
             className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
           >
             {t.reserveTable}
-          </a>
+          </a> */}
+          <button
+            className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+            disabled
+          >
+            {t.reserveTable}
+          </button>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -110,7 +116,9 @@ const Header = () => {
               <button
                 onClick={() => setLang("en")}
                 className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  lang === "en" ? "bg-card text-primary shadow-layered" : "text-muted-foreground"
+                  lang === "en"
+                    ? "bg-card text-primary shadow-layered"
+                    : "text-muted-foreground"
                 }`}
               >
                 EN
@@ -118,7 +126,9 @@ const Header = () => {
               <button
                 onClick={() => setLang("vi")}
                 className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  lang === "vi" ? "bg-card text-primary shadow-layered" : "text-muted-foreground"
+                  lang === "vi"
+                    ? "bg-card text-primary shadow-layered"
+                    : "text-muted-foreground"
                 }`}
               >
                 VI

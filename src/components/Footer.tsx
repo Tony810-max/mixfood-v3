@@ -10,9 +10,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="font-serif text-2xl font-bold text-primary">Mix Food</h3>
+            <h3 className="font-serif text-2xl font-bold text-primary">
+              Mix Food
+            </h3>
             <p className="text-sm text-background/60 leading-relaxed max-w-[40ch]">
-              Authentic Thai cuisine in the heart of Da Nang. Experience the balance of flavors.
+              Authentic Thai cuisine in the heart of Da Nang. Experience the
+              balance of flavors.
             </p>
             <a
               href="https://www.facebook.com/mixfoodamthucthai"
@@ -27,12 +30,14 @@ const Footer = () => {
 
           {/* Links */}
           <div className="space-y-4">
-            <h4 className="font-serif text-lg font-semibold text-background/90">Links</h4>
+            <h4 className="font-serif text-lg font-semibold text-background/90">
+              Links
+            </h4>
             <nav className="flex flex-col gap-2">
               {[
                 { label: t.home, href: "/" },
                 { label: t.menu, href: "/menu" },
-                { label: t.reserveTable, href: "/reserve" },
+                { label: t.reserveTable, href: "/" },
               ].map((link) => (
                 <a
                   key={link.href}
@@ -47,7 +52,9 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="space-y-4">
-            <h4 className="font-serif text-lg font-semibold text-background/90">{t.location}</h4>
+            <h4 className="font-serif text-lg font-semibold text-background/90">
+              {t.location}
+            </h4>
             <p className="text-sm text-background/50">{t.address}</p>
             <p className="text-sm text-background/50">{t.phone}</p>
             <p className="text-sm text-background/50">{t.hoursValue}</p>

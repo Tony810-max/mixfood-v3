@@ -6,7 +6,10 @@ const Hero = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden pt-[72px]">
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center overflow-hidden pt-[72px]"
+    >
       {/* Background decorative circle */}
       <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
@@ -35,12 +38,18 @@ const Hero = () => {
               >
                 {t.viewMenu}
               </a>
-              <a
+              {/* <a
                 href="/reserve"
                 className="rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
               >
                 {t.reserveTable}
-              </a>
+              </a> */}
+              <button
+                className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+                disabled
+              >
+                {t.reserveTable}
+              </button>
             </div>
           </motion.div>
 
