@@ -1126,7 +1126,7 @@ export const menuData: Category[] = [
   {
     id: "lau-thai-3-4-people",
     en: "Thai Hotpot - Team 3-4 People",
-    vi: "LẨU THÁI",
+    vi: "LẨU THÁI LỚN",
     items: [
       {
         id: "lau-ca-loc-chien-nguyen-con",
