@@ -1,0 +1,159 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Mix Food - Ẩm Thực Thái Đà Nẵng",
+  "description": "Nhà hàng ẩm thực Thái chính thống tại Đà Nẵng. Thưởng thức các món ăn Thái Lan đặc sắc như Tom Yum, Pad Thai, Som Tam với hương vị đích thực.",
+  "url": "https://mixfood.vn",
+  "telephone": "+84-236-xxxx-xxxx",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123 Nguyễn Văn Linh",
+    "addressLocality": "Đà Nẵng",
+    "addressRegion": "VN-54",
+    "addressCountry": "VN",
+    "postalCode": "550000"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 16.0544,
+    "longitude": 108.2022
+  },
+  "openingHours": [
+    "Mo-Su 10:00-22:00"
+  ],
+  "servesCuisine": [
+    "Thai",
+    "Asian",
+    "Vietnamese-Thai Fusion"
+  ],
+  "priceRange": "$$",
+  "paymentAccepted": [
+    "Cash",
+    "Credit Card",
+    "Mobile Payment"
+  ],
+  "currenciesAccepted": "VND",
+  "menu": "https://mixfood.vn/menu",
+  "reservationUrl": "https://mixfood.vn/reserve",
+  "image": [
+    "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d1436a0f-be33-4a79-bdc2-b9f86084289e/id-preview-2bc3acc8--bca8a5c9-ef03-4a26-87fc-cfd8270b8a5a.lovable.app-1773591269354.png"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "150",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Nguyễn Văn A"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "reviewBody": "Món ăn rất ngon, hương vị Thái chuẩn vị. Không gian đẹp, phục vụ chu đáo."
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Trần Thị B"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "4",
+        "bestRating": "5"
+      },
+      "reviewBody": "Tom Yum đậm đà, Pad Thai thơm ngon. Sẽ quay lại lần nữa."
+    }
+  ],
+  "hasMenu": [
+    {
+      "@type": "Menu",
+      "name": "Thực Đơn Món Thái",
+      "description": "Các món ăn đặc sắc của ẩm thực Thái Lan",
+      "hasMenuSection": [
+        {
+          "@type": "MenuSection",
+          "name": "Món Chính",
+          "description": "Các món chính đặc sắc",
+          "hasMenuItem": [
+            {
+              "@type": "MenuItem",
+              "name": "Tom Yum Goong",
+              "description": "Tôm hùm sốt chua cay đặc trưng Thái Lan",
+              "offers": {
+                "@type": "Offer",
+                "price": "250000",
+                "priceCurrency": "VND"
+              },
+              "nutrition": {
+                "@type": "NutritionInformation",
+                "calories": "180",
+                "proteinContent": "25g"
+              }
+            },
+            {
+              "@type": "MenuItem",
+              "name": "Pad Thai",
+              "description": "Mì xào Thái truyền thống với tôm và đậu phộng",
+              "offers": {
+                "@type": "Offer",
+                "price": "120000",
+                "priceCurrency": "VND"
+              },
+              "nutrition": {
+                "@type": "NutritionInformation",
+                "calories": "320",
+                "proteinContent": "18g"
+              }
+            },
+            {
+              "@type": "MenuItem",
+              "name": "Som Tam",
+              "description": "Gỏi đu đủ xanh trộn Thái cay",
+              "offers": {
+                "@type": "Offer",
+                "price": "80000",
+                "priceCurrency": "VND"
+              },
+              "nutrition": {
+                "@type": "NutritionInformation",
+                "calories": "120",
+                "proteinContent": "8g"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Tráng Miệng",
+          "description": "Các món tráng miệng Thái Lan",
+          "hasMenuItem": [
+            {
+              "@type": "MenuItem",
+              "name": "Mango Sticky Rice",
+              "description": "Xoài dẻo với cơm nếp dừa",
+              "offers": {
+                "@type": "Offer",
+                "price": "60000",
+                "priceCurrency": "VND"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/mixfooddanang",
+    "https://www.instagram.com/mixfooddanang",
+    "https://twitter.com/mixfooddanang"
+  ]
+}
