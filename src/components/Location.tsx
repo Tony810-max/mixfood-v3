@@ -28,7 +28,8 @@ const Location = () => {
             className="rounded-2xl overflow-hidden shadow-layered aspect-[4/3]"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.0!2d108.2316!3d16.0633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDAzJzQ4LjAiTiAxMDjCsDEzJzU0LjAiRQ!5e0!3m2!1sen!2s!4v1&q=K38/37+Nguyen+Duy+Hieu,+Son+Tra,+Da+Nang,+Vietnam"
+              src="
+              https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1917.108723325348!2d108.23610931193348!3d16.054202099999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142177d7ff847cd%3A0x304e7f27b5c56286!2sMix%20Food!5e0!3m2!1svi!2s!4v1774321341710!5m2!1svi!2s"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -90,11 +91,11 @@ const Location = () => {
               {t.reserveTable}
             </a> */}
             <button
-            className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-            disabled
-          >
-            {t.reserveTable}
-          </button>
+              className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+              disabled
+            >
+              {t.reserveTable}
+            </button>
           </motion.div>
         </div>
       </div>

@@ -54,8 +54,8 @@ const MenuItemCard = ({
   index: number;
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
     viewport={{ once: true, margin: "-50px" }}
     transition={{ duration: 0.4, delay: index * 0.05 }}
     className="group bg-card rounded-2xl shadow-layered hover:shadow-layered-hover transition-all duration-300 overflow-hidden flex flex-col"
@@ -95,7 +95,7 @@ const CategorySection = ({
   category: Category;
   lang: "en" | "vi";
 }) => (
-  <section id={category.id} className="scroll-mt-[140px]">
+  <section id={category.id} className="scroll-mt-[200px]">
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -146,8 +146,8 @@ const MenuContent = () => {
                 {lang === "vi" ? "Thực Đơn" : "Our Menu"}
               </motion.h1>
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="font-body text-background/70 text-lg max-w-lg"
               >
@@ -187,8 +187,8 @@ const MenuContent = () => {
       {/* CTA */}
       <section className="container mx-auto px-6 pb-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-background p-10 md:p-14 text-center"
