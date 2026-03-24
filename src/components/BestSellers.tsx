@@ -1,24 +1,38 @@
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-import padThaiImg from "@/assets/pad-thai.jpg";
-import greenCurryImg from "@/assets/green-curry.jpg";
-import somTumImg from "@/assets/som-tum.jpg";
-import mangoRiceImg from "@/assets/mango-sticky-rice.jpg";
-import heroDishImg from "@/assets/hero-dish.jpg";
 
 interface Dish {
   nameKey: keyof ReturnType<typeof useLanguage>["t"];
-  descKey: keyof ReturnType<typeof useLanguage>["t"];
   price: string;
   image: string;
 }
 
 const dishes: Dish[] = [
-  { nameKey: "padThai", descKey: "padThaiDesc", price: "145,000 VND", image: padThaiImg },
-  { nameKey: "greenCurry", descKey: "greenCurryDesc", price: "165,000 VND", image: greenCurryImg },
-  { nameKey: "tomYum", descKey: "tomYumDesc", price: "175,000 VND", image: heroDishImg },
-  { nameKey: "somTum", descKey: "somTumDesc", price: "95,000 VND", image: somTumImg },
-  { nameKey: "mangoRice", descKey: "mangoRiceDesc", price: "85,000 VND", image: mangoRiceImg },
+  {
+    nameKey: "padThai",
+    price: "145,000 VND",
+    image: "/image-blank.png",
+  },
+  {
+    nameKey: "greenCurry",
+    price: "165,000 VND",
+    image: "/image-blank.png",
+  },
+  {
+    nameKey: "tomYum",
+    price: "175,000 VND",
+    image: "/image-blank.png",
+  },
+  {
+    nameKey: "somTum",
+    price: "95,000 VND",
+    image: "/image-blank.png",
+  },
+  {
+    nameKey: "mangoRice",
+    price: "85,000 VND",
+    image: "/image-blank.png",
+  },
 ];
 
 const BestSellers = () => {
@@ -47,7 +61,11 @@ const BestSellers = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.2, 0.8, 0.2, 1] }}
+              transition={{
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: [0.2, 0.8, 0.2, 1],
+              }}
               whileHover={{ y: -4 }}
               className="bg-card rounded-2xl p-4 shadow-layered hover:shadow-layered-hover transition-shadow cursor-pointer"
             >
@@ -62,9 +80,6 @@ const BestSellers = () => {
               <h3 className="font-serif text-xl font-semibold mt-4 text-foreground text-balance">
                 {t[dish.nameKey] as string}
               </h3>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                {t[dish.descKey] as string}
-              </p>
               <span className="text-primary font-semibold tabular-nums mt-4 block text-lg">
                 {dish.price}
               </span>
