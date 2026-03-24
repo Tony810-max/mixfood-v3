@@ -12,3 +12,23 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Disallow common non-content paths
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /src/
+
+# Allow important assets
+Allow: /images/
+Allow: /css/
+Allow: /js/
+Allow: /favicon.ico
+Allow: /favicon.svg
+
+# Sitemap location
+Sitemap: https://mixfood.vn/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1
