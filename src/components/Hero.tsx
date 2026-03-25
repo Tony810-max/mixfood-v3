@@ -15,7 +15,7 @@ const Hero = () => {
       <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-6 py-16 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Text */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -24,31 +24,37 @@ const Hero = () => {
             className="space-y-6"
           >
             <h1
-              className="font-serif font-bold text-foreground leading-[1.1] text-balance"
+              className="font-serif font-bold text-foreground leading-[1.1] text-balance text-start"
               style={{ fontSize: "clamp(2.5rem, 8vw, 4.5rem)" }}
             >
               {t.heroHeadline}
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-[55ch]">
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-[55ch] text-start">
               {t.heroSub}
             </p>
 
             {/* Thai Cuisine Highlights */}
             <div className="space-y-3">
               <h2 className="text-xl font-semibold text-red-600">
-                Đặc Sắc Ẩm Thực Thái
+                {t.heroTitle}
               </h2>
               <div className="flex flex-wrap gap-2">
-                {["Tom Yum", "Pad Thai", "Som Tam", "Mango Sticky Rice"].map(
-                  (dish) => (
-                    <span
-                      key={dish}
-                      className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium"
-                    >
-                      {dish}
-                    </span>
-                  ),
-                )}
+                {[
+                  t.heroTomYum,
+                  ,
+                  t.padThai,
+                  ,
+                  t.somTamVietnamese,
+                  ,
+                  t.mangoRice,
+                ].map((dish) => (
+                  <span
+                    key={dish}
+                    className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium"
+                  >
+                    {dish}
+                  </span>
+                ))}
               </div>
             </div>
 
@@ -65,14 +71,6 @@ const Hero = () => {
               >
                 {t.reserveTable}
               </button>
-            </div>
-
-            {/* Social Share */}
-            <div className="pt-4">
-              <SocialShare
-                title="Mix Food - Ẩm Thực Thái Đà Nẵng"
-                description="Nhà hàng ẩm thực Thái chính thống tại Đà Nẵng. Thưởng thức Tom Yum, Pad Thai và các món Thái đặc sắc."
-              />
             </div>
           </motion.div>
 

@@ -73,12 +73,12 @@ const Header = () => {
 
           {/* <a
             href="/reserve"
-            className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+            className="rounded-lg min-w-[15.375rem] bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
           >
             {t.reserveTable}
           </a> */}
           <button
-            className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+            className="rounded-lg min-w-[15.375rem] bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
             disabled
           >
             {t.reserveTable}

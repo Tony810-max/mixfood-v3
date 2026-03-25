@@ -10,6 +10,7 @@ const translations = {
     heroHeadline: "Authentic Thai Soul in the Heart of Da Nang",
     heroSub:
       "From the streets of Bangkok to the shores of Da Nang. Experience authentic spices, fresh local seafood, and traditional Thai hospitality.",
+    heroTitle: "Thai Culinary Specialties",
     viewMenu: "View Menu",
     aboutTitle: "The Balance of Four",
     aboutText:
@@ -24,12 +25,9 @@ const translations = {
     hoursValue: "9:00  – 21:50 Daily",
     phone: "(+84) 905 473 728",
     copyright: "© 2026 Mix Food Da Nang. All rights reserved.",
-    padThai: "Classic Pad Thai",
-    padThaiDesc: "Rice noodles, fresh prawns, tamarind glaze, crushed peanuts.",
     greenCurry: "Green Curry Chicken",
     greenCurryDesc: "Coconut milk, Thai basil, bamboo shoots, kaffir lime.",
     tomYum: "Tom Yum Goong",
-    tomYumDesc: "Spicy lemongrass broth, tiger prawns, galangal, chili.",
     somTum: "Som Tum Salad",
     somTumDesc: "Green papaya, dried shrimp, peanuts, chili-lime dressing.",
     mangoRice: "Mango Sticky Rice",
@@ -71,6 +69,44 @@ const translations = {
     guests: "guests",
     reservationSuccess: "Reservation submitted successfully!",
     reservationSuccessDesc: "We'll confirm your booking shortly.",
+
+    // Thai Dish Highlight Component
+    thaiSpecialties: "Specialties of Thai Cuisine",
+    thaiSpecialtiesDesc:
+      "Discover authentic Thai dishes with distinctive flavors, prepared by professional chefs",
+    orderNow: "Order Now",
+    dishSpecialty: "Specialty Dish",
+    whyChooseMixFood: "Why Choose Mix Food?",
+    whyChooseMixFood1: "• Fresh ingredients imported from Thailand",
+    whyChooseMixFood2: "• Professional chefs with 10+ years experience",
+    whyChooseMixFood3: "• Authentic Thai flavors",
+    whyChooseMixFood4: "• Elegant, modern space",
+    dishImage: "Dish Image",
+    dishImageCaption: "Photographed at Mix Food Da Nang",
+    keywords: "Keywords",
+    tomYumGoong: "Tom Yum Goong",
+    tomYumVietnamese: "Spicy Lemongrass Soup with Prawns",
+    tomYumDesc:
+      "Signature Thai soup with spicy & sour flavor, fresh prawns, mushrooms and special herbs.",
+    padThai: "Pad Thai",
+    padThaiVietnamese: "Stir-Fried Thai Noodles",
+    padThaiDesc:
+      "Classic stir-fried noodles with shrimp, peanuts, bean sprouts and special sauce creating perfect balance.",
+    somTam: "Som Tam",
+    somTamVietnamese: "Green Papaya Salad",
+    somTamDesc:
+      "Green papaya salad mixed with tomatoes, peanuts, chili and fish sauce creating refreshing, flavorful Thai dish.",
+    mangoStickyRice: "Mango Sticky Rice",
+    mangoStickyRiceVietnamese: "Sweet Mango Rice",
+    mangoStickyRiceDesc:
+      "Sweet dessert with ripe mango combined with sticky coconut rice and fresh shredded coconut.",
+    rating: "Rating",
+    time: "Time",
+    spicyLevel: "Spicy Level",
+    minutes: "minutes",
+    price: "Price",
+    orderDishNow: "Order Dish Now",
+    shareDish: "Share Dish",
   },
   vi: {
     home: "Trang Chủ",
@@ -79,6 +115,7 @@ const translations = {
     heroHeadline: "Tinh Hoa Ẩm Thực Thái Giữa Lòng Đà Nẵng",
     heroSub:
       "Từ đường phố Bangkok đến bờ biển Đà Nẵng. Trải nghiệm gia vị đích thực, hải sản tươi sống và lòng hiếu khách truyền thống Thái Lan.",
+    heroTitle: "Đặc Sắc Ẩm Thực Thái",
     viewMenu: "Xem Thực Đơn",
     aboutTitle: "Sự Cân Bằng Bốn Vị",
     aboutText:
@@ -93,12 +130,9 @@ const translations = {
     hoursValue: "9:00 – 21:50 Hàng ngày",
     phone: "(+84) 905 473 728",
     copyright: "© 2026 Mix Food Đà Nẵng. Bảo lưu mọi quyền.",
-    padThai: "Pad Thai Truyền Thống",
-    padThaiDesc: "Bún xào, tôm tươi, sốt me, đậu phộng rang.",
     greenCurry: "Cà Ri Xanh Gà",
     greenCurryDesc: "Nước cốt dừa, húng quế Thái, măng, lá chanh kaffir.",
     tomYum: "Tom Yum Goong",
-    tomYumDesc: "Canh chua cay sả, tôm sú, riềng, ớt.",
     somTum: "Gỏi Som Tum",
     somTumDesc: "Đu đủ xanh, tôm khô, đậu phộng, nước trộn chua cay.",
     mangoRice: "Xôi Xoài",
@@ -138,6 +172,48 @@ const translations = {
     guests: "khách",
     reservationSuccess: "Đặt bàn thành công!",
     reservationSuccessDesc: "Chúng tôi sẽ xác nhận đặt chỗ của bạn sớm.",
+    // Thai Dish Highlight Component
+    thaiSpecialties: "Tinh hoa ẩm thực Thái",
+    thaiSpecialtiesDesc:
+      "Khám phá các món ăn Thái chính gốc với hương vị đặc trưng, được chế biến bởi đầu bếp chuyên nghiệp",
+    orderNow: "Đặt ngay",
+    dishSpecialty: "Món đặc trưng",
+    whyChooseMixFood: "Vì sao chọn Mix Food?",
+    whyChooseMixFood1: "• Nguyên liệu tươi nhập khẩu từ Thái Lan",
+    whyChooseMixFood2: "• Đầu bếp chuyên nghiệp với hơn 10 năm kinh nghiệm",
+    whyChooseMixFood3: "• Hương vị Thái chuẩn gốc",
+    whyChooseMixFood4: "• Không gian hiện đại, sang trọng",
+    dishImage: "Hình ảnh món ăn",
+    dishImageCaption: "Chụp tại Mix Food Đà Nẵng",
+    keywords: "Từ khóa",
+
+    tomYumGoong: "Tom Yum Goong",
+    tomYumVietnamese: "Canh chua cay tôm",
+    tomYumDesc:
+      "Món canh đặc trưng Thái Lan với vị chua cay, tôm tươi, nấm và các loại thảo mộc đặc biệt.",
+
+    padThai: "Pad Thai",
+    padThaiVietnamese: "Phở xào kiểu Thái",
+    padThaiDesc:
+      "Mì xào truyền thống với tôm, đậu phộng, giá đỗ và nước sốt đặc biệt tạo nên hương vị cân bằng hoàn hảo.",
+
+    somTam: "Som Tam",
+    somTamVietnamese: "Gỏi đu đủ",
+    somTamDesc:
+      "Gỏi đu đủ xanh trộn với cà chua, đậu phộng, ớt và nước mắm tạo nên món ăn tươi mát, đậm đà.",
+
+    mangoStickyRice: "Xôi xoài",
+    mangoStickyRiceVietnamese: "Xôi xoài ngọt",
+    mangoStickyRiceDesc:
+      "Món tráng miệng ngọt với xoài chín kết hợp cùng xôi dừa và dừa nạo tươi.",
+
+    rating: "Đánh giá",
+    time: "Thời gian",
+    spicyLevel: "Độ cay",
+    minutes: "phút",
+    price: "Giá",
+    orderDishNow: "Đặt món ngay",
+    shareDish: "Chia sẻ món ăn",
   },
 };
 
