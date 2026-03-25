@@ -17,7 +17,7 @@ const Footer = () => {
     {
       name: "Facebook",
       icon: Facebook,
-      url: "https://www.facebook.com/mixfooddanang",
+      url: "https://www.facebook.com/mixfoodamthucthai",
       color: "hover:text-blue-600",
     },
     {
