@@ -5,9 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import RouteProgress from "@/components/RouteProgress";
 import Index from "./pages/Index.tsx";
-import MenuPage from "./pages/Menu/index.tsx";
 import Reserve from "./pages/Reserve.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import MenuPage from "./pages/Menu/index.tsx";
 
 const queryClient = new QueryClient();
 
