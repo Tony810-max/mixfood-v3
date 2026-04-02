@@ -32,7 +32,7 @@ const MenuContent = () => {
       <Header />
 
       {/* Hero */}
-      <section className={`pt-[${HERO_OFFSET}px]`}>
+      <section className="pt-[4.5rem]">
         <div className="relative h-[280px] md:h-[360px] overflow-hidden">
           <img
             src={restaurantImg}
@@ -66,9 +66,7 @@ const MenuContent = () => {
       </section>
 
       {/* Quick Nav */}
-      <section
-        className={`sticky top-[${HERO_OFFSET}px] z-30 bg-background/80 backdrop-blur-md border-b border-border`}
-      >
+      <section className="sticky top-[4.5rem] z-30 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6">
           <div className="flex gap-1 overflow-x-auto py-4 scrollbar-hide -mx-6 px-6">
             {menuData.map((cat) => (
