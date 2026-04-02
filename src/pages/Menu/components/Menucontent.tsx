@@ -46,7 +46,7 @@ const MenuContent = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="font-serif text-4xl md:text-5xl font-bold text-background mb-3"
+                className="font-serif  text-4xl md:text-5xl font-bold text-background mb-3"
               >
                 {lang === "vi" ? "Thực Đơn" : "Our Menu"}
               </motion.h1>
