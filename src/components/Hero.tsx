@@ -1,7 +1,6 @@
-import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
-import SocialShare from "@/components/SocialShare";
 import heroDish from "@/assets/hero-dish.jpg";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   const { t } = useLanguage();
