@@ -1,6 +1,6 @@
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
-import MenuContent from "./components/Menucontent";
+import MenuContent from "./components/Menu/Menucontent";
 
 const MenuPage = () => (
   <LanguageProvider>

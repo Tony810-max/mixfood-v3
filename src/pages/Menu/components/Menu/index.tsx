@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import TagBadge from "./TagBadge";
-import { formatPrice, MenuItem } from "../utils/const";
+import { formatPrice, MenuItem } from "../../utils/const";
+import TagBadge from "../TagBadge";
 
 const MenuItemCard = ({
   item,
