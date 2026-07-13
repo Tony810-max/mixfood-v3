@@ -14,7 +14,7 @@ const items = [
 export default function DropdownCategory() {
     return (
         <Select>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="md:w-[180px] rounded-xl">
                 <SelectValue placeholder="Theme" />
             </SelectTrigger>
             <SelectContent>

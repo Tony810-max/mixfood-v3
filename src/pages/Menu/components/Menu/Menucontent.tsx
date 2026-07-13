@@ -70,7 +70,7 @@ const MenuContent = () => {
           </div>
         </div>
       </section> */}
-      <div className="flex justify-between items-center gap-2 p-4">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-2 p-4">
         <SearchContent />
         <DropdownCategory />
       </div>
