@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useEffect, useState } from "react";
+import ReserveButton from "./ReserveButton";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -77,12 +78,8 @@ const Header = () => {
           >
             {t.reserveTable}
           </a> */}
-          <button
-            className="rounded-lg min-w-[15.375rem] bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-            disabled
-          >
-            {t.reserveTable}
-          </button>
+          <ReserveButton content={t.reserveTable} />
+          
         </nav>
 
         {/* Mobile Menu Button */}

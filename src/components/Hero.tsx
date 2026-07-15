@@ -1,6 +1,7 @@
 import heroDish from "@/assets/hero-dish.jpg";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
+import ReserveButton from "./ReserveButton";
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -64,12 +65,7 @@ const Hero = () => {
               >
                 {t.viewMenu}
               </a>
-              <button
-                className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-                disabled
-              >
-                {t.reserveTable}
-              </button>
+             <ReserveButton content={t.reserveTable} />
             </div>
           </motion.div>
 

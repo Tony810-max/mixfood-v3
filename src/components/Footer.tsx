@@ -1,13 +1,13 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
+  Clock,
   Facebook,
   Instagram,
-  Twitter,
+  Mail,
   MapPin,
   Phone,
-  Mail,
-  Clock,
+  Twitter,
 } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -128,7 +128,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-gray-300 text-sm">
                 <Mail className="h-4 w-4 text-red-500" />
-                <span>info@mixfood.vn</span>
+                <span>mixfood1708@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-300 text-sm">
                 <Clock className="h-4 w-4 text-red-500" />
