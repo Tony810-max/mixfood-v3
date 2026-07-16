@@ -1,4 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -16,8 +17,8 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { label: t.home, href: "/" },
-    { label: t.menu, href: "/menu" },
+    { label: t.home, href: ROUTES.HOME },
+    { label: t.menu, href: ROUTES.MENU },
   ];
 
   return (
@@ -71,14 +72,7 @@ const Header = () => {
               VI
             </button>
           </div>
-
-          {/* <a
-            href="/reserve"
-            className="rounded-lg min-w-[15.375rem] bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-          >
-            {t.reserveTable}
-          </a> */}
-          <ReserveButton content={t.reserveTable} />
+          <ReserveButton className="min-w-60" content={t.reserveTable} />
           
         </nav>
 
@@ -108,6 +102,7 @@ const Header = () => {
               {item.label}
             </a>
           ))}
+          <ReserveButton className="min-w-60" content={t.reserveTable} onClick={() => setMobileOpen(false)} />
           <div className="flex items-center gap-2">
             <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5">
               <button
@@ -132,13 +127,6 @@ const Header = () => {
               </button>
             </div>
           </div>
-          <a
-            href="/reserve"
-            onClick={() => setMobileOpen(false)}
-            className="block rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground text-center"
-          >
-            {t.reserveTable}
-          </a>
         </motion.div>
       )}
     </motion.header>
