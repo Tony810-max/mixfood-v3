@@ -11,6 +11,7 @@ import MenuPage from "./pages/Menu/index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Reserve from "./pages/Reserve.tsx";
 import { ROUTES } from "./utils/const.ts";
+import Booking from "./pages/Booking/index.tsx";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path={ROUTES.HOME} element={<Index />} />
           <Route path={ROUTES.MENU} element={<MenuPage />} />
           <Route path={ROUTES.RESERVE} element={<Reserve />} />
+          <Route path={ROUTES.BOOKING} element={<Booking />} />
           <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

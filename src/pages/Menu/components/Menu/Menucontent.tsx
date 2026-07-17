@@ -70,14 +70,14 @@ const MenuContent = () => {
           </div>
         </div>
       </section> */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-2 p-4">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-2 p-4">
         <SearchContent />
         <DropdownCategory />
       </div>
 
 
       {/* Category Sections */}
-      <div className="container mx-auto px-6 py-12 md:py-16 space-y-16 md:space-y-20">
+      <div className="container mx-auto px-6 py-8 space-y-16 md:space-y-20">
         {menuData.map((category) => (
           <CategorySection key={category.id} category={category} lang={lang} />
         ))}
