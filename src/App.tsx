@@ -6,12 +6,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Auth/Login/index.tsx";
 import RegisterPage from "./pages/Auth/Register/index.tsx";
+import Booking from "./pages/Booking/index.tsx";
 import Index from "./pages/Index.tsx";
 import MenuPage from "./pages/Menu/index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Reserve from "./pages/Reserve.tsx";
 import { ROUTES } from "./utils/const.ts";
-import Booking from "./pages/Booking/index.tsx";
 
 const queryClient = new QueryClient();
 

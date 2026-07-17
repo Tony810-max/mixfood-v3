@@ -12,7 +12,8 @@ import { CalendarIcon, Clock, Mail, Phone, User, Users } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { bookingSchema, guestOptions, timeSlots, type BookingFormValues } from "./bookingSchema"
+import { BookingFormValues, bookingSchema } from "./utils/bookingSchema"
+import { guestOptions, timeSlots } from "./utils/const"
 
 export const BookingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)

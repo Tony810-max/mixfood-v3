@@ -1,3 +1,4 @@
+import { INFORMATION_RESTAURANT } from "@/utils/const"
 import { BookingForm } from "./BookingForm"
 import { BookingInfoCards } from "./BookingInfoCards"
 
@@ -18,7 +19,7 @@ const Booking = () => {
         <BookingForm />
 
         <div className="mt-8 text-center text-sm text-amber-700">
-          <p>Bạn cần hỗ trợ? Gọi cho chúng tôi tại <a href="tel:0123456789" className="font-semibold hover:underline">0123 456 789</a></p>
+          <p>Bạn cần hỗ trợ? Gọi cho chúng tôi tại <a href={`tel:${INFORMATION_RESTAURANT.phone.replace(/\s/g, "")}`} className="font-semibold hover:underline">{INFORMATION_RESTAURANT.phone}</a></p>
         </div>
       </div>
     </div>
