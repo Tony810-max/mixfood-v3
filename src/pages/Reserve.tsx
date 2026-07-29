@@ -1,37 +1,37 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { format } from "date-fns";
-import {
-  Clock,
-  Phone,
-  Mail,
-  Users,
-  CalendarIcon,
-  AlertCircle,
-  ChevronDown,
-} from "lucide-react";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
+import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { getApiErrorMessage } from "@/services/api";
+import { reservationService } from "@/services/reservation.service";
+import { format } from "date-fns";
+import { motion } from "framer-motion";
+import {
+    AlertCircle,
+    CalendarIcon,
+    Clock,
+    Mail,
+    Phone
+} from "lucide-react";
+import { useState } from "react";
 
 const timeSlots = [
   "9:00",
@@ -66,13 +66,56 @@ const ReserveContent = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handlePhoneChange = (value: string) => {
+    setPhone(value.replace(/\D/g, ''));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: t.reservationSuccess,
-      description: t.reservationSuccessDesc,
-    });
+
+    if (!name || !phone || !date || !time || !guests) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await reservationService.create({
+        name,
+        phone,
+        email: email || undefined,
+        reservationDate: date.toISOString(),
+        reservationTime: time,
+        numberOfGuests: parseInt(guests),
+        note: notes || undefined,
+      });
+      toast({
+        title: t.reservationSuccess,
+        description: t.reservationSuccessDesc,
+      });
+      // Reset form
+      setDate(undefined);
+      setTime("");
+      setGuests("");
+      setName("");
+      setPhone("");
+      setEmail("");
+      setNotes("");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: getApiErrorMessage(error),
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const fadeUp = {
@@ -151,7 +194,7 @@ const ReserveContent = () => {
                     id="phone"
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
                     placeholder={t.phonePlaceholder}
                     required
                   />
@@ -265,9 +308,10 @@ const ReserveContent = () => {
               {/* Submit */}
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 h-12 text-base font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.98]"
               >
-                {t.reserveButton}
+                {isLoading ? "Submitting..." : t.reserveButton}
               </Button>
             </form>
           </motion.div>

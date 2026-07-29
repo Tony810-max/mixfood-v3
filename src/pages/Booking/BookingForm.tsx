@@ -6,17 +6,25 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useLanguage } from "@/contexts/LanguageContext"
+import { getApiErrorMessage } from "@/services/api"
+import { reservationService } from "@/services/reservation.service"
+import { ROUTES } from "@/utils/const"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon, Clock, Mail, Phone, User, Users } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { BookingFormValues, bookingSchema } from "./utils/bookingSchema"
-import { guestOptions, timeSlots } from "./utils/const"
+import { getGuestOptions, timeSlots } from "./utils/const"
 
 export const BookingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigate = useNavigate()
+  const { t } = useLanguage()
+  const guestOptions = getGuestOptions()
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -32,16 +40,24 @@ export const BookingForm = () => {
   const onSubmit = async (data: BookingFormValues) => {
     setIsSubmitting(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await reservationService.create({
+        name: data.name,
+        phone: data.phone,
+        email: data.email || undefined,
+        reservationDate: data.date.toISOString(),
+        reservationTime: data.time,
+        numberOfGuests: parseInt(data.guests),
+        note: data.specialRequests || undefined,
+      })
       
-      console.log("Booking data:", data)
       toast.success("Đặt bàn thành công!", {
         description: "Chúng tôi sẽ liên hệ với bạn sớm nhất để xác nhận.",
       })
       form.reset()
+      navigate(ROUTES.BOOKING_SUCCESS)
     } catch (error) {
       toast.error("Đặt bàn thất bại", {
-        description: "Vui lòng thử lại sau.",
+        description: getApiErrorMessage(error),
       })
     } finally {
       setIsSubmitting(false)
@@ -51,9 +67,9 @@ export const BookingForm = () => {
   return (
     <Card className="border-amber-200 bg-white/90 backdrop-blur shadow-xl">
       <CardHeader className="bg-primary-gradient text-white rounded-t-lg">
-        <CardTitle className="text-2xl">Thông Tin Đặt Bàn</CardTitle>
+        <CardTitle className="text-2xl">{t.bookingFormTitle}</CardTitle>
         <CardDescription className="text-amber-100">
-          Vui lòng điền đầy đủ thông tin bên dưới
+          {t.bookingFormDesc}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
@@ -67,11 +83,11 @@ export const BookingForm = () => {
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      Họ và tên
+                      {t.fullName}
                     </FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Nhập họ và tên của bạn" 
+                        placeholder={t.fullNamePlaceholder}
                         className="border-amber-200 focus:border-amber-500 focus:ring-amber-500"
                         {...field} 
                       />
@@ -88,11 +104,11 @@ export const BookingForm = () => {
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
                       <Phone className="h-4 w-4" />
-                      Số điện thoại
+                      {t.phoneNumber}
                     </FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Nhập số điện thoại" 
+                        placeholder={t.phonePlaceholder}
                         className="border-amber-200 focus:border-amber-500 focus:ring-amber-500"
                         {...field} 
                       />
@@ -110,11 +126,11 @@ export const BookingForm = () => {
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
-                    Email
+                    {t.email}
                   </FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="email@example.com" 
+                      placeholder={t.emailPlaceholder}
                       className="border-amber-200 focus:border-amber-500 focus:ring-amber-500"
                       {...field} 
                     />
@@ -132,7 +148,7 @@ export const BookingForm = () => {
                   <FormItem className="flex flex-col">
                     <FormLabel className="flex items-center gap-2">
                       <CalendarIcon className="h-4 w-4" />
-                      Ngày đặt bàn
+                      {t.bookingDate}
                     </FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -146,7 +162,7 @@ export const BookingForm = () => {
                             {field.value ? (
                               format(field.value, "dd/MM/yyyy")
                             ) : (
-                              <span>Chọn ngày</span>
+                              <span>{t.bookingSelectDate}</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -174,12 +190,12 @@ export const BookingForm = () => {
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      Giờ
+                      {t.bookingTime}
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="border-amber-200 focus:border-amber-500 focus:ring-amber-500">
-                          <SelectValue placeholder="Chọn giờ" />
+                          <SelectValue placeholder={t.bookingSelectTime} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -203,12 +219,12 @@ export const BookingForm = () => {
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    Số lượng khách
+                    {t.numberOfGuests}
                   </FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="border-amber-200 focus:border-amber-500 focus:ring-amber-500">
-                        <SelectValue placeholder="Chọn số lượng khách" />
+                        <SelectValue placeholder={t.bookingSelectGuests} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -229,17 +245,17 @@ export const BookingForm = () => {
               name="specialRequests"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Yêu cầu đặc biệt (tùy chọn)</FormLabel>
+                  <FormLabel>{t.bookingSpecialRequests}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Ví dụ: Dị ứng, chỗ ngồi gần cửa sổ, bánh sinh nhật..."
+                      placeholder={t.bookingSpecialRequestsPlaceholder}
                       className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 resize-none"
                       rows={4}
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Chúng tôi sẽ cố gắng đáp ứng yêu cầu của bạn trong khả năng có thể
+                    {t.bookingSpecialRequestsDesc}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -251,7 +267,7 @@ export const BookingForm = () => {
               className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold py-6 text-lg"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Đang xử lý..." : "Xác Nhận Đặt Bàn"}
+              {isSubmitting ? t.bookingSubmitting : t.bookingSubmitButton}
             </Button>
           </form>
         </Form>

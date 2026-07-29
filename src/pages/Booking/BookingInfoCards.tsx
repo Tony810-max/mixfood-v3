@@ -1,7 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { RESTAURANT_INFO } from "./utils/const"
+import { getRestaurantInfo } from "./utils/const"
 
 export const BookingInfoCards = () => {
+  const RESTAURANT_INFO = getRestaurantInfo()
+
   return (
     <div className="grid md:grid-cols-3 gap-6 mb-8">
       {RESTAURANT_INFO.map((info, index) => (

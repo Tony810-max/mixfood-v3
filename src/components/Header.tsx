@@ -1,14 +1,17 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { LogOut, Menu, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ReserveButton from "./ReserveButton";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  // const { user, isAuthenticated, logout } = useAuth();
+  const isAuthenticated = false; // Temporarily disabled
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -50,30 +53,67 @@ const Header = () => {
           ))}
 
           {/* Language Toggle */}
-          <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5">
-            <button
+          <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5 relative overflow-hidden">
+            <motion.div
+              className="absolute top-1 bottom-1 w-[calc(50%-2px)] bg-card rounded-full shadow-layered"
+              initial={false}
+              animate={{
+                x: lang === "en" ? 2 : "calc(100% - 4px)"
+              }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+            <motion.button
               onClick={() => setLang("en")}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                lang === "en"
-                  ? "bg-card text-primary shadow-layered"
-                  : "text-muted-foreground"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative z-10 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                lang === "en" ? "text-primary" : "text-muted-foreground"
               }`}
             >
               EN
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={() => setLang("vi")}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                lang === "vi"
-                  ? "bg-card text-primary shadow-layered"
-                  : "text-muted-foreground"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative z-10 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                lang === "vi" ? "text-primary" : "text-muted-foreground"
               }`}
             >
               VI
-            </button>
+            </motion.button>
           </div>
-          <ReserveButton className="min-w-60" content={t.reserveTable} />
+          <ReserveButton className="min-w-32" content={t.reserveTable} />
           
+          {/* Auth Section */}
+          {isAuthenticated ? (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm">
+                <User className="w-4 h-4" />
+                <span className="font-medium">User</span>
+              </div>
+              <button
+                // onClick={logout}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link to={ROUTES.AUTH.LOGIN}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  Sign In
+                </button>
+              </Link>
+              <Link to={ROUTES.AUTH.REGISTER}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  Sign Up
+                </button>
+              </Link>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu Button */}
@@ -103,6 +143,40 @@ const Header = () => {
             </a>
           ))}
           <ReserveButton className="min-w-60" content={t.reserveTable} onClick={() => setMobileOpen(false)} />
+          
+          {/* Mobile Auth Section */}
+          {isAuthenticated ? (
+            <div className="flex flex-col gap-3 pt-4 border-t border-border">
+              <div className="flex items-center gap-2 text-sm">
+                <User className="w-4 h-4" />
+                <span className="font-medium">User</span>
+              </div>
+              <button
+                onClick={() => {
+                  // logout();
+                  setMobileOpen(false);
+                }}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3 pt-4 border-t border-border">
+              <Link to={ROUTES.AUTH.LOGIN} onClick={() => setMobileOpen(false)}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  Sign In
+                </button>
+              </Link>
+              <Link to={ROUTES.AUTH.REGISTER} onClick={() => setMobileOpen(false)}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  Sign Up
+                </button>
+              </Link>
+            </div>
+          )}
+          
           <div className="flex items-center gap-2">
             <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5">
               <button

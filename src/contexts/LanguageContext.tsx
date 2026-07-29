@@ -6,7 +6,7 @@ const translations = {
   en: {
     home: "Home",
     menu: "Menu",
-    reserveTable: "Reserve Table (Comming Soon)",
+    reserveTable: "Reserve Table",
     heroHeadline: "Authentic Thai Soul in the Heart of Da Nang",
     heroSub:
       "From the streets of Bangkok to the shores of Da Nang. Experience authentic spices, fresh local seafood, and traditional Thai hospitality.",
@@ -69,6 +69,38 @@ const translations = {
     guests: "guests",
     reservationSuccess: "Reservation submitted successfully!",
     reservationSuccessDesc: "We'll confirm your booking shortly.",
+    // Booking page specific
+    bookingAddress: "Address",
+    bookingAddressValue: "K49 Nguyen Van Thoai, Hoa Thuan Tay, Hai Chau, Da Nang",
+    bookingPhone: "Phone",
+    bookingPhoneValue: "0905 473 728",
+    bookingHours: "Opening Hours",
+    bookingHoursValue: "09:00 - 21:50",
+    guest1: "1 person",
+    guest2: "2 people",
+    guest3: "3 people",
+    guest4: "4 people",
+    guest5: "5 people",
+    guest6: "6 people",
+    guest7: "7 people",
+    guest8: "8 people",
+    guest9: "9 people",
+    guest10: "10 people",
+    guest10Plus: "More than 10 people",
+
+    // Booking form specific
+    bookingFormTitle: "Reservation Information",
+    bookingFormDesc: "Please fill in all information below",
+    bookingDate: "Reservation Date",
+    bookingTime: "Time",
+    bookingSelectDate: "Select date",
+    bookingSelectTime: "Select time",
+    bookingSelectGuests: "Select number of guests",
+    bookingSpecialRequests: "Special Requests (optional)",
+    bookingSpecialRequestsPlaceholder: "E.g., Allergies, window seating, birthday cake...",
+    bookingSpecialRequestsDesc: "We will try our best to accommodate your requests",
+    bookingSubmitting: "Processing...",
+    bookingSubmitButton: "Confirm Reservation",
 
     // Thai Dish Highlight Component
     thaiSpecialties: "Specialties of Thai Cuisine",
@@ -145,7 +177,7 @@ const translations = {
   vi: {
     home: "Trang Chủ",
     menu: "Thực Đơn",
-    reserveTable: "Đặt Bàn (Sắp Ra Mắt)",
+    reserveTable: "Đặt Bàn",
     heroHeadline: "Tinh Hoa Ẩm Thực Thái Giữa Lòng Đà Nẵng",
     heroSub:
       "Từ đường phố Bangkok đến bờ biển Đà Nẵng. Trải nghiệm gia vị đích thực, hải sản tươi sống và lòng hiếu khách truyền thống Thái Lan.",
@@ -206,6 +238,39 @@ const translations = {
     guests: "khách",
     reservationSuccess: "Đặt bàn thành công!",
     reservationSuccessDesc: "Chúng tôi sẽ xác nhận đặt chỗ của bạn sớm.",
+    // Booking page specific
+    bookingAddress: "Địa chỉ",
+    bookingAddressValue: "K49 Nguyễn Văn Thoại, Hòa Thuận Tây, Hải Châu, Đà Nẵng",
+    bookingPhone: "Số điện thoại",
+    bookingPhoneValue: "0905 473 728",
+    bookingHours: "Giờ mở cửa",
+    bookingHoursValue: "09:00 - 21:50",
+    guest1: "1 người",
+    guest2: "2 người",
+    guest3: "3 người",
+    guest4: "4 người",
+    guest5: "5 người",
+    guest6: "6 người",
+    guest7: "7 người",
+    guest8: "8 người",
+    guest9: "9 người",
+    guest10: "10 người",
+    guest10Plus: "Trên 10 người",
+
+    // Booking form specific
+    bookingFormTitle: "Thông Tin Đặt Bàn",
+    bookingFormDesc: "Vui lòng điền đầy đủ thông tin bên dưới",
+    bookingDate: "Ngày đặt bàn",
+    bookingTime: "Giờ",
+    bookingSelectDate: "Chọn ngày",
+    bookingSelectTime: "Chọn giờ",
+    bookingSelectGuests: "Chọn số lượng khách",
+    bookingSpecialRequests: "Yêu cầu đặc biệt (tùy chọn)",
+    bookingSpecialRequestsPlaceholder: "Ví dụ: Dị ứng, chỗ ngồi gần cửa sổ, bánh sinh nhật...",
+    bookingSpecialRequestsDesc: "Chúng tôi sẽ cố gắng đáp ứng yêu cầu của bạn trong khả năng có thể",
+    bookingSubmitting: "Đang xử lý...",
+    bookingSubmitButton: "Xác Nhận Đặt Bàn",
+
     // Thai Dish Highlight Component
     thaiSpecialties: "Tinh hoa ẩm thực Thái",
     thaiSpecialtiesDesc:
