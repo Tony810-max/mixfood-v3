@@ -83,7 +83,7 @@ const Header = () => {
               VI
             </motion.button>
           </div>
-          <ReserveButton className="min-w-32" content={t.reserveTable} />
+          <ReserveButton content={t.reserveTable} />
           
           {/* Auth Section */}
           {isAuthenticated ? (

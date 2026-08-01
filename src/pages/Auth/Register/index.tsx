@@ -150,6 +150,7 @@ const RegisterPage = () => {
             </motion.div>
           </CardHeader>
           <CardContent className="space-y-4">
+             <div className="flex justify-between items-center gap-4">
             <div className="space-y-2">
               <Label htmlFor="fullName" className="text-sm font-medium">
                 {t.registerFullName}
@@ -184,6 +185,7 @@ const RegisterPage = () => {
               </div>
               {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
             </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">
                 {t.registerEmail}
@@ -201,6 +203,7 @@ const RegisterPage = () => {
               </div>
               {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
+            
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium">
                 {t.registerPassword}
@@ -275,7 +278,7 @@ const RegisterPage = () => {
               {isLoading ? "Creating account..." : t.registerButton}
             </Button>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4 pt-6">
+          <CardFooter className="flex flex-col space-y-4 w">
             <div className="text-center text-sm">
               <span className="text-muted-foreground">{t.registerHasAccount} </span>
               <Link

@@ -58,10 +58,10 @@ const Hero = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-wrap gap-4 pt-2 items-center">
               <a
                 href="/menu"
-                className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:-translate-y-0.5 transition-all active:scale-95 shadow-layered"
+                className="rounded-lg border border-black min-w-32 px-6 py-3 text-sm font-semibold text-primary-foreground hover:-translate-y-0.5 transition-all active:scale-95 shadow-layered"
               >
                 {t.viewMenu}
               </a>

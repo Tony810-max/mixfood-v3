@@ -16,7 +16,7 @@ export default function ReserveButton({
   return (
     <Link to={ROUTES.BOOKING}>
       <Button
-        className={cn("bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white", className)}
+        className={cn("bg-primary-gradient min-w-32", className)}
         {...props}
       >
         {content}
