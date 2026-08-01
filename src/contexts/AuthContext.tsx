@@ -47,7 +47,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { authService } = await import('@/services/auth.service');
       const response = await authService.login({ email, password }, remember);
       
-      const userData: User = {
+      // Use user data from backend response if available, otherwise fallback to email-based name
+      const userData: User = response.user || {
         id: 1,
         email,
         name: email.split('@')[0],

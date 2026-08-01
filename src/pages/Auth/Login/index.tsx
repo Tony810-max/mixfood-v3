@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { loginSchema, type LoginFormData } from "@/lib/validation";
 import { getApiErrorMessage } from "@/services/api";
-import { authService } from "@/services/auth.service";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { Lock, Mail } from "lucide-react";
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 const LoginPage = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  // const { login } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -51,8 +51,8 @@ const LoginPage = () => {
 
     setIsLoading(true);
     try {
-      await authService.login(formData as any, rememberMe);
-      toast.success("Login successful!");
+      await login(formData.email, formData.password, rememberMe);
+      toast.success(t.loginSuccess);
       navigate(ROUTES.HOME);
     } catch (error) {
       toast.error(getApiErrorMessage(error));
@@ -105,14 +105,14 @@ const LoginPage = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">
-                Email Address
+                {t.loginEmailAddress}
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t.loginEmailPlaceholderAddress}
                   className={`pl-10 h-11 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
@@ -166,7 +166,7 @@ const LoginPage = () => {
               onClick={handleLogin}
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : t.loginButton}
+              {isLoading ? t.loginSigningIn : t.loginButton}
             </Button>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 pt-6">

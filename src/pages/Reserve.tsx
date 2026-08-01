@@ -22,6 +22,8 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "@/services/api";
 import { reservationService } from "@/services/reservation.service";
+import { GUEST_OPTIONS, TIME_SLOTS } from "@/utils/const";
+import { formatPhoneNumber } from "@/utils/formatters";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import {
@@ -32,29 +34,6 @@ import {
     Phone
 } from "lucide-react";
 import { useState } from "react";
-
-const timeSlots = [
-  "9:00",
-  "9:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "12:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-];
 
 const ReserveContent = () => {
   const { t } = useLanguage();
@@ -69,7 +48,7 @@ const ReserveContent = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePhoneChange = (value: string) => {
-    setPhone(value.replace(/\D/g, ''));
+    setPhone(formatPhoneNumber(value));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,8 +56,8 @@ const ReserveContent = () => {
 
     if (!name || !phone || !date || !time || !guests) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
+        title: t.validationError,
+        description: t.validationRequired,
         variant: "destructive",
       });
       return;
@@ -259,7 +238,7 @@ const ReserveContent = () => {
                       <SelectValue placeholder={t.timePlaceholder} />
                     </SelectTrigger>
                     <SelectContent>
-                      {timeSlots.map((slot) => (
+                      {TIME_SLOTS.map((slot) => (
                         <SelectItem key={slot} value={slot}>
                           {slot}
                         </SelectItem>
@@ -279,7 +258,7 @@ const ReserveContent = () => {
                     <SelectValue placeholder={t.guestsPlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, "> 8"].map((n) => (
+                    {GUEST_OPTIONS.map((n) => (
                       <SelectItem key={n} value={String(n)}>
                         {n} {n === 1 ? t.guest : t.guests}
                       </SelectItem>

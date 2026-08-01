@@ -22,6 +22,12 @@ interface AuthResponse {
   message: string;
   accessToken: string;
   refreshToken: string;
+  user?: {
+    id: number;
+    email: string;
+    name: string;
+    role: string;
+  };
 }
 
 const clearStoredTokens = () => {

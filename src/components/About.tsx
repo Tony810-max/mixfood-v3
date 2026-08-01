@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
 import interiorImg from "@/assets/restaurant-interior.jpg";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
 
 const About = () => {
   const { t } = useLanguage();
@@ -45,7 +45,7 @@ const About = () => {
               {t.aboutText}
             </p>
             <div className="flex gap-8 pt-4">
-              {["🧂 Salt", "🍯 Sweet", "🌶️ Spicy", "🍋 Sour"].map((flavor) => (
+              {[t.aboutSalt, t.aboutSweet, t.aboutSpicy, t.aboutSour].map((flavor) => (
                 <span key={flavor} className="text-sm font-medium text-foreground/70">
                   {flavor}
                 </span>

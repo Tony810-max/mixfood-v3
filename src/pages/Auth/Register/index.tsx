@@ -8,6 +8,7 @@ import { registerSchema, type RegisterFormData } from "@/lib/validation";
 import { getApiErrorMessage } from "@/services/api";
 import { authService } from "@/services/auth.service";
 import { ROUTES } from "@/utils/const";
+import { formatPhoneNumber, formatVerificationCode } from "@/utils/formatters";
 import { motion } from "framer-motion";
 import { Lock, Mail, Phone, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -86,7 +87,8 @@ const RegisterPage = () => {
         code: formData.verifyCode,
         password: formData.password,
       });
-      toast.success("Registration successful!");
+      toast.success(t.registerSuccess);
+      // Auto-login after successful registration
       navigate(ROUTES.AUTH.LOGIN);
     } catch (error) {
       toast.error(getApiErrorMessage(error));
@@ -96,10 +98,12 @@ const RegisterPage = () => {
   };
 
   const handleInputChange = (field: keyof RegisterFormData, value: string) => {
-    // Format phone number
+    // Format phone number and verification code
     let formattedValue = value;
     if (field === 'phone') {
-      formattedValue = value.replace(/\D/g, '');
+      formattedValue = formatPhoneNumber(value);
+    } else if (field === 'verifyCode') {
+      formattedValue = formatVerificationCode(value);
     }
     setFormData(prev => ({ ...prev, [field]: formattedValue }));
     // Clear error for this field when user starts typing
@@ -150,7 +154,7 @@ const RegisterPage = () => {
             </motion.div>
           </CardHeader>
           <CardContent className="space-y-4">
-             <div className="flex justify-between items-center gap-4">
+             <div className="md:flex justify-between  items-center gap-4">
             <div className="space-y-2">
               <Label htmlFor="fullName" className="text-sm font-medium">
                 {t.registerFullName}
@@ -170,14 +174,14 @@ const RegisterPage = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone" className="text-sm font-medium">
-                Phone Number
+                {t.registerPhoneNumber}
               </Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="0905 473 728"
+                  placeholder={t.registerPhonePlaceholder}
                   className={`pl-10 h-11 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -252,7 +256,7 @@ const RegisterPage = () => {
                     maxLength={6}
                     className={`pl-10 h-11 ${errors.verifyCode ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
                     value={formData.verifyCode}
-                    onChange={(e) => handleInputChange("verifyCode", e.target.value.replace(/\D/g, ""))}
+                    onChange={(e) => handleInputChange("verifyCode", e.target.value)}
                   />
                 </div>
                 <Button
@@ -262,7 +266,7 @@ const RegisterPage = () => {
                   onClick={handleSendCode}
                   disabled={countdown > 0 || isLoading}
                 >
-                  {isLoading ? "Sending..." : countdown > 0 
+                  {isLoading ? t.registerSending : countdown > 0 
                     ? t.registerResendIn.replace("{seconds}", countdown.toString())
                     : formData.verifyCode ? t.registerResendCode : t.registerSendCode}
                 </Button>
@@ -275,7 +279,7 @@ const RegisterPage = () => {
               onClick={handleRegister}
               disabled={isLoading}
             >
-              {isLoading ? "Creating account..." : t.registerButton}
+              {isLoading ? t.registerCreating : t.registerButton}
             </Button>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 w">

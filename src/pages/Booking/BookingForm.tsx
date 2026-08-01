@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { BookingFormValues, bookingSchema } from "./utils/bookingSchema"
-import { getGuestOptions, timeSlots } from "./utils/const"
+import { BOOKING_TIME_SLOTS, getGuestOptions } from "./utils/const"
 
 export const BookingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -199,7 +199,7 @@ export const BookingForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {timeSlots.map((time) => (
+                        {BOOKING_TIME_SLOTS.map((time) => (
                           <SelectItem key={time} value={time}>
                             {time}
                           </SelectItem>

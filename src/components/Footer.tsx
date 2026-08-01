@@ -1,38 +1,25 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { INFORMATION_RESTAURANT, SOCIAL_LINKS, THAI_DISHES } from "@/utils/const";
 import {
-  Clock,
-  Facebook,
-  Instagram,
-  Mail,
-  MapPin,
-  Phone,
-  Twitter,
+    Clock,
+    Facebook,
+    Instagram,
+    Mail,
+    MapPin,
+    Phone,
+    Twitter,
 } from "lucide-react";
 
 const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
-  const socialLinks = [
-    {
-      name: "Facebook",
-      icon: Facebook,
-      url: "https://www.facebook.com/mixfoodamthucthai",
-      color: "hover:text-blue-600",
-    },
-    {
-      name: "Instagram",
-      icon: Instagram,
-      url: "https://www.instagram.com/mixfooddanang",
-      color: "hover:text-pink-600",
-    },
-    {
-      name: "Twitter",
-      icon: Twitter,
-      url: "https://twitter.com/mixfooddanang",
-      color: "hover:text-sky-600",
-    },
-  ];
+  const socialLinks = SOCIAL_LINKS.map(link => ({
+    ...link,
+    icon: link.name === "Facebook" ? Facebook : 
+            link.name === "Instagram" ? Instagram : 
+            Twitter
+  }));
 
   const quickLinks = [
     { label: t.home, href: "/" },
@@ -42,13 +29,7 @@ const Footer = () => {
     { label: "Liên hệ", href: "/contact" },
   ];
 
-  const thaiDishes = [
-    { name: "Tom Yum", href: "/menu/tom-yum" },
-    { name: "Pad Thai", href: "/menu/pad-thai" },
-    { name: "Som Tam", href: "/menu/som-tam" },
-    { name: "Mango Sticky Rice", href: "/menu/desserts" },
-    { name: "Thai Tea", href: "/menu/drinks" },
-  ];
+  const thaiDishes = THAI_DISHES;
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -128,7 +109,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-gray-300 text-sm">
                 <Mail className="h-4 w-4 text-red-500" />
-                <span>mixfood1708@gmail.com</span>
+                <span>{INFORMATION_RESTAURANT.email}</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-300 text-sm">
                 <Clock className="h-4 w-4 text-red-500" />

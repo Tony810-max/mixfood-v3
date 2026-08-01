@@ -1,7 +1,9 @@
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import RouteProgress from "@/components/RouteProgress";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -12,6 +14,7 @@ import BookingSuccess from "./pages/BookingSuccess/index.tsx";
 import Index from "./pages/Index.tsx";
 import MenuPage from "./pages/Menu/index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import ProfilePage from "./pages/Profile/index.tsx";
 import Reserve from "./pages/Reserve.tsx";
 import { ROUTES } from "./utils/const.ts";
 
@@ -19,8 +22,8 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      {/* <AuthProvider> */}
+    <AuthProvider>
+      <LanguageProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -32,15 +35,28 @@ const App = () => (
               <Route path={ROUTES.RESERVE} element={<Reserve />} />
               <Route path={ROUTES.BOOKING} element={<Booking />} />
               <Route path={ROUTES.BOOKING_SUCCESS} element={<BookingSuccess />} />
-              <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
-              <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
+              <Route path={ROUTES.PROFILE} element={
+                <ProtectedRoute requireAuth={true}>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } />
+              <Route path={ROUTES.AUTH.LOGIN} element={
+                <ProtectedRoute requireAuth={false}>
+                  <LoginPage />
+                </ProtectedRoute>
+              } />
+              <Route path={ROUTES.AUTH.REGISTER} element={
+                <ProtectedRoute requireAuth={false}>
+                  <RegisterPage />
+                </ProtectedRoute>
+              } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
-      {/* </AuthProvider> */}
-    </LanguageProvider>
+      </LanguageProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

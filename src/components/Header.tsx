@@ -1,17 +1,27 @@
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
-import { LogOut, Menu, User, X } from "lucide-react";
+import { ChevronDown, LogOut, Menu, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import LanguageToggle from "./LanguageToggle";
 import ReserveButton from "./ReserveButton";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { lang, setLang, t } = useLanguage();
-  // const { user, isAuthenticated, logout } = useAuth();
-  const isAuthenticated = false; // Temporarily disabled
+  const { t } = useLanguage();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -52,64 +62,50 @@ const Header = () => {
             </a>
           ))}
 
-          {/* Language Toggle */}
-          <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5 relative overflow-hidden">
-            <motion.div
-              className="absolute top-1 bottom-1 w-[calc(50%-2px)] bg-card rounded-full shadow-layered"
-              initial={false}
-              animate={{
-                x: lang === "en" ? 2 : "calc(100% - 4px)"
-              }}
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            />
-            <motion.button
-              onClick={() => setLang("en")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`relative z-10 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                lang === "en" ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              EN
-            </motion.button>
-            <motion.button
-              onClick={() => setLang("vi")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`relative z-10 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                lang === "vi" ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              VI
-            </motion.button>
-          </div>
+          <LanguageToggle variant="desktop" />
           <ReserveButton content={t.reserveTable} />
           
           {/* Auth Section */}
           {isAuthenticated ? (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm">
-                <User className="w-4 h-4" />
-                <span className="font-medium">User</span>
-              </div>
-              <button
-                // onClick={logout}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 hover:text-white hover:opacity-80 transition-colors">
+                  <User className="w-4 h-4" />
+                  <span>{user?.name || t.headerUser}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 ">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name || t.headerUser}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={ROUTES.PROFILE} className="cursor-pointer hover:bg-primary-gradient">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>{t.profileTitle}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 focus:text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{t.headerLogout}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <div className="flex items-center gap-4">
               <Link to={ROUTES.AUTH.LOGIN}>
                 <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                  Sign In
+                  {t.headerSignIn}
                 </button>
               </Link>
               <Link to={ROUTES.AUTH.REGISTER}>
                 <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                  Sign Up
+                  {t.headerSignUp}
                 </button>
               </Link>
             </div>
@@ -149,57 +145,42 @@ const Header = () => {
             <div className="flex flex-col gap-3 pt-4 border-t border-border">
               <div className="flex items-center gap-2 text-sm">
                 <User className="w-4 h-4" />
-                <span className="font-medium">User</span>
+                <span className="font-medium">{user?.name || t.headerUser}</span>
               </div>
+              <Link to={ROUTES.PROFILE} onClick={() => setMobileOpen(false)}>
+                <button className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  <User className="w-4 h-4" />
+                  <span>{t.profileTitle}</span>
+                </button>
+              </Link>
               <button
                 onClick={() => {
-                  // logout();
+                  logout();
                   setMobileOpen(false);
                 }}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                <span>Logout</span>
+                <span>{t.headerLogout}</span>
               </button>
             </div>
           ) : (
             <div className="flex flex-col gap-3 pt-4 border-t border-border">
               <Link to={ROUTES.AUTH.LOGIN} onClick={() => setMobileOpen(false)}>
                 <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                  Sign In
+                  {t.headerSignIn}
                 </button>
               </Link>
               <Link to={ROUTES.AUTH.REGISTER} onClick={() => setMobileOpen(false)}>
                 <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                  Sign Up
+                  {t.headerSignUp}
                 </button>
               </Link>
             </div>
           )}
           
           <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5">
-              <button
-                onClick={() => setLang("en")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  lang === "en"
-                    ? "bg-card text-primary shadow-layered"
-                    : "text-muted-foreground"
-                }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLang("vi")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  lang === "vi"
-                    ? "bg-card text-primary shadow-layered"
-                    : "text-muted-foreground"
-                }`}
-              >
-                VI
-              </button>
-            </div>
+            <LanguageToggle variant="mobile" />
           </div>
         </motion.div>
       )}
