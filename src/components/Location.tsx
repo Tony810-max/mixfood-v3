@@ -2,6 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { Clock, MapPin, Phone } from "lucide-react";
 import ReserveButton from "./ReserveButton";
+import { INFORMATION_RESTAURANT } from "@/utils/const";
 
 const Location = () => {
   const { lang, t } = useLanguage();
@@ -57,7 +58,7 @@ const Location = () => {
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
                   {lang === "vi" ? "Địa Chỉ" : "Address"}
                 </h3>
-                <p className="text-muted-foreground">{t.address}</p>
+                <p className="text-muted-foreground">{INFORMATION_RESTAURANT.address}</p>
               </div>
             </div>
 
@@ -81,7 +82,7 @@ const Location = () => {
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
                   {lang === "vi" ? "Điện Thoại" : "Phone"}
                 </h3>
-                <p className="text-muted-foreground">{t.phone}</p>
+                <p className="text-muted-foreground">{INFORMATION_RESTAURANT.phone}</p>
               </div>
             </div>
 

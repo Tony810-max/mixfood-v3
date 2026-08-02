@@ -15,7 +15,6 @@ import Index from "./pages/Index.tsx";
 import MenuPage from "./pages/Menu/index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ProfilePage from "./pages/Profile/index.tsx";
-import Reserve from "./pages/Reserve.tsx";
 import { ROUTES } from "./utils/const.ts";
 
 const queryClient = new QueryClient();
@@ -32,7 +31,6 @@ const App = () => (
             <Routes>
               <Route path={ROUTES.HOME} element={<Index />} />
               <Route path={ROUTES.MENU} element={<MenuPage />} />
-              <Route path={ROUTES.RESERVE} element={<Reserve />} />
               <Route path={ROUTES.BOOKING} element={<Booking />} />
               <Route path={ROUTES.BOOKING_SUCCESS} element={<BookingSuccess />} />
               <Route path={ROUTES.PROFILE} element={

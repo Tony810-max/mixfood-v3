@@ -1,11 +1,11 @@
+import About from "@/components/About";
+import BestSellers from "@/components/BestSellers";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import ThaiDishHighlight from "@/components/ThaiDishHighlight";
-import BestSellers from "@/components/BestSellers";
-import Reviews from "@/components/Reviews";
 import Location from "@/components/Location";
-import Footer from "@/components/Footer";
+import Reviews from "@/components/Reviews";
+import ThaiDishHighlight from "@/components/ThaiDishHighlight";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -16,7 +16,7 @@ const Index = () => {
         <Hero />
         <ThaiDishHighlight />
         <About />
-        <BestSellers />
+        {/* <BestSellers /> */}
         <Reviews />
         <Location />
         <Footer />
