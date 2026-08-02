@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Star, Clock, Users, MapPin } from "lucide-react";
+import SocialShare from "@/components/SocialShare";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import SocialShare from "@/components/SocialShare";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Clock, MapPin, Star } from "lucide-react";
+import { useState } from "react";
 
 const ThaiDishHighlight = () => {
   const { t } = useLanguage();
@@ -69,10 +69,11 @@ const ThaiDishHighlight = () => {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-red-50 to-orange-50">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             {t.thaiSpecialties}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -81,32 +82,32 @@ const ThaiDishHighlight = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
           {Object.entries(dishes).map(([key, dish]) => (
-            <Button
+            <button
               key={key}
-              variant={activeTab === key ? "default" : "outline"}
               onClick={() => setActiveTab(key)}
-              className={`px-4 py-2 rounded-full transition-all ${
-                activeTab === key
-                  ? "bg-red-600 text-white hover:bg-red-700"
-                  : "hover:bg-red-50 hover:text-red-600"
-              }`}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === key
+                ? "bg-primary-gradient text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
             >
               {dish.name}
-            </Button>
+            </button>
           ))}
         </div>
 
         {/* Dish Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center max-w-5xl mx-auto">
           {/* Left Content */}
           <div className="space-y-6">
-            <Card className="overflow-hidden">
+            {/* Main Card */}
+            <Card className="border border-gray-200 shadow-sm">
               <CardContent className="p-6">
+                {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-1">
                       {currentDish.name}
                     </h3>
                     <p className="text-lg text-red-600 font-medium">
@@ -120,25 +121,26 @@ const ThaiDishHighlight = () => {
                   </div>
                 </div>
 
+                {/* Description */}
                 <p className="text-gray-600 mb-6 leading-relaxed">
                   {currentDish.description}
                 </p>
 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="text-center">
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
                     <div className="flex justify-center mb-1">
                       {renderStars(currentDish.rating)}
                     </div>
                     <p className="text-sm text-gray-600">{t.rating}</p>
                     <p className="font-semibold">{currentDish.rating}</p>
                   </div>
-                  <div className="text-center">
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
                     <Clock className="h-5 w-5 mx-auto mb-1 text-red-600" />
                     <p className="text-sm text-gray-600">{t.time}</p>
                     <p className="font-semibold">{currentDish.time}</p>
                   </div>
-                  <div className="text-center">
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
                     <div className="flex justify-center gap-1 mb-1">
                       {renderSpicyLevel(currentDish.spicy)}
                     </div>
@@ -149,7 +151,7 @@ const ThaiDishHighlight = () => {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <Button className="flex-1 bg-red-600 hover:bg-red-700">
+                  <Button className="flex-1 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white">
                     {t.orderDishNow}
                   </Button>
                   <SocialShare
@@ -160,38 +162,35 @@ const ThaiDishHighlight = () => {
               </CardContent>
             </Card>
 
-            {/* SEO Info Box */}
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="p-4">
-                <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+            {/* Why Choose Box */}
+            <Card className="bg-gray-50 border-gray-200">
+              <CardContent className="p-5">
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   {t.whyChooseMixFood}
                 </h4>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>{t.whyChooseMixFood1}</li>
-                  <li>{t.whyChooseMixFood2}</li>
-                  <li>{t.whyChooseMixFood3}</li>
-                  <li>{t.whyChooseMixFood4}</li>
+                <ul className="text-sm text-gray-700 space-y-2">
+                  <li>• {t.whyChooseMixFood1}</li>
+                  <li>• {t.whyChooseMixFood2}</li>
+                  <li>• {t.whyChooseMixFood3}</li>
+                  <li>• {t.whyChooseMixFood4}</li>
                 </ul>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Content - Image Placeholder */}
+          {/* Right Content - Image */}
           <div className="relative">
-            <div className="aspect-square bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl flex items-center justify-center">
-              <div className="w-32 h-32 bg-red-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-4xl">🍜</span>
+            <div className="aspect-square bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl flex flex-col items-center justify-center p-8">
+              <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-lg mb-4">
+                <span className="text-6xl">🍜</span>
               </div>
-              <p className="text-gray-600 font-medium">
-                {t.dishImage} {currentDish.name}
+              <p className="text-xl font-semibold text-gray-800 mb-1">
+                {currentDish.name}
               </p>
-              <p className="text-sm text-gray-500">{t.dishImageCaption}</p>
-            </div>
-
-            {/* Floating Badge */}
-            <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-              {t.dishSpecialty}
+              <p className="text-sm text-gray-600">
+                {t.dishImageCaption}
+              </p>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
-import { motion } from "framer-motion";
-import { MapPin, Clock, Phone } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
+import { Clock, MapPin, Phone } from "lucide-react";
+import ReserveButton from "./ReserveButton";
 
 const Location = () => {
   const { lang, t } = useLanguage();
@@ -90,12 +91,7 @@ const Location = () => {
             >
               {t.reserveTable}
             </a> */}
-            <button
-              className="rounded-lg bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-              disabled
-            >
-              {t.reserveTable}
-            </button>
+            <ReserveButton content={t.reserveTable} />
           </motion.div>
         </div>
       </div>

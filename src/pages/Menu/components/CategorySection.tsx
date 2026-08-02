@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Category } from "../utils/const";
-import MenuItemCard from "./MenuItemCard";
+import MenuItemCard from "./Menu";
 
 const CategorySection = ({
   category,

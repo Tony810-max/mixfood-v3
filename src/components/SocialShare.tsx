@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Facebook, Twitter, Instagram, Share2, MessageCircle, Link2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Facebook, Instagram, Link2, MessageCircle, Share2, Twitter } from 'lucide-react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 
 interface SocialShareProps {
@@ -50,7 +50,7 @@ const SocialShare: React.FC<SocialShareProps> = ({
       name: 'Instagram',
       icon: Instagram,
       url: `https://www.instagram.com/`,
-      color: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+      color: 'bg-primary-gradient hover:from-purple-600 hover:to-pink-600'
     }
   ];
 

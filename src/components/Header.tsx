@@ -1,12 +1,27 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ROUTES } from "@/utils/const";
+import { motion } from "framer-motion";
+import { ChevronDown, LogOut, Menu, User, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import LanguageToggle from "./LanguageToggle";
+import ReserveButton from "./ReserveButton";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { lang, setLang, t } = useLanguage();
+  const { t } = useLanguage();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -15,8 +30,8 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { label: t.home, href: "/" },
-    { label: t.menu, href: "/menu" },
+    { label: t.home, href: ROUTES.HOME },
+    { label: t.menu, href: ROUTES.MENU },
   ];
 
   return (
@@ -47,42 +62,54 @@ const Header = () => {
             </a>
           ))}
 
-          {/* Language Toggle */}
-          <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5">
-            <button
-              onClick={() => setLang("en")}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                lang === "en"
-                  ? "bg-card text-primary shadow-layered"
-                  : "text-muted-foreground"
-              }`}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setLang("vi")}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                lang === "vi"
-                  ? "bg-card text-primary shadow-layered"
-                  : "text-muted-foreground"
-              }`}
-            >
-              VI
-            </button>
-          </div>
-
-          {/* <a
-            href="/reserve"
-            className="rounded-lg min-w-[15.375rem] bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-          >
-            {t.reserveTable}
-          </a> */}
-          <button
-            className="rounded-lg min-w-[15.375rem] bg-slate-400 px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
-            disabled
-          >
-            {t.reserveTable}
-          </button>
+          <LanguageToggle variant="desktop" />
+          <ReserveButton content={t.reserveTable} />
+          
+          {/* Auth Section */}
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 hover:text-white hover:opacity-80 transition-colors">
+                  <User className="w-4 h-4" />
+                  <span>{user?.name || t.headerUser}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 ">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name || t.headerUser}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={ROUTES.PROFILE} className="cursor-pointer hover:bg-primary-gradient">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>{t.profileTitle}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 focus:text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{t.headerLogout}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link to={ROUTES.AUTH.LOGIN}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  {t.headerSignIn}
+                </button>
+              </Link>
+              <Link to={ROUTES.AUTH.REGISTER}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  {t.headerSignUp}
+                </button>
+              </Link>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu Button */}
@@ -111,37 +138,50 @@ const Header = () => {
               {item.label}
             </a>
           ))}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-full bg-secondary p-1 gap-0.5">
+          <ReserveButton className="min-w-60" content={t.reserveTable} onClick={() => setMobileOpen(false)} />
+          
+          {/* Mobile Auth Section */}
+          {isAuthenticated ? (
+            <div className="flex flex-col gap-3 pt-4 border-t border-border">
+              <div className="flex items-center gap-2 text-sm">
+                <User className="w-4 h-4" />
+                <span className="font-medium">{user?.name || t.headerUser}</span>
+              </div>
+              <Link to={ROUTES.PROFILE} onClick={() => setMobileOpen(false)}>
+                <button className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  <User className="w-4 h-4" />
+                  <span>{t.profileTitle}</span>
+                </button>
+              </Link>
               <button
-                onClick={() => setLang("en")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  lang === "en"
-                    ? "bg-card text-primary shadow-layered"
-                    : "text-muted-foreground"
-                }`}
+                onClick={() => {
+                  logout();
+                  setMobileOpen(false);
+                }}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                EN
-              </button>
-              <button
-                onClick={() => setLang("vi")}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  lang === "vi"
-                    ? "bg-card text-primary shadow-layered"
-                    : "text-muted-foreground"
-                }`}
-              >
-                VI
+                <LogOut className="w-4 h-4" />
+                <span>{t.headerLogout}</span>
               </button>
             </div>
+          ) : (
+            <div className="flex flex-col gap-3 pt-4 border-t border-border">
+              <Link to={ROUTES.AUTH.LOGIN} onClick={() => setMobileOpen(false)}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  {t.headerSignIn}
+                </button>
+              </Link>
+              <Link to={ROUTES.AUTH.REGISTER} onClick={() => setMobileOpen(false)}>
+                <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  {t.headerSignUp}
+                </button>
+              </Link>
+            </div>
+          )}
+          
+          <div className="flex items-center gap-2">
+            <LanguageToggle variant="mobile" />
           </div>
-          <a
-            href="/reserve"
-            onClick={() => setMobileOpen(false)}
-            className="block rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground text-center"
-          >
-            {t.reserveTable}
-          </a>
         </motion.div>
       )}
     </motion.header>

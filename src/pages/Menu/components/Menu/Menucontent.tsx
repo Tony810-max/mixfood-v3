@@ -1,32 +1,15 @@
-import { useLanguage } from "../../../contexts/LanguageContext";
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 import { motion } from "framer-motion";
-import restaurantImg from "../../../assets/restaurant-interior.jpg";
-import { menuData } from "../utils/const";
-import CategorySection from "./CategorySection";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-
-const HERO_OFFSET = 72;
-
-// Tab styling logic
-const getTabStyles = (isActive: boolean) => {
-  if (!isActive) {
-    return "bg-secondary text-muted-foreground hover:bg-primary hover:text-primary-foreground";
-  }
-  return "bg-primary/90 text-secondary";
-};
+import restaurantImg from "../../../../assets/restaurant-interior.jpg";
+import Footer from "../../../../components/Footer";
+import Header from "../../../../components/Header";
+import { useLanguage } from "../../../../contexts/LanguageContext";
+import { menuData } from "../../utils/const";
+import CategorySection from "../CategorySection";
+import DropdownCategory from "./DropdownCategory";
+import SearchContent from "./SearchContent";
 
 const MenuContent = () => {
   const { lang, t } = useLanguage();
-  const [hash, setHash] = useState("#appetizers");
-
-  const handleHashChange = (newHash: string) => {
-    setHash(newHash);
-    window.location.hash = newHash;
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -40,7 +23,7 @@ const MenuContent = () => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/40 to-transparent" />
-          <div className="absolute inset-0 flex items-end pb-12 md:pb-16">
+          <div className="absolute inset-0 flex items-end -translate-y-1/2 top-1/2">
             <div className="container mx-auto px-6">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -54,7 +37,7 @@ const MenuContent = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="font-body text-background/70 text-lg max-w-lg"
+                className="font-body text-background/70 text-lg "
               >
                 {lang === "vi"
                   ? "Khám phá hương vị Thái Lan đích thực với nguyên liệu tươi ngon nhất"
@@ -66,7 +49,7 @@ const MenuContent = () => {
       </section>
 
       {/* Quick Nav */}
-      <section className="sticky top-[4.5rem] z-30 bg-background/80 backdrop-blur-md border-b border-border">
+      {/* <section className="sticky top-[4.5rem] z-30 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-6">
           <div className="flex gap-1 overflow-x-auto py-4 scrollbar-hide -mx-6 px-6">
             {menuData.map((cat) => (
@@ -86,10 +69,15 @@ const MenuContent = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-2 p-4">
+        <SearchContent />
+        <DropdownCategory />
+      </div>
+
 
       {/* Category Sections */}
-      <div className="container mx-auto px-6 py-12 md:py-16 space-y-16 md:space-y-20">
+      <div className="container mx-auto px-6 py-8 space-y-16 md:space-y-20">
         {menuData.map((category) => (
           <CategorySection key={category.id} category={category} lang={lang} />
         ))}
