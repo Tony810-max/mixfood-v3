@@ -1,3 +1,4 @@
+import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import restaurantImg from "../../../../assets/restaurant-interior.jpg";
 import Footer from "../../../../components/Footer";
@@ -101,7 +102,7 @@ const MenuContent = () => {
               : "Reserve your table now for an authentic Thai dining experience at Mix Food."}
           </p>
           <a
-            href="/reserve"
+            href={ROUTES.BOOKING}
             className="inline-block rounded-xl bg-accent px-8 py-3.5 text-base font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
           >
             {t.reserveTable}
