@@ -1,11 +1,10 @@
-import About from "@/components/About";
-import BestSellers from "@/components/BestSellers";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import Location from "@/components/Location";
-import Reviews from "@/components/Reviews";
-import ThaiDishHighlight from "@/components/ThaiDishHighlight";
+import Location from "@/components/common/Location";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
+import About from "@/components/sections/About";
+import Hero from "@/components/sections/Hero";
+import Reviews from "@/components/sections/Reviews";
+import ThaiDishHighlight from "@/components/sections/ThaiDishHighlight";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const Index = () => {

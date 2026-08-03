@@ -1,7 +1,7 @@
 import heroDish from "@/assets/hero-dish.jpg";
+import ReserveButton from "@/components/navigation/ReserveButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
-import ReserveButton from "./ReserveButton";
 
 const Hero = () => {
   const { t } = useLanguage();

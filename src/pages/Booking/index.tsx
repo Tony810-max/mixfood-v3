@@ -1,4 +1,4 @@
-import Header from "@/components/Header"
+import Header from "@/components/layout/Header"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { INFORMATION_RESTAURANT } from "@/utils/const"
 import { motion } from "framer-motion"

@@ -1,5 +1,5 @@
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import RouteProgress from "@/components/RouteProgress";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import RouteProgress from "@/components/common/RouteProgress";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";

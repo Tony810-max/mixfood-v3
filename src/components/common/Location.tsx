@@ -1,8 +1,8 @@
+import ReserveButton from "@/components/navigation/ReserveButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { INFORMATION_RESTAURANT } from "@/utils/const";
 import { motion } from "framer-motion";
 import { Clock, MapPin, Phone } from "lucide-react";
-import ReserveButton from "./ReserveButton";
-import { INFORMATION_RESTAURANT } from "@/utils/const";
 
 const Location = () => {
   const { lang, t } = useLanguage();

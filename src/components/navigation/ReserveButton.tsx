@@ -1,7 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/utils/const";
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
 
 interface ReserveButtonProps
   extends React.ComponentProps<typeof Button> {

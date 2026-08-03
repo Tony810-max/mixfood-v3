@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";

@@ -1,9 +1,9 @@
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import restaurantImg from "../../../../assets/restaurant-interior.jpg";
-import Footer from "../../../../components/Footer";
-import Header from "../../../../components/Header";
-import { useLanguage } from "../../../../contexts/LanguageContext";
 import { menuData } from "../../utils/const";
 import CategorySection from "../CategorySection";
 import DropdownCategory from "./DropdownCategory";
