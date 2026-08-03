@@ -42,7 +42,7 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
       {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 hover:text-white hover:opacity-80 transition-colors">
+            <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:bg-primary-gradient focus:bg-primary-gradient hover:text-white hover:opacity-80 transition-colors">
               <User className="w-4 h-4" />
               <span>{user?.name || t.headerUser}</span>
               <ChevronDown className="w-4 h-4" />
@@ -57,13 +57,13 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to={ROUTES.PROFILE} className="cursor-pointer hover:bg-primary-gradient">
+              <Link to={ROUTES.PROFILE} className="cursor-pointer hover:bg-primary-gradient focus:bg-transparent">
                 <User className="mr-2 h-4 w-4" />
                 <span>{t.profileTitle}</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 focus:text-red-600">
+            <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 hover:text-white focus:bg-primary-gradient hover:bg-primary-gradient">
               <LogOut className="mr-2 h-4 w-4" />
               <span>{t.headerLogout}</span>
             </DropdownMenuItem>
