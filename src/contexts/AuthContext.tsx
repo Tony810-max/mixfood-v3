@@ -1,19 +1,12 @@
+import { STORAGE_KEYS } from '@/constants';
+import { User } from '@/types';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: string;
-  phone?: string;
-}
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string, remember: boolean) => Promise<void>;
-  logout: () => void;
+  setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,9 +18,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if user is logged in on mount
     try {
-      const token = localStorage.getItem('mixfood.access-token') || sessionStorage.getItem('mixfood.access-token');
+      const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) || sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
       if (token) {
-        const storedUser = localStorage.getItem('mixfood.user');
+        const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
         if (storedUser) {
           try {
             setUser(JSON.parse(storedUser));
@@ -43,42 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (email: string, password: string, remember: boolean) => {
-    try {
-      const { authService } = await import('@/services/auth.service');
-      const response = await authService.login({ email, password }, remember);
-      
-      // Use user data from backend response if available, otherwise fallback to email-based name
-      const userData: User = response.user || {
-        id: 1,
-        email,
-        name: email.split('@')[0],
-        role: 'USER',
-      };
-      
-      setUser(userData);
-      localStorage.setItem('mixfood.user', JSON.stringify(userData));
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
-  };
-
-  const logout = () => {
-    try {
-      localStorage.removeItem('mixfood.access-token');
-      localStorage.removeItem('mixfood.refresh-token');
-      sessionStorage.removeItem('mixfood.access-token');
-      sessionStorage.removeItem('mixfood.refresh-token');
-      setUser(null);
-      localStorage.removeItem('mixfood.user');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, setUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -15,6 +15,7 @@ import Index from "./pages/Index.tsx";
 import MenuPage from "./pages/Menu/index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ProfilePage from "./pages/Profile/index.tsx";
+import ReservationsPage from "./pages/Reservations/index.tsx";
 import { ROUTES } from "./utils/const.ts";
 
 const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ const App = () => (
     <AuthProvider>
       <LanguageProvider>
         <TooltipProvider>
-          <Toaster />
+          <Toaster  />
           <Sonner />
           <BrowserRouter>
             <RouteProgress />
@@ -38,6 +39,7 @@ const App = () => (
                   <ProfilePage />
                 </ProtectedRoute>
               } />
+              <Route path={ROUTES.RESERVATIONS} element={<ReservationsPage />} />
               <Route path={ROUTES.AUTH.LOGIN} element={
                 <ProtectedRoute requireAuth={false}>
                   <LoginPage />

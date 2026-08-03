@@ -4,21 +4,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getApiErrorMessage } from "@/services/api";
-import { userService } from "@/services/user.service";
+import { useLogout } from "@/hooks/api/useAuth";
+import { useChangePassword, useUpdateProfile } from "@/hooks/api/useUser";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
-import { Calendar, Lock, LogOut, Mail, Save, Shield, User } from "lucide-react";
+import { Calendar, Clock, Lock, LogOut, Mail, Save, Shield, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const ProfilePage = () => {
   const { t } = useLanguage();
-  const { user, logout } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const logoutMutation = useLogout();
+  const updateProfileMutation = useUpdateProfile();
+  const changePasswordMutation = useChangePassword();
   const [isLoading, setIsLoading] = useState(false);
   const [activeSection, setActiveSection] = useState<"info" | "password">("info");
+
+  const handleNavigateToReservations = () => {
+    navigate(ROUTES.RESERVATIONS);
+  };
 
   // Update Info Form State
   const [updateInfoForm, setUpdateInfoForm] = useState({
@@ -47,19 +53,11 @@ const ProfilePage = () => {
 
     setIsLoading(true);
     try {
-      console.log('Updating profile with data:', {
+      const response = await updateProfileMutation.mutateAsync({
         name: updateInfoForm.name,
         email: updateInfoForm.email,
         phone: updateInfoForm.phone,
       });
-      
-      const response = await userService.updateProfile({
-        name: updateInfoForm.name,
-        email: updateInfoForm.email,
-        phone: updateInfoForm.phone,
-      });
-      
-      console.log('Update profile response:', response);
       
       // Update user context if response contains user data
       if (response.user) {
@@ -68,14 +66,11 @@ const ProfilePage = () => {
           name: response.user.name,
           email: response.user.email,
         };
+        setUser(updatedUser);
         localStorage.setItem('mixfood.user', JSON.stringify(updatedUser));
-        // You might need to add a method to update user in AuthContext
       }
-      
-      toast.success(t.profileUpdateSuccess);
     } catch (error) {
-      console.error('Update profile error:', error);
-      toast.error(getApiErrorMessage(error));
+      // Error is handled by the mutation
     } finally {
       setIsLoading(false);
     }
@@ -97,32 +92,26 @@ const ProfilePage = () => {
 
     setIsLoading(true);
     try {
-      console.log('Changing password');
-      
-      await userService.changePassword({
+      await changePasswordMutation.mutateAsync({
         currentPassword: changePasswordForm.currentPassword,
         newPassword: changePasswordForm.newPassword,
       });
       
-      console.log('Password changed successfully');
-      
-      toast.success(t.profilePasswordChanged);
       setChangePasswordForm({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
     } catch (error) {
-      console.error('Change password error:', error);
-      toast.error(getApiErrorMessage(error));
+      // Error is handled by the mutation
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleLogout = () => {
-    logout();
-    navigate(ROUTES.HOME);
+    setUser(null);
+    logoutMutation.mutate();
   };
 
   return (
@@ -245,6 +234,14 @@ const ProfilePage = () => {
                   >
                     <Lock className="mr-3 h-5 w-5" />
                     <span className="font-medium">{t.profileChangePassword}</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start h-12 hover:bg-orange-100 dark:hover:bg-orange-900/30 text-foreground transition-all duration-300"
+                    onClick={handleNavigateToReservations}
+                  >
+                    <Clock className="mr-3 h-5 w-5" />
+                    <span className="font-medium">{t.reservationsTitle}</span>
                   </Button>
                   <div className="border-t border-orange-200 dark:border-orange-900/50 my-4" />
                   <Button

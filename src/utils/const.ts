@@ -5,6 +5,7 @@ export const ROUTES = {
   BOOKING: "/booking",
   BOOKING_SUCCESS: "/booking/success",
   PROFILE: "/profile",
+  RESERVATIONS: "/reservations",
   AUTH: {
     LOGIN: "/login",
     REGISTER: "/register",

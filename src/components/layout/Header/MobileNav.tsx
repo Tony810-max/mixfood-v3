@@ -2,9 +2,10 @@ import LanguageToggle from "@/components/navigation/LanguageToggle";
 import ReserveButton from "@/components/navigation/ReserveButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLogout } from "@/hooks/api/useAuth";
 import { ROUTES } from "@/utils/const";
-import { LogOut, Menu, User, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { Calendar, LogOut, Menu, User, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface MobileNavProps {
@@ -15,7 +16,8 @@ interface MobileNavProps {
 
 const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
   const { t } = useLanguage();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, setUser } = useAuth();
+  const logoutMutation = useLogout();
 
   return (
     <>
@@ -59,9 +61,16 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                   <span>{t.profileTitle}</span>
                 </button>
               </Link>
+              <Link to={ROUTES.RESERVATIONS} onClick={() => setMobileOpen(false)}>
+                <button className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+                  <Calendar className="w-4 h-4" />
+                  <span>{t.reservationsTitle}</span>
+                </button>
+              </Link>
               <button
                 onClick={() => {
-                  logout();
+                  setUser(null);
+                  logoutMutation.mutate();
                   setMobileOpen(false);
                 }}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"

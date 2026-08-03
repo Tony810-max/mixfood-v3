@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card"
+import { useLanguage } from "@/contexts/LanguageContext"
 import { getRestaurantInfo } from "./utils/const"
 
 export const BookingInfoCards = () => {
-  const RESTAURANT_INFO = getRestaurantInfo()
+  const { t } = useLanguage()
+  const RESTAURANT_INFO = getRestaurantInfo(t)
 
   return (
     <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -15,7 +17,7 @@ export const BookingInfoCards = () => {
             </div>
             <div>
               <p className="font-semibold text-amber-900">{info.title}</p>
-              <p className="text-sm text-amber-700">{info.desription}</p>
+              <p className="text-sm text-amber-700">{info.description}</p>
             </div>
           </div>
         </CardContent>

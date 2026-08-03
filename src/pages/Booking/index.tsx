@@ -4,6 +4,7 @@ import { INFORMATION_RESTAURANT } from "@/utils/const"
 import { motion } from "framer-motion"
 import { BookingForm } from "./BookingForm"
 import { BookingInfoCards } from "./BookingInfoCards"
+import { BookingRules } from "./BookingRules"
 
 const Booking = () => {
   const { t } = useLanguage()
@@ -33,6 +34,14 @@ const Booking = () => {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <BookingInfoCards />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            <BookingRules />
           </motion.div>
 
           <motion.div

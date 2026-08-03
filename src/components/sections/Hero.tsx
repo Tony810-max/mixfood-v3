@@ -41,11 +41,8 @@ const Hero = () => {
               <div className="flex flex-wrap gap-2">
                 {[
                   t.heroTomYum,
-                  ,
                   t.padThai,
-                  ,
                   t.somTamVietnamese,
-                  ,
                   t.mangoRice,
                 ].map((dish) => (
                   <span

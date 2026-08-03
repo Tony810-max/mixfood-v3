@@ -4,20 +4,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useRegister, useSendRegistrationCode } from "@/hooks/api/useAuth";
 import { registerSchema, type RegisterFormData } from "@/lib/validation";
-import { getApiErrorMessage } from "@/services/api";
-import { authService } from "@/services/auth.service";
 import { ROUTES } from "@/utils/const";
 import { formatPhoneNumber, formatVerificationCode } from "@/utils/formatters";
 import { motion } from "framer-motion";
 import { Lock, Mail, Phone, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const RegisterPage = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const sendCodeMutation = useSendRegistrationCode();
+  const registerMutation = useRegister();
   const [formData, setFormData] = useState<RegisterFormData>({
     fullName: "",
     phone: "",
@@ -54,11 +54,10 @@ const RegisterPage = () => {
 
     setIsLoading(true);
     try {
-      await authService.sendRegistrationCode(formData.email);
+      await sendCodeMutation.mutateAsync(formData.email);
       setCountdown(60); // 60 seconds cooldown
-      toast.success(t.registerCodeSent);
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      // Error is handled by the mutation
     } finally {
       setIsLoading(false);
     }
@@ -80,18 +79,17 @@ const RegisterPage = () => {
 
     setIsLoading(true);
     try {
-      await authService.register({
+      await registerMutation.mutateAsync({
         name: formData.fullName,
         email: formData.email,
         phone: formData.phone,
         code: formData.verifyCode,
         password: formData.password,
       });
-      toast.success(t.registerSuccess);
       // Auto-login after successful registration
       navigate(ROUTES.AUTH.LOGIN);
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      // Error is handled by the mutation
     } finally {
       setIsLoading(false);
     }

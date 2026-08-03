@@ -2,17 +2,18 @@ import LanguageToggle from "@/components/navigation/LanguageToggle";
 import ReserveButton from "@/components/navigation/ReserveButton";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLogout } from "@/hooks/api/useAuth";
 import { ROUTES } from "@/utils/const";
-import { ChevronDown, LogOut, User } from "lucide-react";
+import { Calendar, ChevronDown, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface DesktopNavProps {
@@ -21,7 +22,8 @@ interface DesktopNavProps {
 
 const DesktopNav = ({ navItems }: DesktopNavProps) => {
   const { t } = useLanguage();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, setUser } = useAuth();
+  const logoutMutation = useLogout();
 
   return (
     <nav className="hidden md:flex items-center gap-8">
@@ -62,8 +64,17 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
                 <span>{t.profileTitle}</span>
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={ROUTES.RESERVATIONS} className="cursor-pointer hover:bg-primary-gradient focus:bg-transparent">
+                <Calendar className="mr-2 h-4 w-4" />
+                <span>{t.reservationsTitle}</span>
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 hover:text-white focus:bg-primary-gradient hover:bg-primary-gradient">
+            <DropdownMenuItem onClick={() => {
+              setUser(null);
+              logoutMutation.mutate();
+            }} className="cursor-pointer text-red-600 hover:text-white focus:bg-primary-gradient hover:bg-primary-gradient">
               <LogOut className="mr-2 h-4 w-4" />
               <span>{t.headerLogout}</span>
             </DropdownMenuItem>

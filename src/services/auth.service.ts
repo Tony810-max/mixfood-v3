@@ -1,83 +1,71 @@
-import { apiRequest } from "./api";
-
-const ACCESS_TOKEN_KEY = "mixfood.access-token";
-const REFRESH_TOKEN_KEY = "mixfood.refresh-token";
-
-type StorageLocation = "local" | "session";
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface RegisterPayload {
-  name: string;
-  phone: string;
-  email: string;
-  code: string;
-  password: string;
-}
-
-interface AuthResponse {
-  message: string;
-  accessToken: string;
-  refreshToken: string;
-  user?: {
-    id: number;
-    email: string;
-    name: string;
-    role: string;
-  };
-}
+import { STORAGE_KEYS } from "@/constants";
+import axios from "@/lib/axios";
+import {
+    AuthResponse,
+    LoginPayload,
+    RegisterPayload
+} from "@/types";
 
 const clearStoredTokens = () => {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-  sessionStorage.removeItem(ACCESS_TOKEN_KEY);
-  sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.USER);
+  sessionStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+  sessionStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+  sessionStorage.removeItem(STORAGE_KEYS.USER);
 };
 
 const storeTokens = ({ accessToken, refreshToken }: AuthResponse, remember: boolean) => {
   clearStoredTokens();
 
   const storage = remember ? localStorage : sessionStorage;
-  storage.setItem(ACCESS_TOKEN_KEY, accessToken);
-  storage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+  storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
 };
 
 export const authService = {
-  async login(payload: LoginPayload, remember: boolean) {
-    const response = await apiRequest<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: payload,
-    });
-
-    storeTokens(response, remember);
-    return response;
+  async login(payload: LoginPayload, remember: boolean): Promise<AuthResponse> {
+    const response = await axios.post<AuthResponse>("/auth/login", payload);
+    storeTokens(response.data, remember);
+    return response.data;
   },
 
-  register(payload: RegisterPayload) {
-    return apiRequest<{ message: string }>("/auth/register", {
-      method: "POST",
-      body: payload,
-    });
+  async register(payload: RegisterPayload): Promise<{ message: string }> {
+    const response = await axios.post<{ message: string }>("/auth/register", payload);
+    return response.data;
   },
 
-  sendRegistrationCode(email: string) {
-    return apiRequest<{ message: string }>("/auth/otp", {
-      method: "POST",
-      body: { email, type: "REGISTER" },
-    });
+  async sendRegistrationCode(email: string): Promise<{ message: string }> {
+    const response = await axios.post<{ message: string }>("/auth/otp", { email, type: "REGISTER" });
+    return response.data;
   },
 
-  getAccessToken() {
-    return localStorage.getItem(ACCESS_TOKEN_KEY) ?? sessionStorage.getItem(ACCESS_TOKEN_KEY);
+  getAccessToken(): string | null {
+    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   },
 
-  clearSession() {
+  getRefreshToken(): string | null {
+    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ?? sessionStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+  },
+
+  async refreshAccessToken(): Promise<string> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+    const response = await axios.post<{ accessToken: string; refreshToken: string }>("/auth/refresh-token", { refreshToken });
+
+    // Update stored tokens
+    const storage = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ? localStorage : sessionStorage;
+    storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.data.accessToken);
+    storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.data.refreshToken);
+
+    return response.data.accessToken;
+  },
+
+  clearSession(): void {
     clearStoredTokens();
   },
 };
-
-export type { StorageLocation };
 

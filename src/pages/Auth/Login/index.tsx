@@ -6,26 +6,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLogin } from "@/hooks/api/useAuth";
 import { loginSchema, type LoginFormData } from "@/lib/validation";
-import { getApiErrorMessage } from "@/services/api";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const LoginPage = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { setUser } = useAuth();
+  const loginMutation = useLogin();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
-  const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (field: keyof LoginFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -51,11 +51,21 @@ const LoginPage = () => {
 
     setIsLoading(true);
     try {
-      await login(formData.email, formData.password, rememberMe);
-      toast.success(t.loginSuccess);
+      const response = await loginMutation.mutateAsync({ payload: { email: formData.email, password: formData.password }, remember: rememberMe });
+      
+      // Set user data from response
+      const userData = response.user || {
+        id: 1,
+        email: formData.email,
+        name: formData.email.split('@')[0],
+        role: 'USER',
+      };
+      setUser(userData);
+      localStorage.setItem('mixfood.user', JSON.stringify(userData));
+      
       navigate(ROUTES.HOME);
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      // Error is handled by the mutation
     } finally {
       setIsLoading(false);
     }
