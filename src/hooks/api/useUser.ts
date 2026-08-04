@@ -2,12 +2,11 @@
  * TanStack Query hooks for user management
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/user.service';
-import { UpdateProfilePayload, ChangePasswordPayload } from '@/types';
-import { toast } from 'sonner';
-import { getApiErrorMessage } from '@/services/api';
+import { ChangePasswordPayload, UpdateProfilePayload } from '@/types';
 import { logger } from '@/utils/logger';
+import { showApiErrorToast, showOperationSuccess } from '@/utils/toastHelpers';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
@@ -16,14 +15,12 @@ export const useUpdateProfile = () => {
     mutationFn: (payload: UpdateProfilePayload) => userService.updateProfile(payload),
     onSuccess: (data) => {
       logger.info('Profile updated successfully', { user: data.user });
-      toast.success('Cập nhật thông tin thành công!');
+      showOperationSuccess('updateProfile');
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: (error) => {
       logger.error('Profile update failed', error);
-      toast.error('Cập nhật thông tin thất bại', {
-        description: getApiErrorMessage(error),
-      });
+      showApiErrorToast(error, 'Cập nhật thông tin thất bại');
     },
   });
 };
@@ -33,13 +30,11 @@ export const useChangePassword = () => {
     mutationFn: (payload: ChangePasswordPayload) => userService.changePassword(payload),
     onSuccess: () => {
       logger.info('Password changed successfully');
-      toast.success('Đổi mật khẩu thành công!');
+      showOperationSuccess('changePassword');
     },
     onError: (error) => {
       logger.error('Password change failed', error);
-      toast.error('Đổi mật khẩu thất bại', {
-        description: getApiErrorMessage(error),
-      });
+      showApiErrorToast(error, 'Đổi mật khẩu thất bại');
     },
   });
 };

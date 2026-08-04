@@ -4,18 +4,18 @@
  */
 
 // Layout Components
-export { default as Header } from './layout/Header';
 export { default as Footer } from './layout/Footer';
+export { default as Header } from './layout/Header';
 
 // Auth Components
-export { default as ProtectedRoute } from './auth/ProtectedRoute';
+export { AuthCard, AuthFormLayout, AuthHeader, AuthLogo, ProtectedRoute } from './auth';
 
 // UI Components
 export { Button } from './ui/button';
-export { Input } from './ui/input';
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-export { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 export { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+export { Input } from './ui/input';
+export { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 
 // Common Components
 export { default as Location } from './common/Location';
@@ -25,3 +25,4 @@ export { default as RouteProgress } from './common/RouteProgress';
 export { default as LanguageToggle } from './navigation/LanguageToggle';
 export { default as NavLink } from './navigation/NavLink';
 export { default as ReserveButton } from './navigation/ReserveButton';
+

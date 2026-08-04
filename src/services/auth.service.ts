@@ -5,22 +5,18 @@ import {
     LoginPayload,
     RegisterPayload
 } from "@/types";
+import { authStorage, storage } from "@/utils/storage";
 
 const clearStoredTokens = () => {
-  localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-  localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-  localStorage.removeItem(STORAGE_KEYS.USER);
-  sessionStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-  sessionStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-  sessionStorage.removeItem(STORAGE_KEYS.USER);
+  authStorage.clearAuth();
 };
 
 const storeTokens = ({ accessToken, refreshToken }: AuthResponse, remember: boolean) => {
   clearStoredTokens();
 
-  const storage = remember ? localStorage : sessionStorage;
-  storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
-  storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+  const location: 'local' | 'session' = remember ? 'local' : 'session';
+  storage.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, location);
+  storage.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, location);
 };
 
 export const authService = {
@@ -41,11 +37,11 @@ export const authService = {
   },
 
   getAccessToken(): string | null {
-    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ?? sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    return authStorage.getAccessToken();
   },
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ?? sessionStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+    return authStorage.getRefreshToken();
   },
 
   async refreshAccessToken(): Promise<string> {
@@ -57,9 +53,9 @@ export const authService = {
     const response = await axios.post<{ accessToken: string; refreshToken: string }>("/auth/refresh-token", { refreshToken });
 
     // Update stored tokens
-    const storage = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ? localStorage : sessionStorage;
-    storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.data.accessToken);
-    storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.data.refreshToken);
+    const location: 'local' | 'session' = storage.has(STORAGE_KEYS.REFRESH_TOKEN, 'local') ? 'local' : 'session';
+    storage.set(STORAGE_KEYS.ACCESS_TOKEN, response.data.accessToken, location);
+    storage.set(STORAGE_KEYS.REFRESH_TOKEN, response.data.refreshToken, location);
 
     return response.data.accessToken;
   },

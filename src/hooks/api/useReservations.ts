@@ -2,12 +2,21 @@
  * TanStack Query hooks for reservations
  */
 
-import { getApiErrorMessage } from '@/services/api';
 import { reservationService } from '@/services/reservation.service';
-import { CreateReservationPayload } from '@/types';
+import { CreateReservationPayload, Reservation } from '@/types';
 import { logger } from '@/utils/logger';
+import { showApiErrorToast, showOperationSuccess } from '@/utils/toastHelpers';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+
+type UseQueryResult<T> = {
+  data: T | undefined;
+  isLoading: boolean;
+  error: unknown;
+  isFetching: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  refetch: () => Promise<unknown>;
+};
 
 export const useMyReservations = (isAuthenticated: boolean = true) => {
   const query = useQuery({
@@ -25,7 +34,7 @@ export const useMyReservations = (isAuthenticated: boolean = true) => {
       isSuccess: true,
       isError: false,
       refetch: () => Promise.resolve({ data: [] }),
-    } as any;
+    } as UseQueryResult<Reservation[]>;
   }
 
   return query;
@@ -39,16 +48,12 @@ export const useCreateReservation = () => {
       reservationService.create(payload),
     onSuccess: (data) => {
       logger.info('Reservation created successfully', { reservationId: data.reservation.id });
-      toast.success('Đặt bàn thành công!', {
-        description: 'Chúng tôi sẽ liên hệ với bạn sớm nhất để xác nhận.',
-      });
+      showOperationSuccess('createReservation');
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
     },
     onError: (error) => {
       logger.error('Reservation creation failed', error);
-      toast.error('Đặt bàn thất bại', {
-        description: getApiErrorMessage(error),
-      });
+      showApiErrorToast(error, 'Đặt bàn thất bại');
     },
   });
 };

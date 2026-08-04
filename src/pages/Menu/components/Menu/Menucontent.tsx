@@ -17,7 +17,7 @@ const MenuContent = () => {
 
       {/* Hero */}
       <section className="pt-[4.5rem]">
-        <div className="relative h-[280px] md:h-[360px] overflow-hidden">
+        <div className="relative h-[240px] md:h-[280px] lg:h-[360px] overflow-hidden">
           <img
             src={restaurantImg}
             alt="Mix Food Restaurant"
@@ -25,12 +25,12 @@ const MenuContent = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/40 to-transparent" />
           <div className="absolute inset-0 flex items-end -translate-y-1/2 top-1/2">
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-4 md:px-6">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="font-serif  text-4xl md:text-5xl font-bold text-background mb-3"
+                className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-background mb-2 md:mb-3"
               >
                 {lang === "vi" ? "Thực Đơn" : "Our Menu"}
               </motion.h1>
@@ -38,7 +38,7 @@ const MenuContent = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="font-body text-background/70 text-lg "
+                className="font-body text-background/70 text-base md:text-lg "
               >
                 {lang === "vi"
                   ? "Khám phá hương vị Thái Lan đích thực với nguyên liệu tươi ngon nhất"
@@ -71,7 +71,7 @@ const MenuContent = () => {
           </div>
         </div>
       </section> */}
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-2 p-4">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-3 md:gap-2 p-4 md:p-4">
         <SearchContent />
         <DropdownCategory />
       </div>
@@ -85,25 +85,25 @@ const MenuContent = () => {
       </div>
 
       {/* CTA */}
-      <section className="container mx-auto px-6 pb-16">
+      <section className="container mx-auto px-4 md:px-6 pb-12 md:pb-16">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-background p-10 md:p-14 text-center"
+          className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-background p-6 md:p-10 lg:p-14 text-center"
         >
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">
+          <h2 className="font-serif text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
             {lang === "vi" ? "Sẵn sàng thưởng thức?" : "Ready to dine?"}
           </h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          <p className="text-muted-foreground mb-6 md:mb-8 max-w-md mx-auto text-sm md:text-base">
             {lang === "vi"
               ? "Đặt bàn ngay để trải nghiệm ẩm thực Thái Lan đích thực tại Mix Food."
               : "Reserve your table now for an authentic Thai dining experience at Mix Food."}
           </p>
           <a
             href={ROUTES.BOOKING}
-            className="inline-block rounded-xl bg-accent px-8 py-3.5 text-base font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95"
+            className="rounded-xl bg-accent px-6 md:px-8 py-3 md:py-3.5 text-sm md:text-base font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95 min-h-[44px] flex items-center justify-center"
           >
             {t.reserveTable}
           </a>

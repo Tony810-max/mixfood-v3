@@ -1,5 +1,5 @@
+import { BOOKING_TIME_SLOTS, GUEST_OPTIONS } from "@/constants";
 import { BookingRule, GuestOption, RestaurantInfo } from "@/types";
-import { GUEST_OPTIONS } from "@/utils/const";
 import { AlertCircle, Clock, MapPin, Phone } from "lucide-react";
 
 /**
@@ -85,8 +85,6 @@ export const getGuestOptions = (translations: {
   }));
 };
 
-// Booking-specific time slots (lunch and dinner service only)
-export const BOOKING_TIME_SLOTS = [
-  "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
-  "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00"
-] as const;
+// Re-export BOOKING_TIME_SLOTS from constants for backward compatibility
+export { BOOKING_TIME_SLOTS };
+

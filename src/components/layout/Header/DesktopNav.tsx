@@ -71,7 +71,9 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => {
+            <DropdownMenuItem onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               setUser(null);
               logoutMutation.mutate();
             }} className="cursor-pointer text-red-600 hover:text-white focus:bg-primary-gradient hover:bg-primary-gradient">

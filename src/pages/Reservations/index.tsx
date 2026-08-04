@@ -3,26 +3,41 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RESERVATION_STATUS, STATUS_COLORS } from "@/constants";
+import { RESERVATION_STATUS } from "@/constants";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useDateFormat } from "@/hooks/useDateFormat";
 import { useReservations } from "@/hooks/useReservations";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
-import { AlertCircle, Calendar, CheckCircle, ChevronDown, Clock, Loader2, MoreVertical, Phone, RefreshCw, Search, Users, XCircle } from "lucide-react";
-import { useState } from "react";
+import { AlertCircle, Calendar, ChevronDown, Loader2, RefreshCw, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ReservationCard } from "./components/ReservationCard";
+import { ReservationsStats } from "./components/ReservationsStats";
 
 const ReservationsPage = () => {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
-  const { formatDate } = useDateFormat();
   const { reservations, isLoading, stats, refreshReservations, filterReservations, sortReservations } = useReservations();
   
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("date-desc");
+  const [isRefreshDisabled, setIsRefreshDisabled] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  const handleRefresh = () => {
+    setIsRefreshDisabled(true);
+    setHasAnimated(false);
+    refreshReservations();
+    toast.success("Đã làm mới danh sách đặt bàn", {
+      duration: 2000,
+    });
+    
+    setTimeout(() => {
+      setIsRefreshDisabled(false);
+    }, 5000);
+  };
 
   // Filter and sort reservations
   const filteredAndSortedReservations = sortReservations(
@@ -30,61 +45,23 @@ const ReservationsPage = () => {
     sortBy as 'date-desc' | 'date-asc' | 'status'
   );
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      [RESERVATION_STATUS.PENDING]: {
-        icon: AlertCircle,
-        label: t.reservationsStatusPending,
-        colors: STATUS_COLORS.PENDING,
-      },
-      [RESERVATION_STATUS.CONFIRMED]: {
-        icon: CheckCircle,
-        label: t.reservationsStatusConfirmed,
-        colors: STATUS_COLORS.CONFIRMED,
-      },
-      [RESERVATION_STATUS.CANCELLED]: {
-        icon: XCircle,
-        label: t.reservationsStatusCancelled,
-        colors: STATUS_COLORS.CANCELLED,
-      },
+  useEffect(() => {
+    if (!hasAnimated && !isLoading && filteredAndSortedReservations.length > 0) {
+      const timer = setTimeout(() => {
+        setHasAnimated(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [filteredAndSortedReservations.length, hasAnimated, isLoading]);
+
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      [RESERVATION_STATUS.PENDING]: t.reservationsStatusPending,
+      [RESERVATION_STATUS.CONFIRMED]: t.reservationsStatusConfirmed,
+      [RESERVATION_STATUS.CANCELLED]: t.reservationsStatusCancelled,
     };
-
-    const config = statusConfig[status as keyof typeof statusConfig];
-    if (!config) return null;
-
-    const Icon = config.icon;
-    return (
-      <div className={`flex items-center gap-2 px-3 py-1 ${config.colors.bg} ${config.colors.text} rounded-full text-sm font-medium`}>
-        <Icon className="h-4 w-4" />
-        {config.label}
-      </div>
-    );
+    return labels[status] || status;
   };
-
-  const StatCard = ({ icon: Icon, label, value, color, bgColor }: {
-    icon: React.ComponentType<{ className?: string }>;
-    label: string;
-    value: number;
-    color: string;
-    bgColor: string;
-  }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-6"
-    >
-      <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-xl ${bgColor}`}>
-          <Icon className={`h-6 w-6 ${color}`} />
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="text-2xl font-bold text-foreground">{value}</p>
-        </div>
-      </div>
-    </motion.div>
-  );
 
   if (!isAuthenticated) {
     return (
@@ -156,36 +133,15 @@ const ReservationsPage = () => {
           ) : (
             <>
               {/* Statistics Dashboard */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <StatCard
-                  icon={Calendar}
-                  label={t.reservationsTotal || "Tổng"}
-                  value={stats.total}
-                  color="text-orange-600 dark:text-orange-400"
-                  bgColor="bg-orange-100 dark:bg-orange-900/30"
-                />
-                <StatCard
-                  icon={AlertCircle}
-                  label={t.reservationsStatusPending || "Chờ xác nhận"}
-                  value={stats.pending}
-                  color="text-yellow-600 dark:text-yellow-400"
-                  bgColor="bg-yellow-100 dark:bg-yellow-900/30"
-                />
-                <StatCard
-                  icon={CheckCircle}
-                  label={t.reservationsStatusConfirmed || "Đã xác nhận"}
-                  value={stats.confirmed}
-                  color="text-green-600 dark:text-green-400"
-                  bgColor="bg-green-100 dark:bg-green-900/30"
-                />
-                <StatCard
-                  icon={XCircle}
-                  label={t.reservationsStatusCancelled || "Đã hủy"}
-                  value={stats.cancelled}
-                  color="text-red-600 dark:text-red-400"
-                  bgColor="bg-red-100 dark:bg-red-900/30"
-                />
-              </div>
+              <ReservationsStats
+                stats={stats}
+                labels={{
+                  total: t.reservationsTotal || "Tổng",
+                  pending: t.reservationsStatusPending || "Chờ xác nhận",
+                  confirmed: t.reservationsStatusConfirmed || "Đã xác nhận",
+                  cancelled: t.reservationsStatusCancelled || "Đã hủy",
+                }}
+              />
 
               {/* Search and Filter Bar */}
               <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-4 mb-6">
@@ -202,7 +158,7 @@ const ReservationsPage = () => {
                   <div className="flex items-center gap-2 w-full md:w-auto">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="flex-1 md:flex-none">
+                        <Button variant="outline" className="flex-1 md:flex-none hover:bg-primary-gradient">
                           <ChevronDown className="h-4 w-4 mr-2" />
                           {sortBy === "date-desc" ? (t.reservationsSortNewest || "Mới nhất") : 
                            sortBy === "date-asc" ? (t.reservationsSortOldest || "Cũ nhất") :
@@ -210,13 +166,22 @@ const ReservationsPage = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setSortBy("date-desc")}>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.preventDefault();
+                          setSortBy("date-desc");
+                        }}>
                           {t.reservationsSortNewest || "Mới nhất"}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setSortBy("date-asc")}>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.preventDefault();
+                          setSortBy("date-asc");
+                        }}>
                           {t.reservationsSortOldest || "Cũ nhất"}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setSortBy("status")}>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.preventDefault();
+                          setSortBy("status");
+                        }}>
                           {t.reservationsSortStatus || "Theo trạng thái"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -224,8 +189,10 @@ const ReservationsPage = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => refreshReservations()}
+                      onClick={handleRefresh}
                       title={t.reservationsRefresh || "Làm mới"}
+                      className="hover:bg-primary-gradient"
+                      disabled={isRefreshDisabled}
                     >
                       <RefreshCw className="h-4 w-4" />
                     </Button>
@@ -279,141 +246,21 @@ const ReservationsPage = () => {
                   ) : (
                     <div className="grid gap-4">
                       {filteredAndSortedReservations.map((reservation, index) => (
-                        <motion.div
+                        <ReservationCard
                           key={reservation.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.05 }}
-                          className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 overflow-hidden hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 transition-all duration-300"
-                        >
-                          <div className="p-6">
-                            <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-                              {/* Status Badge - Mobile Top, Desktop Right */}
-                              <div className="lg:hidden flex justify-between items-start mb-2">
-                                <div className="flex-1">
-                                  <h3 className="text-lg font-semibold text-foreground group-hover:text-white transition-colors">
-                                    {reservation.name}
-                                  </h3>
-                                  <p className="text-sm text-muted-foreground group-hover:text-white/80 transition-colors">
-                                    {reservation.phone}
-                                  </p>
-                                </div>
-                                {getStatusBadge(reservation.status)}
-                              </div>
-
-                              {/* Main Content */}
-                              <div className="flex-1">
-                                <div className="hidden lg:flex items-start justify-between mb-4">
-                                  <div>
-                                    <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-white transition-colors">
-                                      {reservation.name}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground group-hover:text-white/80 transition-colors">
-                                      {reservation.phone}
-                                    </p>
-                                  </div>
-                                  {getStatusBadge(reservation.status)}
-                                </div>
-                                
-                                {/* Reservation Details Grid */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
-                                    <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
-                                    <div>
-                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsDate || "Ngày"}</p>
-                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{formatDate(reservation.reservationDate)}</p>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
-                                    <Clock className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
-                                    <div>
-                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsTime || "Giờ"}</p>
-                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{reservation.reservationTime}</p>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
-                                    <Users className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
-                                    <div>
-                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsGuests || "Khách"}</p>
-                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{reservation.numberOfGuests} {t.reservationsGuest || "khách"}</p>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
-                                    <Phone className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
-                                    <div>
-                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsPhone || "Điện thoại"}</p>
-                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{reservation.phone}</p>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                {reservation.note && (
-                                  <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-900/50 group-hover:bg-white/20 group-hover:dark:bg-white/10 group-hover:border-white/30 transition-colors">
-                                    <p className="text-sm text-amber-700 dark:text-amber-400 group-hover:text-white transition-colors">
-                                      <span className="font-medium">{t.reservationsNote || "Ghi chú"}:</span> {reservation.note}
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Actions */}
-                              <div className="flex lg:flex-col gap-2 lg:w-auto w-full">
-                                {reservation.status === RESERVATION_STATUS.PENDING && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex-1 lg:flex-none text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                    onClick={() => {
-                                      // TODO: Implement cancel functionality
-                                      toast.info("Tính năng hủy đặt bàn đang được phát triển");
-                                    }}
-                                  >
-                                    {t.reservationsCancel || "Hủy"}
-                                  </Button>
-                                )}
-                                {reservation.status === RESERVATION_STATUS.CANCELLED && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex-1 lg:flex-none"
-                                    onClick={() => window.location.href = ROUTES.BOOKING}
-                                  >
-                                    {t.reservationsRebook || "Đặt lại"}
-                                  </Button>
-                                )}
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="flex-1 lg:flex-none">
-                                    <MoreVertical className="h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => {
-                                      // TODO: Implement view details
-                                      toast.info("Tính năng xem chi tiết đang được phát triển");
-                                    }}>
-                                      {t.reservationsViewDetails || "Xem chi tiết"}
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => {
-                                      navigator.clipboard.writeText(`Đặt bàn: ${reservation.name}, ${reservation.phone}, ${formatDate(reservation.reservationDate)} ${reservation.reservationTime}, ${reservation.numberOfGuests} khách`);
-                                      toast.success("Đã sao chép thông tin đặt bàn");
-                                    }}>
-                                      {t.reservationsCopy || "Sao chép"}
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Footer */}
-                          <div className="px-6 py-3 bg-orange-50/50 dark:bg-orange-900/20 border-t border-orange-200 dark:border-orange-900/50 text-xs text-muted-foreground flex justify-between items-center">
-                            <span>{t.reservationsBookedAt || "Đặt lúc"} {new Date(reservation.createdAt).toLocaleString('vi-VN')}</span>
-                            <span className="text-orange-600 dark:text-orange-400 font-medium">
-                              #{String(reservation.id).slice(-6)}
-                            </span>
-                          </div>
-                        </motion.div>
+                          reservation={reservation}
+                          index={index}
+                          getStatusLabel={getStatusLabel}
+                          labels={{
+                            date: t.reservationsDate || "Ngày",
+                            time: t.reservationsTime || "Giờ",
+                            guests: t.reservationsGuests || "Khách",
+                            guest: t.reservationsGuest || "khách",
+                            phone: t.reservationsPhone || "Điện thoại",
+                            note: t.reservationsNote || "Ghi chú",
+                            cancel: t.reservationsCancel || "Hủy",
+                          }}
+                        />
                       ))}
                     </div>
                   )}

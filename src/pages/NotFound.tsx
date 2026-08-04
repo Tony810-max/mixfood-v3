@@ -1,4 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ROUTES } from "@/utils/const";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -15,7 +16,7 @@ const NotFound = () => {
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold">{t.notFoundTitle}</h1>
         <p className="mb-4 text-xl text-muted-foreground">{t.notFoundMessage}</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
+        <a href={ROUTES.HOME} className="text-primary underline hover:text-primary/90">
           {t.notFoundReturn}
         </a>
       </div>

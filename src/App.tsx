@@ -1,4 +1,4 @@
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth";
 import RouteProgress from "@/components/common/RouteProgress";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ForgotPasswordPage from "./pages/Auth/ForgotPassword/index.tsx";
 import LoginPage from "./pages/Auth/Login/index.tsx";
 import RegisterPage from "./pages/Auth/Register/index.tsx";
 import Booking from "./pages/Booking/index.tsx";
@@ -17,7 +18,6 @@ import NotFound from "./pages/NotFound.tsx";
 import ProfilePage from "./pages/Profile/index.tsx";
 import ReservationsPage from "./pages/Reservations/index.tsx";
 import { ROUTES } from "./utils/const.ts";
-import ForgotPasswordPage from "./pages/Auth/ForgotPassword/index.tsx";
 
 const queryClient = new QueryClient();
 

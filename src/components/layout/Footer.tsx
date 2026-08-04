@@ -1,3 +1,4 @@
+import { ROUTES } from "@/utils/const";
 import ContactInfo from "./Footer/ContactInfo";
 import QuickLinks from "./Footer/QuickLinks";
 import RestaurantInfo from "./Footer/RestaurantInfo";
@@ -8,8 +9,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           <RestaurantInfo />
           <QuickLinks />
           <ThaiDishes />
@@ -17,27 +18,27 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-gray-400 text-sm">
+        <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+            <div className="text-gray-400 text-xs md:text-sm">
               © {currentYear} Mix Food. Tất cả quyền được bảo lưu.
             </div>
-            <div className="flex space-x-6 text-gray-400 text-sm">
+            <div className="flex space-x-4 md:space-x-6 text-gray-400 text-xs md:text-sm">
               <a
-                href="/privacy"
+                href={ROUTES.PRIVACY}
                 className="hover:text-red-500 transition-colors"
               >
                 Chính sách bảo mật
               </a>
-              <a href="/terms" className="hover:text-red-500 transition-colors">
+              <a href={ROUTES.TERMS} className="hover:text-red-500 transition-colors">
                 Điều khoản sử dụng
               </a>
             </div>
           </div>
         </div>
 
-        {/* SEO Keywords */}
-        <div className="mt-8 pt-8 border-t border-gray-800">
+        {/* SEO Keywords - Hidden on mobile */}
+        <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800 hidden md:block">
           <div className="text-center">
             <p className="text-gray-500 text-xs">
               Keywords: ẩm thực thái lan, nhà hàng thái lan đà nẵng, món ăn

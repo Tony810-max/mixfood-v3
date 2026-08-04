@@ -2,12 +2,12 @@
  * TanStack Query hooks for authentication
  */
 
-import { getApiErrorMessage } from '@/services/api';
 import { authService } from '@/services/auth.service';
 import { LoginPayload, RegisterPayload } from '@/types';
 import { logger } from '@/utils/logger';
+import { authStorage } from '@/utils/storage';
+import { showApiErrorToast, showOperationSuccess, showSuccessToast } from '@/utils/toastHelpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -17,13 +17,11 @@ export const useLogin = () => {
       authService.login(payload, remember),
     onSuccess: (data) => {
       logger.info('Login successful', { user: data.user });
-      toast.success('Đăng nhập thành công!');
+      showOperationSuccess('login');
     },
     onError: (error) => {
       logger.error('Login failed', error);
-      toast.error('Đăng nhập thất bại', {
-        description: getApiErrorMessage(error),
-      });
+      showApiErrorToast(error, 'Đăng nhập thất bại');
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['auth'] });
@@ -36,13 +34,11 @@ export const useRegister = () => {
     mutationFn: (payload: RegisterPayload) => authService.register(payload),
     onSuccess: () => {
       logger.info('Registration successful');
-      toast.success('Đăng ký thành công!');
+      showOperationSuccess('register');
     },
     onError: (error) => {
       logger.error('Registration failed', error);
-      toast.error('Đăng ký thất bại', {
-        description: getApiErrorMessage(error),
-      });
+      showApiErrorToast(error, 'Đăng ký thất bại');
     },
   });
 };
@@ -52,13 +48,11 @@ export const useSendRegistrationCode = () => {
     mutationFn: (email: string) => authService.sendRegistrationCode(email),
     onSuccess: () => {
       logger.info('Registration code sent');
-      toast.success('Mã xác nhận đã được gửi!');
+      showSuccessToast('Mã xác nhận đã được gửi!');
     },
     onError: (error) => {
       logger.error('Failed to send registration code', error);
-      toast.error('Gửi mã thất bại', {
-        description: getApiErrorMessage(error),
-      });
+      showApiErrorToast(error, 'Gửi mã thất bại');
     },
   });
 };
@@ -71,9 +65,8 @@ export const useLogout = () => {
     onSuccess: () => {
       logger.info('Logout successful');
       queryClient.clear();
-      // Clear user from localStorage
-      localStorage.removeItem('mixfood.user');
-      toast.success('Đăng xuất thành công!');
+      authStorage.removeUser();
+      showOperationSuccess('logout');
       window.location.href = '/login';
     },
   });

@@ -15,7 +15,9 @@ export const useReservations = () => {
   const invalidateReservations = useInvalidateReservations();
 
   // Ensure reservations is always an array
-  const safeReservations = Array.isArray(reservations) ? reservations : [];
+  const safeReservations = useMemo(() => {
+    return Array.isArray(reservations) ? reservations : [];
+  }, [reservations]);
 
   const stats = useMemo(() => {
     return {

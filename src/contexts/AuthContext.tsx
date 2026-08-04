@@ -1,5 +1,6 @@
-import { STORAGE_KEYS } from '@/constants';
 import { User } from '@/types';
+import { logger } from '@/utils/logger';
+import { authStorage } from '@/utils/storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
@@ -18,19 +19,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if user is logged in on mount
     try {
-      const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) || sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+      const token = authStorage.getAccessToken();
       if (token) {
-        const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
+        const storedUser = authStorage.getUser();
         if (storedUser) {
-          try {
-            setUser(JSON.parse(storedUser));
-          } catch (error) {
-            console.error('Failed to parse stored user:', error);
-          }
+          setUser(storedUser);
         }
       }
     } catch (error) {
-      console.error('Auth initialization error:', error);
+      logger.error('Auth initialization error:', error);
     } finally {
       setIsLoading(false);
     }
