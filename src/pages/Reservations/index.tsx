@@ -284,17 +284,17 @@ const ReservationsPage = () => {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.05 }}
-                          className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+                          className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 overflow-hidden hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 transition-all duration-300"
                         >
                           <div className="p-6">
                             <div className="flex flex-col lg:flex-row lg:items-start gap-4">
                               {/* Status Badge - Mobile Top, Desktop Right */}
                               <div className="lg:hidden flex justify-between items-start mb-2">
                                 <div className="flex-1">
-                                  <h3 className="text-lg font-semibold text-foreground">
+                                  <h3 className="text-lg font-semibold text-foreground group-hover:text-white transition-colors">
                                     {reservation.name}
                                   </h3>
-                                  <p className="text-sm text-muted-foreground">
+                                  <p className="text-sm text-muted-foreground group-hover:text-white/80 transition-colors">
                                     {reservation.phone}
                                   </p>
                                 </div>
@@ -305,10 +305,10 @@ const ReservationsPage = () => {
                               <div className="flex-1">
                                 <div className="hidden lg:flex items-start justify-between mb-4">
                                   <div>
-                                    <h3 className="text-xl font-semibold text-foreground mb-1">
+                                    <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-white transition-colors">
                                       {reservation.name}
                                     </h3>
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-muted-foreground group-hover:text-white/80 transition-colors">
                                       {reservation.phone}
                                     </p>
                                   </div>
@@ -317,39 +317,39 @@ const ReservationsPage = () => {
                                 
                                 {/* Reservation Details Grid */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                                    <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
+                                    <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
                                     <div>
-                                      <p className="text-xs text-muted-foreground">{t.reservationsDate || "Ngày"}</p>
-                                      <p className="font-medium text-foreground">{formatDate(reservation.reservationDate)}</p>
+                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsDate || "Ngày"}</p>
+                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{formatDate(reservation.reservationDate)}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                                    <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
+                                    <Clock className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
                                     <div>
-                                      <p className="text-xs text-muted-foreground">{t.reservationsTime || "Giờ"}</p>
-                                      <p className="font-medium text-foreground">{reservation.reservationTime}</p>
+                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsTime || "Giờ"}</p>
+                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{reservation.reservationTime}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                                    <Users className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
+                                    <Users className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
                                     <div>
-                                      <p className="text-xs text-muted-foreground">{t.reservationsGuests || "Khách"}</p>
-                                      <p className="font-medium text-foreground">{reservation.numberOfGuests} {t.reservationsGuest || "khách"}</p>
+                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsGuests || "Khách"}</p>
+                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{reservation.numberOfGuests} {t.reservationsGuest || "khách"}</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                                    <Phone className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                  <div className="flex items-center gap-2 text-sm p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg group-hover:bg-white/20 group-hover:dark:bg-white/10 transition-colors">
+                                    <Phone className="h-4 w-4 text-orange-500 flex-shrink-0 group-hover:text-white transition-colors" />
                                     <div>
-                                      <p className="text-xs text-muted-foreground">{t.reservationsPhone || "Điện thoại"}</p>
-                                      <p className="font-medium text-foreground">{reservation.phone}</p>
+                                      <p className="text-xs text-muted-foreground group-hover:text-white/80 transition-colors">{t.reservationsPhone || "Điện thoại"}</p>
+                                      <p className="font-medium text-foreground group-hover:text-white transition-colors">{reservation.phone}</p>
                                     </div>
                                   </div>
                                 </div>
                                 
                                 {reservation.note && (
-                                  <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-900/50">
-                                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                                  <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-900/50 group-hover:bg-white/20 group-hover:dark:bg-white/10 group-hover:border-white/30 transition-colors">
+                                    <p className="text-sm text-amber-700 dark:text-amber-400 group-hover:text-white transition-colors">
                                       <span className="font-medium">{t.reservationsNote || "Ghi chú"}:</span> {reservation.note}
                                     </p>
                                   </div>

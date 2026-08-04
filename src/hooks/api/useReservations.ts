@@ -10,6 +10,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const useMyReservations = (isAuthenticated: boolean = true) => {
+  const query = useQuery({
+    queryKey: ['reservations', 'my'],
+    queryFn: () => reservationService.getMyReservations(),
+    enabled: isAuthenticated,
+  });
+
   if (!isAuthenticated) {
     return {
       data: [],
@@ -21,11 +27,6 @@ export const useMyReservations = (isAuthenticated: boolean = true) => {
       refetch: () => Promise.resolve({ data: [] }),
     } as any;
   }
-
-  const query = useQuery({
-    queryKey: ['reservations', 'my'],
-    queryFn: () => reservationService.getMyReservations(),
-  });
 
   return query;
 };

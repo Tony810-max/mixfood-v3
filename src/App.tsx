@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound.tsx";
 import ProfilePage from "./pages/Profile/index.tsx";
 import ReservationsPage from "./pages/Reservations/index.tsx";
 import { ROUTES } from "./utils/const.ts";
+import ForgotPasswordPage from "./pages/Auth/ForgotPassword/index.tsx";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
                   <RegisterPage />
                 </ProtectedRoute>
               } />
+              <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -14,18 +14,21 @@ export const useReservations = () => {
   const { data: reservations = [], isLoading, error } = useMyReservations(isAuthenticated);
   const invalidateReservations = useInvalidateReservations();
 
+  // Ensure reservations is always an array
+  const safeReservations = Array.isArray(reservations) ? reservations : [];
+
   const stats = useMemo(() => {
     return {
-      total: reservations.length,
-      pending: reservations.filter(r => r.status === RESERVATION_STATUS.PENDING).length,
-      confirmed: reservations.filter(r => r.status === RESERVATION_STATUS.CONFIRMED).length,
-      cancelled: reservations.filter(r => r.status === RESERVATION_STATUS.CANCELLED).length,
+      total: safeReservations.length,
+      pending: safeReservations.filter(r => r.status === RESERVATION_STATUS.PENDING).length,
+      confirmed: safeReservations.filter(r => r.status === RESERVATION_STATUS.CONFIRMED).length,
+      cancelled: safeReservations.filter(r => r.status === RESERVATION_STATUS.CANCELLED).length,
     };
-  }, [reservations]);
+  }, [safeReservations]);
 
   const filterReservations = useMemo(() => {
     return (status?: string, searchQuery?: string) => {
-      let filtered = reservations;
+      let filtered = safeReservations;
 
       if (status && status !== 'ALL') {
         filtered = filtered.filter(r => r.status === status);
@@ -42,7 +45,7 @@ export const useReservations = () => {
 
       return filtered;
     };
-  }, [reservations]);
+  }, [safeReservations]);
 
   const sortReservations = useMemo(() => {
     return (reservationsToSort: Reservation[], sortBy: 'date-desc' | 'date-asc' | 'status') => {
@@ -67,7 +70,7 @@ export const useReservations = () => {
   }, []);
 
   return {
-    reservations,
+    reservations: safeReservations,
     isLoading: isAuthenticated ? isLoading : false,
     error,
     stats,

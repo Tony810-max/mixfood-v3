@@ -59,7 +59,7 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to={ROUTES.PROFILE} className="cursor-pointer hover:bg-primary-gradient focus:bg-transparent">
+              <Link to={ROUTES.PROFILE} className="cursor-pointer hover:text-white hover:bg-primary-gradient focus:bg-transparent">
                 <User className="mr-2 h-4 w-4" />
                 <span>{t.profileTitle}</span>
               </Link>

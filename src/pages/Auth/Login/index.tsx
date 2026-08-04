@@ -164,7 +164,7 @@ const LoginPage = () => {
                 </label>
               </div>
               <Link
-                to="#"
+                to={ROUTES.AUTH.FORGOT_PASSWORD}
                 className="text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 transition-colors"
               >
                 {t.forgotPassword}
