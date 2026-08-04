@@ -10,13 +10,24 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const useMyReservations = (isAuthenticated: boolean = true) => {
-  return useQuery({
+  if (!isAuthenticated) {
+    return {
+      data: [],
+      isLoading: false,
+      error: null,
+      isFetching: false,
+      isSuccess: true,
+      isError: false,
+      refetch: () => Promise.resolve({ data: [] }),
+    } as any;
+  }
+
+  const query = useQuery({
     queryKey: ['reservations', 'my'],
     queryFn: () => reservationService.getMyReservations(),
-    enabled: isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: false,
   });
+
+  return query;
 };
 
 export const useCreateReservation = () => {
