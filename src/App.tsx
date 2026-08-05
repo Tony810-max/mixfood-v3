@@ -40,7 +40,11 @@ const App = () => (
                   <ProfilePage />
                 </ProtectedRoute>
               } />
-              <Route path={ROUTES.RESERVATIONS} element={<ReservationsPage />} />
+              <Route path={ROUTES.RESERVATIONS} element={
+                <ProtectedRoute requireAuth={true}>
+                  <ReservationsPage />
+                </ProtectedRoute>
+              } />
               <Route path={ROUTES.AUTH.LOGIN} element={
                 <ProtectedRoute requireAuth={false}>
                   <LoginPage />

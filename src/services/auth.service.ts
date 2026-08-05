@@ -1,22 +1,37 @@
-import { STORAGE_KEYS } from "@/constants";
 import axios from "@/lib/axios";
 import {
   AuthResponse,
   LoginPayload,
   RegisterPayload
 } from "@/types";
-import { authStorage, storage } from "@/utils/storage";
+import { authStorage } from "@/utils/storage";
 
 const clearStoredTokens = () => {
   authStorage.clearAuth();
 };
 
 const storeTokens = ({ accessToken, refreshToken }: AuthResponse, remember: boolean) => {
+  console.log('[storeTokens] Storing tokens:', {
+    accessToken: accessToken ? 'exists' : 'missing',
+    refreshToken: refreshToken ? 'exists' : 'missing',
+    remember,
+  });
+
   clearStoredTokens();
 
   const location: 'local' | 'session' = remember ? 'local' : 'session';
-  storage.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, location);
-  storage.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, location);
+  console.log('[storeTokens] Location:', location);
+
+  const result1 = authStorage.setAccessToken(accessToken, location);
+  const result2 = authStorage.setRefreshToken(refreshToken, location);
+
+  console.log('[storeTokens] Storage results:', { result1, result2 });
+  console.log('[storeTokens] After storage:', {
+    accessToken_local: localStorage.getItem('mixfood.access-token'),
+    accessToken_session: sessionStorage.getItem('mixfood.access-token'),
+    refreshToken_local: localStorage.getItem('mixfood.refresh-token'),
+    refreshToken_session: sessionStorage.getItem('mixfood.refresh-token'),
+  });
 };
 
 export const authService = {
@@ -68,9 +83,9 @@ export const authService = {
     const response = await axios.post<{ accessToken: string; refreshToken: string }>("/auth/refresh-token", { refreshToken });
 
     // Update stored tokens
-    const location: 'local' | 'session' = storage.has(STORAGE_KEYS.REFRESH_TOKEN, 'local') ? 'local' : 'session';
-    storage.set(STORAGE_KEYS.ACCESS_TOKEN, response.data.accessToken, location);
-    storage.set(STORAGE_KEYS.REFRESH_TOKEN, response.data.refreshToken, location);
+    const location: 'local' | 'session' = localStorage.getItem('mixfood.refresh-token') ? 'local' : 'session';
+    authStorage.setAccessToken(response.data.accessToken, location);
+    authStorage.setRefreshToken(response.data.refreshToken, location);
 
     return response.data.accessToken;
   },

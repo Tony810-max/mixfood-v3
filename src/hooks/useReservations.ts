@@ -14,6 +14,13 @@ export const useReservations = () => {
   const { data: reservations = [], isLoading, error } = useMyReservations(isAuthenticated);
   const invalidateReservations = useInvalidateReservations();
 
+  console.log('[useReservations] Hook state:', {
+    isAuthenticated,
+    isLoading,
+    error,
+    reservationsCount: reservations?.length,
+  });
+
   // Ensure reservations is always an array
   const safeReservations = useMemo(() => {
     return Array.isArray(reservations) ? reservations : [];

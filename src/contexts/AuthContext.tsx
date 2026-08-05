@@ -19,14 +19,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if user is logged in on mount
     try {
+      console.log('[AuthContext] Initializing auth...');
       const token = authStorage.getAccessToken();
+      console.log('[AuthContext] Token found:', !!token);
+      console.log('[AuthContext] Token value:', token ? `${token.substring(0, 20)}...` : 'none');
       if (token) {
         const storedUser = authStorage.getUser();
+        console.log('[AuthContext] Stored user:', storedUser);
         if (storedUser) {
           setUser(storedUser);
         }
       }
     } catch (error) {
+      console.error('[AuthContext] Auth initialization error:', error);
       logger.error('Auth initialization error:', error);
     } finally {
       setIsLoading(false);

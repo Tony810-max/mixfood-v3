@@ -24,7 +24,13 @@ class StorageManager {
     try {
       const storage = this.getStorage(location);
       const item = storage.getItem(key);
-      return item ? JSON.parse(item) : null;
+      if (!item) return null;
+      // Try to parse as JSON, if it fails return as string
+      try {
+        return JSON.parse(item);
+      } catch {
+        return item as T;
+      }
     } catch (error) {
       this.handleError('get', key, error);
       return null;
@@ -37,9 +43,14 @@ class StorageManager {
   set<T>(key: string, value: T, location: StorageLocation = 'local'): boolean {
     try {
       const storage = this.getStorage(location);
-      storage.setItem(key, JSON.stringify(value));
+      console.log('[Storage.set] Setting:', { key, location, value });
+      // Only JSON.stringify if value is not a string (strings are stored as-is)
+      const serializedValue = typeof value === 'string' ? value : JSON.stringify(value);
+      storage.setItem(key, serializedValue);
+      console.log('[Storage.set] Set successful, verifying:', storage.getItem(key));
       return true;
     } catch (error) {
+      console.error('[Storage.set] Error:', error);
       this.handleError('set', key, error);
       return false;
     }
@@ -92,22 +103,34 @@ export const storage = new StorageManager();
 
 // Auth-related storage helpers
 export const authStorage = {
-  getAccessToken: () => storage.get<string>(STORAGE_KEYS.ACCESS_TOKEN),
-  setAccessToken: (token: string) => storage.set(STORAGE_KEYS.ACCESS_TOKEN, token),
-  removeAccessToken: () => storage.remove(STORAGE_KEYS.ACCESS_TOKEN),
+  getAccessToken: () => storage.get<string>(STORAGE_KEYS.ACCESS_TOKEN, 'local') || storage.get<string>(STORAGE_KEYS.ACCESS_TOKEN, 'session'),
+  setAccessToken: (token: string, location: 'local' | 'session' = 'local') => storage.set(STORAGE_KEYS.ACCESS_TOKEN, token, location),
+  removeAccessToken: () => {
+    storage.remove(STORAGE_KEYS.ACCESS_TOKEN, 'local');
+    storage.remove(STORAGE_KEYS.ACCESS_TOKEN, 'session');
+  },
 
-  getRefreshToken: () => storage.get<string>(STORAGE_KEYS.REFRESH_TOKEN),
-  setRefreshToken: (token: string) => storage.set(STORAGE_KEYS.REFRESH_TOKEN, token),
-  removeRefreshToken: () => storage.remove(STORAGE_KEYS.REFRESH_TOKEN),
+  getRefreshToken: () => storage.get<string>(STORAGE_KEYS.REFRESH_TOKEN, 'local') || storage.get<string>(STORAGE_KEYS.REFRESH_TOKEN, 'session'),
+  setRefreshToken: (token: string, location: 'local' | 'session' = 'local') => storage.set(STORAGE_KEYS.REFRESH_TOKEN, token, location),
+  removeRefreshToken: () => {
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN, 'local');
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN, 'session');
+  },
 
-  getUser: () => storage.get(STORAGE_KEYS.USER),
-  setUser: (user: unknown) => storage.set(STORAGE_KEYS.USER, user),
-  removeUser: () => storage.remove(STORAGE_KEYS.USER),
+  getUser: () => storage.get(STORAGE_KEYS.USER, 'local') || storage.get(STORAGE_KEYS.USER, 'session'),
+  setUser: (user: unknown, location: 'local' | 'session' = 'local') => storage.set(STORAGE_KEYS.USER, user, location),
+  removeUser: () => {
+    storage.remove(STORAGE_KEYS.USER, 'local');
+    storage.remove(STORAGE_KEYS.USER, 'session');
+  },
 
   clearAuth: () => {
-    storage.remove(STORAGE_KEYS.ACCESS_TOKEN);
-    storage.remove(STORAGE_KEYS.REFRESH_TOKEN);
-    storage.remove(STORAGE_KEYS.USER);
+    storage.remove(STORAGE_KEYS.ACCESS_TOKEN, 'local');
+    storage.remove(STORAGE_KEYS.ACCESS_TOKEN, 'session');
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN, 'local');
+    storage.remove(STORAGE_KEYS.REFRESH_TOKEN, 'session');
+    storage.remove(STORAGE_KEYS.USER, 'local');
+    storage.remove(STORAGE_KEYS.USER, 'session');
   },
 };
 

@@ -21,8 +21,19 @@ type UseQueryResult<T> = {
 export const useMyReservations = (isAuthenticated: boolean = true) => {
   const query = useQuery({
     queryKey: ['reservations', 'my'],
-    queryFn: () => reservationService.getMyReservations(),
+    queryFn: () => {
+      console.log('[useMyReservations] Fetching reservations...');
+      return reservationService.getMyReservations();
+    },
     enabled: isAuthenticated,
+  });
+
+  console.log('[useMyReservations] Query state:', {
+    isAuthenticated,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    error: query.error,
+    data: query.data,
   });
 
   if (!isAuthenticated) {
