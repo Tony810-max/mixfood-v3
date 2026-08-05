@@ -1,9 +1,9 @@
 import { STORAGE_KEYS } from "@/constants";
 import axios from "@/lib/axios";
 import {
-    AuthResponse,
-    LoginPayload,
-    RegisterPayload
+  AuthResponse,
+  LoginPayload,
+  RegisterPayload
 } from "@/types";
 import { authStorage, storage } from "@/utils/storage";
 
@@ -33,6 +33,21 @@ export const authService = {
 
   async sendRegistrationCode(email: string): Promise<{ message: string }> {
     const response = await axios.post<{ message: string }>("/auth/otp", { email, type: "REGISTER" });
+    return response.data;
+  },
+
+  async sendForgotPasswordOTP(email: string): Promise<{ message: string }> {
+    const response = await axios.post<{ message: string }>("/auth/otp", { email, type: "FORGOT_PASSWORD" });
+    return response.data;
+  },
+
+  async verifyOTP(email: string, otp: string, type: string): Promise<{ message: string; valid: boolean }> {
+    const response = await axios.post<{ message: string; valid: boolean }>("/auth/verify-otp", { email, otp, type });
+    return response.data;
+  },
+
+  async resetPassword(email: string, otp: string, newPassword: string): Promise<{ message: string }> {
+    const response = await axios.post<{ message: string }>("/auth/reset-password", { email, otp, newPassword });
     return response.data;
   },
 
