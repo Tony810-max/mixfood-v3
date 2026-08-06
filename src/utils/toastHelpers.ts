@@ -3,8 +3,8 @@
  * Provides consistent toast notifications across the application
  */
 
-import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/services/api';
+import { toast } from 'sonner';
 import { logger } from './logger';
 
 export type ToastOptions = {
@@ -24,6 +24,7 @@ export const showSuccessToast = (message: string, options?: ToastOptions) => {
  * Show error toast
  */
 export const showErrorToast = (message: string, options?: ToastOptions) => {
+  console.log('[showErrorToast] Showing error toast:', message);
   logger.error('Error toast shown', { message });
   toast.error(message, options);
 };

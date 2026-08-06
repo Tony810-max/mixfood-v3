@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { STORAGE_KEYS } from "@/constants";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLogin } from "@/hooks/api/useAuth";
+import { getLoginErrorMessage, useLogin } from "@/hooks/api/useAuth";
 import { loginSchema, type LoginFormData } from "@/lib/validation";
 import { ROUTES } from "@/utils/const";
 import { authStorage } from "@/utils/storage";
@@ -27,21 +27,30 @@ const LoginPage = () => {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const handleInputChange = (field: keyof LoginFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error for this field when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
-    }
+    // Clear errors when user starts typing
+    setErrors(prev => ({ ...prev, [field]: "" }));
+    setLoginError(null);
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    // Prevent default form submission if event is provided
+    if (e) {
+      e.preventDefault();
+    }
+
+    console.log('[Login] handleLogin called');
+    // Clear previous login error
+    setLoginError(null);
+
     // Validate form using zod
     const result = loginSchema.safeParse(formData);
-    
+
     if (!result.success) {
+      console.log('[Login] Validation failed:', result.error);
       const fieldErrors: Partial<Record<keyof LoginFormData, string>> = {};
       result.error.errors.forEach((error) => {
         const field = error.path[0] as keyof LoginFormData;
@@ -51,10 +60,10 @@ const LoginPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    console.log('[Login] Validation passed, calling mutation');
     try {
       const response = await loginMutation.mutateAsync({ payload: { email: formData.email, password: formData.password }, remember: rememberMe });
-      
+
       // Set user data from response
       const userData = response.user || {
         id: 1,
@@ -63,18 +72,18 @@ const LoginPage = () => {
         role: 'USER',
       };
       console.log('[Login] Setting user:', userData);
-      console.log('[Login] Response tokens:', { 
+      console.log('[Login] Response tokens:', {
         accessToken: response.accessToken ? 'exists' : 'missing',
         refreshToken: response.refreshToken ? 'exists' : 'missing',
       });
       setUser(userData);
-      
+
       // Save user data to storage (same location as tokens)
       const location: 'local' | 'session' = rememberMe ? 'local' : 'session';
       console.log('[Login] Saving user to storage, location:', location);
       authStorage.setUser(userData, location);
       console.log('[Login] User saved, checking storage:', authStorage.getUser());
-      
+
       // Verify tokens are stored
       console.log('[Login] Checking stored tokens:', {
         accessToken_local: localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ? 'exists' : 'missing',
@@ -82,12 +91,13 @@ const LoginPage = () => {
         refreshToken_local: localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ? 'exists' : 'missing',
         refreshToken_session: sessionStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ? 'exists' : 'missing',
       });
-      
+
       navigate(ROUTES.HOME);
     } catch (error) {
-      // Error is handled by the mutation
-    } finally {
-      setIsLoading(false);
+      console.error('[Login] Error caught in handleLogin:', error);
+      // Set error state to display on form using the same error handling as toast
+      const errorMessage = getLoginErrorMessage(error);
+      setLoginError(errorMessage);
     }
   };
 
@@ -105,7 +115,12 @@ const LoginPage = () => {
             title={t.loginTitle}
             subtitle={t.loginSubtitle}
           />
-          <div className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
+            {loginError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
+                <p className="text-sm">{loginError}</p>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">
                 {t.loginEmailAddress}
@@ -166,12 +181,12 @@ const LoginPage = () => {
             <Button
               className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
               size="lg"
-              onClick={handleLogin}
-              disabled={isLoading}
+              type="submit"
+              disabled={loginMutation.isPending}
             >
-              {isLoading ? t.loginSigningIn : t.loginButton}
+              {loginMutation.isPending ? t.loginSigningIn : t.loginButton}
             </Button>
-          </div>
+          </form>
           <div className="flex flex-col space-y-4 pt-6">
             <div className="text-center text-sm">
               <span className="text-muted-foreground">{t.noAccount} </span>

@@ -1,4 +1,5 @@
 import { ProtectedRoute } from "@/components/auth";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 import RouteProgress from "@/components/common/RouteProgress";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -22,48 +23,50 @@ import { ROUTES } from "./utils/const.ts";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster  />
-          <Sonner />
-          <BrowserRouter>
-            <RouteProgress />
-            <Routes>
-              <Route path={ROUTES.HOME} element={<Index />} />
-              <Route path={ROUTES.MENU} element={<MenuPage />} />
-              <Route path={ROUTES.BOOKING} element={<Booking />} />
-              <Route path={ROUTES.BOOKING_SUCCESS} element={<BookingSuccess />} />
-              <Route path={ROUTES.PROFILE} element={
-                <ProtectedRoute requireAuth={true}>
-                  <ProfilePage />
-                </ProtectedRoute>
-              } />
-              <Route path={ROUTES.RESERVATIONS} element={
-                <ProtectedRoute requireAuth={true}>
-                  <ReservationsPage />
-                </ProtectedRoute>
-              } />
-              <Route path={ROUTES.AUTH.LOGIN} element={
-                <ProtectedRoute requireAuth={false}>
-                  <LoginPage />
-                </ProtectedRoute>
-              } />
-              <Route path={ROUTES.AUTH.REGISTER} element={
-                <ProtectedRoute requireAuth={false}>
-                  <RegisterPage />
-                </ProtectedRoute>
-              } />
-              <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </LanguageProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster  />
+            <Sonner />
+            <BrowserRouter>
+              <RouteProgress />
+              <Routes>
+                <Route path={ROUTES.HOME} element={<Index />} />
+                <Route path={ROUTES.MENU} element={<MenuPage />} />
+                <Route path={ROUTES.BOOKING} element={<Booking />} />
+                <Route path={ROUTES.BOOKING_SUCCESS} element={<BookingSuccess />} />
+                <Route path={ROUTES.PROFILE} element={
+                  <ProtectedRoute requireAuth={true}>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                } />
+                <Route path={ROUTES.RESERVATIONS} element={
+                  <ProtectedRoute requireAuth={true}>
+                    <ReservationsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path={ROUTES.AUTH.LOGIN} element={
+                  <ProtectedRoute requireAuth={false}>
+                    <LoginPage />
+                  </ProtectedRoute>
+                } />
+                <Route path={ROUTES.AUTH.REGISTER} element={
+                  <ProtectedRoute requireAuth={false}>
+                    <RegisterPage />
+                  </ProtectedRoute>
+                } />
+                <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </LanguageProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

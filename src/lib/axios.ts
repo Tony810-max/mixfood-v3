@@ -92,11 +92,24 @@ axiosInstance.interceptors.response.use(
 
     // Handle 401 Unauthorized - try to refresh token
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip refresh token for auth endpoints (login, register, etc.) to avoid redirecting on invalid credentials
+      if (originalRequest.url?.includes('/auth/')) {
+        console.log('[Axios] 401 error on auth endpoint, skipping token refresh:', originalRequest.url);
+        const errorMessage = error.response?.data 
+          ? (error.response.data as { message?: string | string[] }).message
+          : error.message;
+        const apiError = new ApiError(
+          typeof errorMessage === 'string' ? errorMessage : ERROR_MESSAGES.GENERIC_ERROR,
+          401
+        );
+        return Promise.reject(apiError);
+      }
+
       // Skip refresh token for refresh token endpoint itself to avoid infinite loop
       if (originalRequest.url === '/auth/refresh-token') {
         console.error('[Axios] Refresh token endpoint returned 401, clearing session');
         authStorage.clearAuth();
-        
+
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }

@@ -6,27 +6,60 @@ import { authService } from '@/services/auth.service';
 import { LoginPayload, RegisterPayload } from '@/types';
 import { logger } from '@/utils/logger';
 import { authStorage } from '@/utils/storage';
-import { showApiErrorToast, showOperationSuccess, showSuccessToast } from '@/utils/toastHelpers';
+import { showApiErrorToast, showErrorToast, showOperationSuccess, showSuccessToast } from '@/utils/toastHelpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ payload, remember }: { payload: LoginPayload; remember: boolean }) => 
-      authService.login(payload, remember),
+    mutationFn: ({ payload, remember }: { payload: LoginPayload; remember: boolean }) => {
+      console.log('[useLogin] mutationFn called with:', { email: payload.email, remember });
+      return authService.login(payload, remember);
+    },
     onSuccess: (data) => {
+      console.log('[useLogin] onSuccess called');
       logger.info('Login successful', { user: data.user });
       showOperationSuccess('login');
-    },
-    onError: (error) => {
-      logger.error('Login failed', error);
-      showApiErrorToast(error, 'Đăng nhập thất bại');
-    },
-    onSettled: () => {
+      // Only invalidate queries on success
       queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
+    onError: (error) => {
+      console.log('[useLogin] onError called with error:', error);
+      logger.error('Login failed', error);
+      const errorMessage = getLoginErrorMessage(error);
+      console.log('[useLogin] Showing error toast:', errorMessage);
+      showErrorToast(errorMessage);
+      // Don't invalidate queries on error to prevent unnecessary reloads
+      console.log('[useLogin] Skipping query invalidation on error');
+    },
   });
+};
+
+/**
+ * Get specific error message for login failures
+ */
+export const getLoginErrorMessage = (error: unknown): string => {
+  const apiError = error as { message?: string; response?: { data?: { message?: string } } };
+
+  // Try to get error message from different sources
+  const message = apiError.message ||
+                  apiError.response?.data?.message ||
+                  'Đăng nhập thất bại';
+
+  // Provide user-friendly messages based on common errors
+  // For security reasons, use generic message for both invalid email and password
+  if (message.includes('User not found') || message.includes('NotFoundException') ||
+      message.includes('Invalid password') || message.includes('UnauthorizedException')) {
+    return 'Sai tên tài khoản hoặc mật khẩu. Vui lòng kiểm tra lại.';
+  }
+
+  if (message.includes('Network') || message.includes('fetch')) {
+    return 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối internet và thử lại.';
+  }
+
+  // Return original message if it's not a common error
+  return message;
 };
 
 export const useRegister = () => {
@@ -61,7 +94,10 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => authService.clearSession(),
+    mutationFn: async () => {
+      authService.clearSession();
+      return Promise.resolve();
+    },
     onSuccess: () => {
       logger.info('Logout successful');
       queryClient.clear();

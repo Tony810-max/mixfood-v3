@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('[AuthContext] Token found:', !!token);
       console.log('[AuthContext] Token value:', token ? `${token.substring(0, 20)}...` : 'none');
       if (token) {
-        const storedUser = authStorage.getUser();
+        const storedUser = authStorage.getUser() as User | null;
         console.log('[AuthContext] Stored user:', storedUser);
         if (storedUser) {
           setUser(storedUser);
@@ -34,9 +34,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('[AuthContext] Auth initialization error:', error);
       logger.error('Auth initialization error:', error);
     } finally {
+      console.log('[AuthContext] Setting isLoading to false');
       setIsLoading(false);
     }
   }, []);
+
+  // Add effect to monitor auth state changes
+  useEffect(() => {
+    console.log('[AuthContext] Auth state changed:', { user: !!user, isAuthenticated: !!user, isLoading });
+  }, [user, isLoading]);
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, setUser }}>
@@ -50,5 +56,6 @@ export const useAuth = () => {
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+  console.log('[useAuth] Returning context:', { isAuthenticated: context.isAuthenticated, isLoading: context.isLoading });
   return context;
 };
