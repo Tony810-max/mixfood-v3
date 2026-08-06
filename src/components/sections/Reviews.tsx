@@ -1,6 +1,6 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const reviews = [
   {
@@ -30,19 +30,19 @@ const Reviews = () => {
   const { lang, t } = useLanguage();
 
   return (
-    <section className="py-24 bg-secondary/50">
-      <div className="container mx-auto px-6">
+    <section className="py-16 md:py-24 bg-secondary/50">
+      <div className="container mx-auto px-4 md:px-6">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-          className="font-serif text-3xl md:text-4xl font-bold text-foreground text-center mb-16"
+          className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-foreground text-center mb-8 md:mb-16"
         >
           {t.reviews}
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {reviews.map((review, i) => (
             <motion.div
               key={review.name}
@@ -50,7 +50,7 @@ const Reviews = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: i * 0.1, ease: [0.2, 0.8, 0.2, 1] }}
-              className="bg-card rounded-2xl p-6 shadow-layered space-y-4"
+              className="bg-card rounded-2xl p-5 md:p-6 shadow-layered space-y-3 md:space-y-4"
             >
               <div className="flex gap-1">
                 {Array.from({ length: review.rating }).map((_, j) => (
@@ -61,7 +61,7 @@ const Reviews = () => {
                 "{lang === "vi" ? review.vi : review.en}"
               </p>
               <div className="flex items-center gap-3 pt-2">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary shrink-0">
                   {review.avatar}
                 </div>
                 <span className="font-medium text-sm text-foreground">{review.name}</span>

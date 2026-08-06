@@ -1,45 +1,56 @@
 
-import Header from "@/components/Header";
+import { AuthCard, AuthFormLayout, AuthHeader, AuthLogo } from "@/components/auth";
+import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { STORAGE_KEYS } from "@/constants";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getLoginErrorMessage, useLogin } from "@/hooks/api/useAuth";
 import { loginSchema, type LoginFormData } from "@/lib/validation";
-import { getApiErrorMessage } from "@/services/api";
 import { ROUTES } from "@/utils/const";
+import { authStorage } from "@/utils/storage";
 import { motion } from "framer-motion";
 import { Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const LoginPage = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { setUser } = useAuth();
+  const loginMutation = useLogin();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
-  const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const handleInputChange = (field: keyof LoginFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error for this field when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
-    }
+    // Clear errors when user starts typing
+    setErrors(prev => ({ ...prev, [field]: "" }));
+    setLoginError(null);
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    // Prevent default form submission if event is provided
+    if (e) {
+      e.preventDefault();
+    }
+
+    console.log('[Login] handleLogin called');
+    // Clear previous login error
+    setLoginError(null);
+
     // Validate form using zod
     const result = loginSchema.safeParse(formData);
-    
+
     if (!result.success) {
+      console.log('[Login] Validation failed:', result.error);
       const fieldErrors: Partial<Record<keyof LoginFormData, string>> = {};
       result.error.errors.forEach((error) => {
         const field = error.path[0] as keyof LoginFormData;
@@ -49,60 +60,67 @@ const LoginPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    console.log('[Login] Validation passed, calling mutation');
     try {
-      await login(formData.email, formData.password, rememberMe);
-      toast.success(t.loginSuccess);
+      const response = await loginMutation.mutateAsync({ payload: { email: formData.email, password: formData.password }, remember: rememberMe });
+
+      // Set user data from response
+      const userData = response.user || {
+        id: 1,
+        email: formData.email,
+        name: formData.email.split('@')[0],
+        role: 'USER',
+      };
+      console.log('[Login] Setting user:', userData);
+      console.log('[Login] Response tokens:', {
+        accessToken: response.accessToken ? 'exists' : 'missing',
+        refreshToken: response.refreshToken ? 'exists' : 'missing',
+      });
+      setUser(userData);
+
+      // Save user data to storage (same location as tokens)
+      const location: 'local' | 'session' = rememberMe ? 'local' : 'session';
+      console.log('[Login] Saving user to storage, location:', location);
+      authStorage.setUser(userData, location);
+      console.log('[Login] User saved, checking storage:', authStorage.getUser());
+
+      // Verify tokens are stored
+      console.log('[Login] Checking stored tokens:', {
+        accessToken_local: localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ? 'exists' : 'missing',
+        accessToken_session: sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ? 'exists' : 'missing',
+        refreshToken_local: localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ? 'exists' : 'missing',
+        refreshToken_session: sessionStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ? 'exists' : 'missing',
+      });
+
       navigate(ROUTES.HOME);
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
-    } finally {
-      setIsLoading(false);
+      console.error('[Login] Error caught in handleLogin:', error);
+      // Set error state to display on form using the same error handling as toast
+      const errorMessage = getLoginErrorMessage(error);
+      setLoginError(errorMessage);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <AuthCard>
       <Header />
-      <div className="min-h-[calc(100vh-72px)] flex items-center justify-center pt-20 p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
       >
-        <Card className="border-2 border-orange-200 dark:border-orange-900 shadow-xl">
-          <CardHeader className="space-y-1 text-center pb-6">
-            <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 20 }}
-              className="mx-auto mb-6 relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full blur-xl opacity-30 animate-pulse" />
-              <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 p-2 shadow-2xl border-4 border-white dark:border-orange-800">
-                <img 
-                  src="/favicon.jpg" 
-                  alt="Mix Food Logo" 
-                  className="w-full h-full rounded-full object-cover"
-                />
+        <AuthFormLayout>
+          <AuthLogo />
+          <AuthHeader
+            title={t.loginTitle}
+            subtitle={t.loginSubtitle}
+          />
+          <form onSubmit={handleLogin} className="space-y-4">
+            {loginError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
+                <p className="text-sm">{loginError}</p>
               </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
-              <h2 className="text-2xl font-bold text-foreground mb-1">Mix Food</h2>
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                {t.loginTitle}
-              </CardTitle>
-              <CardDescription className="text-base mt-2">
-                {t.loginSubtitle}
-              </CardDescription>
-            </motion.div>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">
                 {t.loginEmailAddress}
@@ -154,7 +172,7 @@ const LoginPage = () => {
                 </label>
               </div>
               <Link
-                to="#"
+                to={ROUTES.AUTH.FORGOT_PASSWORD}
                 className="text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 transition-colors"
               >
                 {t.forgotPassword}
@@ -163,13 +181,13 @@ const LoginPage = () => {
             <Button
               className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
               size="lg"
-              onClick={handleLogin}
-              disabled={isLoading}
+              type="submit"
+              disabled={loginMutation.isPending}
             >
-              {isLoading ? t.loginSigningIn : t.loginButton}
+              {loginMutation.isPending ? t.loginSigningIn : t.loginButton}
             </Button>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4 pt-6">
+          </form>
+          <div className="flex flex-col space-y-4 pt-6">
             <div className="text-center text-sm">
               <span className="text-muted-foreground">{t.noAccount} </span>
               <Link
@@ -179,11 +197,10 @@ const LoginPage = () => {
                 {t.registerLink}
               </Link>
             </div>
-          </CardFooter>
-        </Card>
+          </div>
+        </AuthFormLayout>
       </motion.div>
-      </div>
-    </div>
+    </AuthCard>
   );
 };
 

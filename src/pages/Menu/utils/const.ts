@@ -1,23 +1,5 @@
-import padThaiImg from "@/assets/pad-thai.jpg";
-import greenCurryImg from "@/assets/green-curry.jpg";
-import somTumImg from "@/assets/som-tum.jpg";
-import mangoRiceImg from "@/assets/mango-sticky-rice.jpg";
-import heroDishImg from "@/assets/hero-dish.jpg";
+import { Category } from "@/types";
 
-export interface MenuItem {
-  id: string;
-  name: { en: string; vi: string };
-  price: number;
-  image: string | null;
-  tags?: ("spicy" | "veggie" | "popular")[];
-}
-
-export interface Category {
-  id: string;
-  en: string;
-  vi: string;
-  items: MenuItem[];
-}
 
 export const menuData: Category[] = [
   {
@@ -36,7 +18,7 @@ export const menuData: Category[] = [
         name: { en: "Stir-fried Bok Choy with Garlic", vi: "Cải thìa xào tỏi" },
         price: 40000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "rau-muong-xao-toi",
@@ -46,7 +28,7 @@ export const menuData: Category[] = [
         },
         price: 40000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "rau-muong-xao-ruoc",
@@ -56,21 +38,21 @@ export const menuData: Category[] = [
         },
         price: 45000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "salad",
         name: { en: "Salad", vi: "Salad" },
         price: 45000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "rau-cu-xao-toi",
         name: { en: "Stir-fried Vegetables with Garlic", vi: "Rau củ xào tỏi" },
         price: 50000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "chan-ga",
@@ -80,7 +62,7 @@ export const menuData: Category[] = [
         },
         price: 75000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
     ],
   },
@@ -94,21 +76,21 @@ export const menuData: Category[] = [
         name: { en: "Green Papaya Salad", vi: "Sontam xanh" },
         price: 40000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-mam-ca",
         name: { en: "Papaya Salad with Fermented Fish", vi: "Sontam mắm cá" },
         price: 45000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-tep",
         name: { en: "Papaya Salad with Tiny Shrimp", vi: "Sontam tép" },
         price: 45000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-ca-kho-gion",
@@ -118,49 +100,49 @@ export const menuData: Category[] = [
         },
         price: 55000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-tom-kho",
         name: { en: "Papaya Salad with Dried Shrimp", vi: "Sontam tôm khô" },
         price: 60000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-ngheu",
         name: { en: "Papaya Salad with Scallop", vi: "Sontam nghêu" },
         price: 60000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-ba-khia",
         name: { en: "Papaya Salad with Crab", vi: "Sontam ba khía" },
         price: 65000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-muc",
         name: { en: "Papaya Salad with Squid", vi: "Sontam mực" },
         price: 75000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-tom-hap",
         name: { en: "Papaya Salad with Steamed Shrimp", vi: "Sontam tôm hấp" },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-tom-song",
         name: { en: "Papaya Salad with Fresh Shrimp", vi: "Sontam tôm sống" },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-tom-xoc-toi",
@@ -170,14 +152,14 @@ export const menuData: Category[] = [
         },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-hai-san",
         name: { en: "Papaya Salad with Seafood", vi: "Sontam hải sản" },
         price: 85000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-mam-ca-tom-song",
@@ -187,7 +169,7 @@ export const menuData: Category[] = [
         },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-ba-kia-tom-song",
@@ -197,7 +179,7 @@ export const menuData: Category[] = [
         },
         price: 85000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "sontam-ba-kia-hai-san",
@@ -207,7 +189,7 @@ export const menuData: Category[] = [
         },
         price: 90000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
     ],
   },
@@ -221,28 +203,28 @@ export const menuData: Category[] = [
         name: { en: "Mango Salad with Dried Fish", vi: "Gỏi xoài cá khô" },
         price: 65000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "goi-xoai-muc",
         name: { en: "Mango Salad with Squid", vi: "Gỏi xoài mực" },
         price: 70000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "goi-xoai-tom",
         name: { en: "Mango Salad with Shrimp", vi: "Gỏi xoài tôm" },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "goi-xoai-hai-san",
         name: { en: "Mango Salad with Seafood", vi: "Gỏi xoài hải sản" },
         price: 85000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
     ],
   },
@@ -402,14 +384,14 @@ export const menuData: Category[] = [
         name: { en: "Octopus with Spicy Sauce", vi: "Gỏi bạch tuộc sốt cay" },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "goi-muc-sot-cay",
         name: { en: "Squid with Spicy Sauce", vi: "Gỏi mực sốt cay" },
         price: 80000,
         image: null,
-        tags: ["spicy"],
+        tags: ["spicy" as MenuItemTag],
       },
       {
         id: "goi-bo-ca-phao",

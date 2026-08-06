@@ -1,7 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/utils/const";
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
 
 interface ReserveButtonProps
   extends React.ComponentProps<typeof Button> {
@@ -16,7 +16,7 @@ export default function ReserveButton({
   return (
     <Link to={ROUTES.BOOKING}>
       <Button
-        className={cn("bg-primary-gradient min-w-32", className)}
+        className={cn("hover:opacity-70 bg-primary-gradient min-w-32", className)}
         {...props}
       >
         {content}

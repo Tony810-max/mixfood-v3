@@ -1,28 +1,18 @@
-import { apiRequest } from "./api";
-
-export interface CreateReservationPayload {
-  name: string;
-  phone: string;
-  email?: string;
-  reservationDate: string;
-  reservationTime: string;
-  numberOfGuests: number;
-  note?: string;
-}
-
-export interface ReservationResponse {
-  message: string;
-  reservation: {
-    id: number;
-    status: "PENDING" | "CONFIRMED" | "CANCELLED";
-  };
-}
+import axios from "@/lib/axios";
+import {
+    CreateReservationPayload,
+    Reservation,
+    ReservationResponse
+} from "@/types";
 
 export const reservationService = {
-  create(payload: CreateReservationPayload) {
-    return apiRequest<ReservationResponse>("/reservations", {
-      method: "POST",
-      body: payload,
-    });
+  async create(payload: CreateReservationPayload): Promise<ReservationResponse> {
+    const response = await axios.post<ReservationResponse>("/reservations", payload);
+    return response.data;
+  },
+
+  async getMyReservations(): Promise<Reservation[]> {
+    const response = await axios.get<Reservation[]>("/reservations/my-reservations");
+    return response.data;
   },
 };

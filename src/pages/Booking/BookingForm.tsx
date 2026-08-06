@@ -4,78 +4,116 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useAuth } from "@/contexts/AuthContext"
 import { useLanguage } from "@/contexts/LanguageContext"
-import { getApiErrorMessage } from "@/services/api"
-import { reservationService } from "@/services/reservation.service"
+import { useCreateReservation } from "@/hooks/api/useReservations"
 import { ROUTES } from "@/utils/const"
+import { logger } from "@/utils/logger"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon, Clock, Mail, Phone, User, Users } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { toast } from "sonner"
 import { BookingFormValues, bookingSchema } from "./utils/bookingSchema"
-import { BOOKING_TIME_SLOTS, getGuestOptions } from "./utils/const"
 
 export const BookingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
   const { t } = useLanguage()
-  const guestOptions = getGuestOptions()
+  const { user } = useAuth()
+  const createReservation = useCreateReservation()
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const [minTime, setMinTime] = useState<string>("09:00")
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      guests: "",
+      name: user?.name || "",
+      phone: user?.phone || "",
+      email: user?.email || "",
+      date: new Date(),
+      guests: 1, // Number to match schema transformation
       specialRequests: "",
     },
   })
 
+  // Calculate initial minTime when component mounts
+  useEffect(() => {
+    const now = new Date()
+    const minReservationTime = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+    const hours = minReservationTime.getHours().toString().padStart(2, '0')
+    const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
+    setMinTime(`${hours}:${minutes}`)
+  }, [])
+
   const onSubmit = async (data: BookingFormValues) => {
     setIsSubmitting(true)
     try {
-      await reservationService.create({
+      logger.debug('Booking form submitted with data:', data)
+      
+      const payload = {
         name: data.name,
         phone: data.phone,
         email: data.email || undefined,
         reservationDate: data.date.toISOString(),
         reservationTime: data.time,
-        numberOfGuests: parseInt(data.guests),
+        numberOfGuests: Number(data.guests), // Convert to number for API
         note: data.specialRequests || undefined,
-      })
+        userId: user?.id,
+      }
       
-      toast.success("Đặt bàn thành công!", {
-        description: "Chúng tôi sẽ liên hệ với bạn sớm nhất để xác nhận.",
-      })
+      logger.debug('Sending reservation payload:', payload)
+      
+      await createReservation.mutateAsync(payload)
+      
       form.reset()
       navigate(ROUTES.BOOKING_SUCCESS)
     } catch (error) {
-      toast.error("Đặt bàn thất bại", {
-        description: getApiErrorMessage(error),
-      })
+      logger.error('Reservation creation failed:', error)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      form.setValue('date', date)
+      setIsCalendarOpen(false)
+      
+      // Calculate minimum time based on selected date
+      const now = new Date()
+      const selectedDate = new Date(date)
+      selectedDate.setHours(0, 0, 0, 0)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      if (selectedDate.getTime() === today.getTime()) {
+        // If today, minimum time is current time + 3 hours
+        const minReservationTime = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+        const hours = minReservationTime.getHours().toString().padStart(2, '0')
+        const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
+        setMinTime(`${hours}:${minutes}`)
+      } else {
+        // If future date, minimum time is opening time (09:00)
+        setMinTime("09:00")
+      }
     }
   }
 
   return (
     <Card className="border-amber-200 bg-white/90 backdrop-blur shadow-xl">
       <CardHeader className="bg-primary-gradient text-white rounded-t-lg">
-        <CardTitle className="text-2xl">{t.bookingFormTitle}</CardTitle>
-        <CardDescription className="text-amber-100">
+        <CardTitle className="text-xl md:text-2xl">{t.bookingFormTitle}</CardTitle>
+        <CardDescription className="text-amber-100 text-sm md:text-base">
           {t.bookingFormDesc}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="pt-4 md:pt-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -86,10 +124,10 @@ export const BookingForm = () => {
                       {t.fullName}
                     </FormLabel>
                     <FormControl>
-                      <Input 
+                      <Input
                         placeholder={t.fullNamePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500"
-                        {...field} 
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -107,10 +145,10 @@ export const BookingForm = () => {
                       {t.phoneNumber}
                     </FormLabel>
                     <FormControl>
-                      <Input 
+                      <Input
                         placeholder={t.phonePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500"
-                        {...field} 
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -129,10 +167,10 @@ export const BookingForm = () => {
                     {t.email}
                   </FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       placeholder={t.emailPlaceholder}
-                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500"
-                      {...field} 
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -140,22 +178,22 @@ export const BookingForm = () => {
               )}
             />
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
               <FormField
                 control={form.control}
                 name="date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="flex items-center gap-2">
+                    <FormLabel className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                       <CalendarIcon className="h-4 w-4" />
                       {t.bookingDate}
                     </FormLabel>
-                    <Popover>
+                    <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
-                            className={`w-full pl-3 text-left font-normal border-amber-200 focus:border-amber-500 focus:ring-amber-500 ${
+                            className={`w-full pl-3 text-left font-normal border-amber-200 focus:border-amber-500 focus:ring-amber-500 hover:bg-primary-gradient hover:text-white hover:border-transparent ${
                               !field.value && "text-muted-foreground"
                             }`}
                           >
@@ -164,7 +202,7 @@ export const BookingForm = () => {
                             ) : (
                               <span>{t.bookingSelectDate}</span>
                             )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            <CalendarIcon className="ml-auto h-4 w-4" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -172,9 +210,20 @@ export const BookingForm = () => {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
+                          onSelect={handleDateSelect}
+                          disabled={(date) => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return date < today;
+                          }}
                           initialFocus
+                          className="rounded-lg border-amber-200"
+                          classNames={{
+                            day: "h-9 w-9 p-0 font-normal aria-selected:bg-primary-gradient aria-selected:text-white hover:bg-primary-gradient hover:text-white transition-colors",
+                            day_today: "bg-primary-gradient text-white",
+                            day_selected: "bg-primary-gradient text-white hover:bg-primary-gradient hover:text-white",
+                            day_disabled: "text-muted-foreground opacity-50",
+                                  }}
                         />
                       </PopoverContent>
                     </Popover>
@@ -192,20 +241,19 @@ export const BookingForm = () => {
                       <Clock className="h-4 w-4" />
                       {t.bookingTime}
                     </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="border-amber-200 focus:border-amber-500 focus:ring-amber-500">
-                          <SelectValue placeholder={t.bookingSelectTime} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {BOOKING_TIME_SLOTS.map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {time}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Input
+                        type="time"
+                        min={minTime}
+                        max="21:50"
+                        placeholder={t.bookingTimePlaceholder}
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="text-xs text-amber-600">
+                      Giờ mở cửa: 09:00 - 21:50 (Đặt bàn trước ít nhất 3 tiếng)
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -221,20 +269,16 @@ export const BookingForm = () => {
                     <Users className="h-4 w-4" />
                     {t.numberOfGuests}
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="border-amber-200 focus:border-amber-500 focus:ring-amber-500">
-                        <SelectValue placeholder={t.bookingSelectGuests} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {guestOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="50"
+                      placeholder={t.bookingGuestsPlaceholder}
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -249,8 +293,8 @@ export const BookingForm = () => {
                   <FormControl>
                     <Textarea
                       placeholder={t.bookingSpecialRequestsPlaceholder}
-                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 resize-none"
-                      rows={4}
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 resize-none text-sm md:text-base"
+                      rows={3}
                       {...field}
                     />
                   </FormControl>
@@ -264,7 +308,7 @@ export const BookingForm = () => {
 
             <Button
               type="submit"
-              className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold py-6 text-lg"
+              className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold py-3 md:py-6 text-base md:text-lg min-h-[44px] md:min-h-[56px]"
               disabled={isSubmitting}
             >
               {isSubmitting ? t.bookingSubmitting : t.bookingSubmitButton}

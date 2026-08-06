@@ -1,18 +1,13 @@
+import { User } from '@/types';
+import { logger } from '@/utils/logger';
+import { authStorage } from '@/utils/storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: string;
-}
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string, remember: boolean) => Promise<void>;
-  logout: () => void;
+  setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,60 +19,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if user is logged in on mount
     try {
-      const token = localStorage.getItem('mixfood.access-token') || sessionStorage.getItem('mixfood.access-token');
+      console.log('[AuthContext] Initializing auth...');
+      const token = authStorage.getAccessToken();
+      console.log('[AuthContext] Token found:', !!token);
+      console.log('[AuthContext] Token value:', token ? `${token.substring(0, 20)}...` : 'none');
       if (token) {
-        const storedUser = localStorage.getItem('mixfood.user');
+        const storedUser = authStorage.getUser() as User | null;
+        console.log('[AuthContext] Stored user:', storedUser);
         if (storedUser) {
-          try {
-            setUser(JSON.parse(storedUser));
-          } catch (error) {
-            console.error('Failed to parse stored user:', error);
-          }
+          setUser(storedUser);
         }
       }
     } catch (error) {
-      console.error('Auth initialization error:', error);
+      console.error('[AuthContext] Auth initialization error:', error);
+      logger.error('Auth initialization error:', error);
     } finally {
+      console.log('[AuthContext] Setting isLoading to false');
       setIsLoading(false);
     }
   }, []);
 
-  const login = async (email: string, password: string, remember: boolean) => {
-    try {
-      const { authService } = await import('@/services/auth.service');
-      const response = await authService.login({ email, password }, remember);
-      
-      // Use user data from backend response if available, otherwise fallback to email-based name
-      const userData: User = response.user || {
-        id: 1,
-        email,
-        name: email.split('@')[0],
-        role: 'USER',
-      };
-      
-      setUser(userData);
-      localStorage.setItem('mixfood.user', JSON.stringify(userData));
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
-  };
-
-  const logout = () => {
-    try {
-      localStorage.removeItem('mixfood.access-token');
-      localStorage.removeItem('mixfood.refresh-token');
-      sessionStorage.removeItem('mixfood.access-token');
-      sessionStorage.removeItem('mixfood.refresh-token');
-      setUser(null);
-      localStorage.removeItem('mixfood.user');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
+  // Add effect to monitor auth state changes
+  useEffect(() => {
+    console.log('[AuthContext] Auth state changed:', { user: !!user, isAuthenticated: !!user, isLoading });
+  }, [user, isLoading]);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, setUser }}>
       {children}
     </AuthContext.Provider>
   );
@@ -88,5 +56,6 @@ export const useAuth = () => {
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+  console.log('[useAuth] Returning context:', { isAuthenticated: context.isAuthenticated, isLoading: context.isLoading });
   return context;
 };
