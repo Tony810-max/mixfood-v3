@@ -1,17 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { type ChangePasswordFormData } from '@/lib/validation';
 import { Lock } from 'lucide-react';
 
 interface ChangePasswordFormProps {
-  formData: {
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-  };
-  errors: Record<string, string>;
+  formData: ChangePasswordFormData;
+  errors: Partial<Record<keyof ChangePasswordFormData, string>>;
   isLoading: boolean;
-  onInputChange: (field: string, value: string) => void;
+  onInputChange: (field: keyof ChangePasswordFormData, value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   labels: {
     currentPassword: string;
@@ -51,8 +48,9 @@ export const ChangePasswordForm = ({
             value={formData.currentPassword}
             onChange={(e) => onInputChange('currentPassword', e.target.value)}
             placeholder={labels.currentPasswordPlaceholder}
-            className="border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
+            className={`border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.currentPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
+          {errors.currentPassword && <p className="text-sm text-red-500">{errors.currentPassword}</p>}
         </div>
 
         <div className="space-y-2">
@@ -63,8 +61,9 @@ export const ChangePasswordForm = ({
             value={formData.newPassword}
             onChange={(e) => onInputChange('newPassword', e.target.value)}
             placeholder={labels.newPasswordPlaceholder}
-            className="border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
+            className={`border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.newPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
+          {errors.newPassword && <p className="text-sm text-red-500">{errors.newPassword}</p>}
         </div>
 
         <div className="space-y-2">
@@ -75,15 +74,10 @@ export const ChangePasswordForm = ({
             value={formData.confirmPassword}
             onChange={(e) => onInputChange('confirmPassword', e.target.value)}
             placeholder={labels.confirmPasswordPlaceholder}
-            className="border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
+            className={`border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
+          {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
         </div>
-
-        {errors.general && (
-          <div className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
-            {errors.general}
-          </div>
-        )}
 
         <Button
           type="submit"

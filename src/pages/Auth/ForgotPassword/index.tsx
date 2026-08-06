@@ -22,10 +22,12 @@ const ForgotPasswordPage = () => {
     confirmPassword,
     isLoading,
     error,
+    errors,
     setEmail,
     setOtp,
     setNewPassword,
     setConfirmPassword,
+    setStep,
     handleSendOTP,
     handleVerifyOTP,
     handleResetPassword,
@@ -212,7 +214,7 @@ const ForgotPasswordPage = () => {
               id="newPassword"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              className={`pl-10 pr-10 h-11 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 pr-10 h-11 ${errors.newPassword || error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               disabled={isLoading}
@@ -225,6 +227,7 @@ const ForgotPasswordPage = () => {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
+          {errors.newPassword && <p className="text-sm text-red-500">{errors.newPassword}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirmPassword" className="text-sm font-medium">
@@ -236,7 +239,7 @@ const ForgotPasswordPage = () => {
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
-              className={`pl-10 pr-10 h-11 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 pr-10 h-11 ${errors.confirmPassword || error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
@@ -249,7 +252,7 @@ const ForgotPasswordPage = () => {
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
         </div>
         <div className="flex gap-3">
           <Button

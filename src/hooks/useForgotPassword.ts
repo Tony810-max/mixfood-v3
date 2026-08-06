@@ -1,3 +1,4 @@
+import { forgotPasswordSchema, type ForgotPasswordFormData } from '@/lib/validation';
 import { authService } from '@/services/auth.service';
 import { showErrorToast, showSuccessToast } from '@/utils/toastHelpers';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ interface UseForgotPasswordReturn {
   confirmPassword: string;
   isLoading: boolean;
   error: string;
+  errors: Partial<Record<keyof ForgotPasswordFormData, string>>;
   setEmail: (email: string) => void;
   setOtp: (otp: string) => void;
   setNewPassword: (password: string) => void;
@@ -32,12 +34,19 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState<Partial<Record<keyof ForgotPasswordFormData, string>>>({});
 
   const handleSendOTP = async () => {
-    if (!email) {
-      setError('Vui lòng nhập email');
-      showErrorToast('Vui lòng nhập email');
-      return;
+    // Validate email using zod
+    const emailValidation = forgotPasswordSchema.safeParse({ email, otp: '123456', newPassword: 'Test123', confirmPassword: 'Test123' });
+
+    if (!emailValidation.success) {
+      const emailError = emailValidation.error.errors.find(e => e.path[0] === 'email');
+      if (emailError) {
+        setError(emailError.message);
+        showErrorToast(emailError.message);
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -89,26 +98,33 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
   };
 
   const handleResetPassword = async () => {
-    if (!newPassword || !confirmPassword) {
-      setError('Vui lòng nhập mật khẩu mới');
-      showErrorToast('Vui lòng nhập mật khẩu mới');
-      return;
-    }
+    // Validate form using zod
+    const formData: ForgotPasswordFormData = {
+      email,
+      otp,
+      newPassword,
+      confirmPassword,
+    };
 
-    if (newPassword !== confirmPassword) {
-      setError('Mật khẩu không khớp');
-      showErrorToast('Mật khẩu không khớp');
-      return;
-    }
+    const result = forgotPasswordSchema.safeParse(formData);
 
-    if (newPassword.length < 6) {
-      setError('Mật khẩu phải có ít nhất 6 ký tự');
-      showErrorToast('Mật khẩu phải có ít nhất 6 ký tự');
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof ForgotPasswordFormData, string>> = {};
+      result.error.errors.forEach((error) => {
+        const field = error.path[0] as keyof ForgotPasswordFormData;
+        fieldErrors[field] = error.message;
+      });
+      setErrors(fieldErrors);
+      const firstError = result.error.errors[0];
+      const errorMessage = firstError?.message || 'Validation failed';
+      setError(errorMessage);
+      showErrorToast(errorMessage);
       return;
     }
 
     setIsLoading(true);
     setError('');
+    setErrors({});
 
     try {
       await authService.resetPassword(email, otp, newPassword);
@@ -146,21 +162,25 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
   const handleSetEmail = (newEmail: string) => {
     setEmail(newEmail);
     if (error) setError('');
+    if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
   };
 
   const handleSetOtp = (newOtp: string) => {
     setOtp(newOtp);
     if (error) setError('');
+    if (errors.otp) setErrors(prev => ({ ...prev, otp: '' }));
   };
 
   const handleSetNewPassword = (newPassword: string) => {
     setNewPassword(newPassword);
     if (error) setError('');
+    if (errors.newPassword) setErrors(prev => ({ ...prev, newPassword: '' }));
   };
 
   const handleSetConfirmPassword = (confirmPassword: string) => {
     setConfirmPassword(confirmPassword);
     if (error) setError('');
+    if (errors.confirmPassword) setErrors(prev => ({ ...prev, confirmPassword: '' }));
   };
 
   const reset = () => {
@@ -170,6 +190,7 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
     setNewPassword('');
     setConfirmPassword('');
     setError('');
+    setErrors({});
   };
 
   return {
@@ -180,6 +201,7 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
     confirmPassword,
     isLoading,
     error,
+    errors,
     setEmail: handleSetEmail,
     setOtp: handleSetOtp,
     setNewPassword: handleSetNewPassword,

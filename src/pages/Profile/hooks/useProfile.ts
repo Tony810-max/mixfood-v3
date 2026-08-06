@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLogout } from '@/hooks/api/useAuth';
 import { useChangePassword, useUpdateProfile } from '@/hooks/api/useUser';
+import { changePasswordSchema, type ChangePasswordFormData } from '@/lib/validation';
 import { useState } from 'react';
 
 export const useProfile = () => {
@@ -22,12 +23,12 @@ export const useProfile = () => {
   const [updateInfoErrors, setUpdateInfoErrors] = useState<Record<string, string>>({});
 
   // Change Password Form State
-  const [changePasswordForm, setChangePasswordForm] = useState({
+  const [changePasswordForm, setChangePasswordForm] = useState<ChangePasswordFormData>({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const [changePasswordErrors, setChangePasswordErrors] = useState<Record<string, string>>({});
+  const [changePasswordErrors, setChangePasswordErrors] = useState<Partial<Record<keyof ChangePasswordFormData, string>>>({});
 
   const handleUpdateInfo = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,13 +66,16 @@ export const useProfile = () => {
     e.preventDefault();
     setChangePasswordErrors({});
 
-    if (!changePasswordForm.currentPassword || !changePasswordForm.newPassword || !changePasswordForm.confirmPassword) {
-      setChangePasswordErrors({ general: t.validationRequired });
-      return;
-    }
+    // Validate form using zod
+    const result = changePasswordSchema.safeParse(changePasswordForm);
 
-    if (changePasswordForm.newPassword !== changePasswordForm.confirmPassword) {
-      setChangePasswordErrors({ general: t.registerPasswordMismatch });
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof ChangePasswordFormData, string>> = {};
+      result.error.errors.forEach((error) => {
+        const field = error.path[0] as keyof ChangePasswordFormData;
+        fieldErrors[field] = error.message;
+      });
+      setChangePasswordErrors(fieldErrors);
       return;
     }
 
@@ -81,7 +85,7 @@ export const useProfile = () => {
         currentPassword: changePasswordForm.currentPassword,
         newPassword: changePasswordForm.newPassword,
       });
-      
+
       setChangePasswordForm({
         currentPassword: "",
         newPassword: "",
