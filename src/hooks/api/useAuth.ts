@@ -28,8 +28,13 @@ export const useLogin = () => {
       console.log('[useLogin] onError called with error:', error);
       logger.error('Login failed', error);
       const errorMessage = getLoginErrorMessage(error);
-      console.log('[useLogin] Showing error toast:', errorMessage);
-      showErrorToast(errorMessage);
+      console.log('[useLogin] Error message:', errorMessage);
+      
+      // Only show toast for non-blocked errors - blocked errors are handled by BlockedUserToast component
+      if (!errorMessage.toLowerCase().includes('blocked')) {
+        showErrorToast(errorMessage);
+      }
+      
       // Don't invalidate queries on error to prevent unnecessary reloads
       console.log('[useLogin] Skipping query invalidation on error');
     },
@@ -46,6 +51,12 @@ export const getLoginErrorMessage = (error: unknown): string => {
   const message = apiError.message ||
                   apiError.response?.data?.message ||
                   'Đăng nhập thất bại';
+
+  // Check for blocked user
+  if (message.toLowerCase().includes('blocked')) {
+    localStorage.setItem('mixfood.showBlockedToast', 'true');
+    return 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ hỗ trợ để được trợ giúp.';
+  }
 
   // Provide user-friendly messages based on common errors
   // For security reasons, use generic message for both invalid email and password
