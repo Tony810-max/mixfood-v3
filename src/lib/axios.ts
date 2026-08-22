@@ -90,16 +90,48 @@ axiosInstance.interceptors.response.use(
       message: error.message,
     });
 
+    // Check if user is blocked
+    const blockCheckMessage = error.response?.data
+      ? (error.response.data as { message?: string | string[] }).message
+      : error.message;
+
+    console.log('[Axios] Checking for blocked user:', blockCheckMessage);
+    
+    const messageString = Array.isArray(blockCheckMessage) ? blockCheckMessage.join(' ') : String(blockCheckMessage);
+    
+    if (messageString.toLowerCase().includes('blocked')) {
+      console.log('[Axios] User is blocked, forcing logout');
+      // Set flag for toast notification (BlockedUserToast component will handle showing it)
+      localStorage.setItem('mixfood.showBlockedToast', 'true');
+
+      // Clear session and redirect to login
+      authStorage.clearAuth();
+      authStorage.removeUser();
+
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+
+      return Promise.reject(new ApiError(messageString, 401));
+    }
+
     // Handle 401 Unauthorized - try to refresh token
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Skip refresh token for auth endpoints (login, register, etc.) to avoid redirecting on invalid credentials
       if (originalRequest.url?.includes('/auth/')) {
         console.log('[Axios] 401 error on auth endpoint, skipping token refresh:', originalRequest.url);
-        const errorMessage = error.response?.data 
+        const authErrorMessage = error.response?.data
           ? (error.response.data as { message?: string | string[] }).message
           : error.message;
+        
+        // Check if it's a blocked user message (in case the first check missed it)
+        const authMessageString = Array.isArray(authErrorMessage) ? authErrorMessage.join(' ') : String(authErrorMessage);
+        if (authMessageString.toLowerCase().includes('blocked')) {
+          localStorage.setItem('mixfood.showBlockedToast', 'true');
+        }
+        
         const apiError = new ApiError(
-          typeof errorMessage === 'string' ? errorMessage : ERROR_MESSAGES.GENERIC_ERROR,
+          authMessageString || ERROR_MESSAGES.GENERIC_ERROR,
           401
         );
         return Promise.reject(apiError);
@@ -176,12 +208,12 @@ axiosInstance.interceptors.response.use(
     }
 
     // Handle other errors
-    const errorMessage = error.response?.data 
+    const finalErrorMessage = error.response?.data
       ? (error.response.data as { message?: string | string[] }).message
       : error.message;
 
     const apiError = new ApiError(
-      typeof errorMessage === 'string' ? errorMessage : ERROR_MESSAGES.GENERIC_ERROR,
+      typeof finalErrorMessage === 'string' ? finalErrorMessage : ERROR_MESSAGES.GENERIC_ERROR,
       error.response?.status || 500
     );
 

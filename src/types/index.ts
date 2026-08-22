@@ -10,6 +10,8 @@ export interface User {
   name: string;
   role: string;
   phone?: string;
+  status?: string;
+  createdAt?: string;
 }
 
 export interface LoginPayload {

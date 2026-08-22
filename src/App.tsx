@@ -1,4 +1,5 @@
 import { ProtectedRoute } from "@/components/auth";
+import { BlockedUserToast } from "@/components/common/BlockedUserToast";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import RouteProgress from "@/components/common/RouteProgress";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -30,6 +31,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster  />
             <Sonner />
+            <BlockedUserToast />
             <BrowserRouter>
               <RouteProgress />
               <Routes>

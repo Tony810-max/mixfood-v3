@@ -1,3 +1,4 @@
+import axios from '@/lib/axios';
 import { User } from '@/types';
 import { logger } from '@/utils/logger';
 import { authStorage } from '@/utils/storage';
@@ -17,26 +18,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on mount
-    try {
-      console.log('[AuthContext] Initializing auth...');
-      const token = authStorage.getAccessToken();
-      console.log('[AuthContext] Token found:', !!token);
-      console.log('[AuthContext] Token value:', token ? `${token.substring(0, 20)}...` : 'none');
-      if (token) {
-        const storedUser = authStorage.getUser() as User | null;
-        console.log('[AuthContext] Stored user:', storedUser);
-        if (storedUser) {
-          setUser(storedUser);
+    // Check if user is logged in on mount by validating token with server
+    const verifyAuth = async () => {
+      try {
+        console.log('[AuthContext] Initializing auth...');
+        const token = authStorage.getAccessToken();
+        console.log('[AuthContext] Token found:', !!token);
+        console.log('[AuthContext] Token value:', token ? `${token.substring(0, 20)}...` : 'none');
+        
+        if (token) {
+          console.log('[AuthContext] Validating token with server...');
+          const response = await axios.get<{ user: User }>('/auth/me');
+          console.log('[AuthContext] User validated:', response.data.user);
+          
+          // Update user data from server
+          setUser(response.data.user);
+          
+          // Update stored user with fresh data
+          const location: 'local' | 'session' = localStorage.getItem('mixfood.access-token') ? 'local' : 'session';
+          authStorage.setUser(response.data.user, location);
         }
+      } catch (error) {
+        console.error('[AuthContext] Auth validation error:', error);
+        logger.error('Auth validation error:', error);
+        
+        // Check if user is blocked
+        const apiError = error as { response?: { data?: { message?: string | string[] } } };
+        const errorMessage = apiError.response?.data?.message || 
+                             (error as Error).message || 
+                             'Authentication failed';
+        
+        console.log('[AuthContext] Error message:', errorMessage);
+        console.log('[AuthContext] Error message type:', typeof errorMessage);
+        
+        // Handle both string and array message formats
+        const messageString = Array.isArray(errorMessage) ? errorMessage.join(' ') : String(errorMessage);
+        
+        if (messageString.toLowerCase().includes('blocked')) {
+          console.log('[AuthContext] User is blocked, setting flag for toast');
+          // Set localStorage flag to show toast after app is fully loaded
+          localStorage.setItem('mixfood.showBlockedToast', 'true');
+        }
+        
+        // Token invalid or user blocked - clear session
+        console.log('[AuthContext] Clearing invalid session');
+        authStorage.clearAuth();
+        setUser(null);
+      } finally {
+        console.log('[AuthContext] Setting isLoading to false');
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('[AuthContext] Auth initialization error:', error);
-      logger.error('Auth initialization error:', error);
-    } finally {
-      console.log('[AuthContext] Setting isLoading to false');
-      setIsLoading(false);
-    }
+    };
+
+    verifyAuth();
   }, []);
 
   // Add effect to monitor auth state changes
