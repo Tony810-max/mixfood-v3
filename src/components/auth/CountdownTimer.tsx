@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -17,6 +18,7 @@ export const CountdownTimer = ({
   isResending = false,
   className,
 }: CountdownTimerProps) => {
+  const { t } = useLanguage();
   const [seconds, setSeconds] = useState(initialSeconds);
   const [isExpired, setIsExpired] = useState(false);
 
@@ -61,7 +63,7 @@ export const CountdownTimer = ({
           animate={{ opacity: 1 }}
           className="text-sm text-muted-foreground"
         >
-          Gửi lại mã sau{' '}
+          {t.countdownResendIn}{' '}
           <span className="font-semibold text-orange-600 dark:text-orange-400">
             {formatTime(seconds)}
           </span>
@@ -82,12 +84,12 @@ export const CountdownTimer = ({
             {isResending ? (
               <>
                 <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                Đang gửi...
+                {t.countdownSending}
               </>
             ) : (
               <>
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Gửi lại mã
+                {t.countdownResend}
               </>
             )}
           </Button>

@@ -47,6 +47,7 @@ const ProfilePage = () => {
               onNavigateToReservations={handleNavigateToReservations}
               onLogout={handleLogout}
               labels={{
+                accountSettings: t.profileAccountSettings,
                 profileUpdateInfo: t.profileUpdateInfo,
                 profileChangePassword: t.profileChangePassword,
                 reservationsTitle: t.reservationsTitle,
@@ -74,6 +75,7 @@ const ProfilePage = () => {
                     onInputChange={(field, value) => setUpdateInfoForm(prev => ({ ...prev, [field]: value }))}
                     onSubmit={handleUpdateInfo}
                     labels={{
+                      title: t.profilePersonalInfoTitle,
                       fullName: t.registerFullName,
                       email: t.email,
                       phone: t.phoneNumber,
@@ -100,13 +102,14 @@ const ProfilePage = () => {
                     onInputChange={(field, value) => setChangePasswordForm(prev => ({ ...prev, [field]: value }))}
                     onSubmit={handleChangePassword}
                     labels={{
+                      title: t.profileChangePasswordTitle,
                       currentPassword: t.profileCurrentPassword,
                       newPassword: t.profileNewPassword,
-                      confirmPassword: t.registerConfirmPassword,
+                      confirmPassword: t.profileConfirmNewPassword,
                       currentPasswordPlaceholder: t.profileCurrentPasswordPlaceholder,
                       newPasswordPlaceholder: t.registerPasswordPlaceholder,
                       confirmPasswordPlaceholder: t.registerConfirmPasswordPlaceholder,
-                      save: t.profileUpdateButton,
+                      save: t.profileChangePasswordButton,
                       saving: t.profileUpdating,
                     }}
                   />

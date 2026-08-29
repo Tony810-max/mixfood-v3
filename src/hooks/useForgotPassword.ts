@@ -26,7 +26,19 @@ interface UseForgotPasswordReturn {
   reset: () => void;
 }
 
-export const useForgotPassword = (): UseForgotPasswordReturn => {
+export interface ForgotPasswordMessages {
+  sendSuccess: string;
+  sendError: string;
+  resendSuccess: string;
+  resendError: string;
+  otpLengthError: string;
+  otpVerifySuccess: string;
+  otpVerifyError: string;
+  resetSuccess: string;
+  resetError: string;
+}
+
+export const useForgotPassword = (messages: ForgotPasswordMessages): UseForgotPasswordReturn => {
   const [step, setStep] = useState<ForgotPasswordStep>('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -55,10 +67,10 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
     try {
       await authService.sendForgotPasswordOTP(email);
       setStep('otp');
-      showSuccessToast('Đã gửi mã OTP đến email của bạn');
+      showSuccessToast(messages.sendSuccess);
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
-      const errorMessage = error.response?.data?.message || 'Không thể gửi OTP. Vui lòng thử lại.';
+      const errorMessage = error.response?.data?.message || messages.sendError;
       setError(errorMessage);
       showErrorToast(errorMessage);
     } finally {
@@ -68,8 +80,8 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
 
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) {
-      setError('Vui lòng nhập mã OTP 6 số');
-      showErrorToast('Vui lòng nhập mã OTP 6 số');
+      setError(messages.otpLengthError);
+      showErrorToast(messages.otpLengthError);
       return;
     }
 
@@ -81,15 +93,15 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
       
       if (response.valid) {
         setStep('newPassword');
-        showSuccessToast('Xác thực OTP thành công');
+        showSuccessToast(messages.otpVerifySuccess);
       } else {
-        const errorMessage = response.message || 'Mã OTP không hợp lệ hoặc đã hết hạn';
+        const errorMessage = response.message || messages.otpVerifyError;
         setError(errorMessage);
         showErrorToast(errorMessage);
       }
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
-      const errorMessage = error.response?.data?.message || 'Mã OTP không hợp lệ. Vui lòng thử lại.';
+      const errorMessage = error.response?.data?.message || messages.otpVerifyError;
       setError(errorMessage);
       showErrorToast(errorMessage);
     } finally {
@@ -129,10 +141,10 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
     try {
       await authService.resetPassword(email, otp, newPassword);
       setStep('success');
-      showSuccessToast('Đặt lại mật khẩu thành công');
+      showSuccessToast(messages.resetSuccess);
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
-      const errorMessage = error.response?.data?.message || 'Không thể đặt lại mật khẩu. Vui lòng thử lại.';
+      const errorMessage = error.response?.data?.message || messages.resetError;
       setError(errorMessage);
       showErrorToast(errorMessage);
     } finally {
@@ -147,10 +159,10 @@ export const useForgotPassword = (): UseForgotPasswordReturn => {
     try {
       await authService.sendForgotPasswordOTP(email);
       setOtp('');
-      showSuccessToast('Đã gửi lại mã OTP');
+      showSuccessToast(messages.resendSuccess);
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
-      const errorMessage = error.response?.data?.message || 'Không thể gửi lại OTP. Vui lòng thử lại.';
+      const errorMessage = error.response?.data?.message || messages.resendError;
       setError(errorMessage);
       showErrorToast(errorMessage);
     } finally {

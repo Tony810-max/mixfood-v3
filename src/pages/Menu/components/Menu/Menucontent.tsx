@@ -41,7 +41,7 @@ const MenuContent = () => {
             <div className="text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
               <p className="mt-4 text-muted-foreground">
-                {lang === "vn" ? "Đang tải thực đơn..." : "Loading menu..."}
+                {t.menuLoading}
               </p>
             </div>
           </div>
@@ -58,13 +58,13 @@ const MenuContent = () => {
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <p className="text-destructive mb-4">
-                {lang === "vn" ? "Có lỗi xảy ra khi tải thực đơn" : "Error loading menu"}
+                {t.menuLoadError}
               </p>
               <button
                 onClick={() => window.location.reload()}
                 className="text-primary hover:underline"
               >
-                {lang === "vn" ? "Thử lại" : "Try again"}
+                {t.menuRetry}
               </button>
             </div>
           </div>
@@ -94,7 +94,7 @@ const MenuContent = () => {
                 transition={{ duration: 0.6 }}
                 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-background mb-2 md:mb-3"
               >
-                {lang === "vn" ? "Thực Đơn" : "Our Menu"}
+                {t.menuTitle}
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -102,9 +102,7 @@ const MenuContent = () => {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="font-body text-background/70 text-base md:text-lg "
               >
-                {lang === "vn"
-                  ? "Khám phá hương vị Thái Lan đích thực với nguyên liệu tươi ngon nhất"
-                  : "Discover authentic Thai flavors crafted with the freshest ingredients"}
+                {t.menuSubtitle}
               </motion.p>
             </div>
           </div>
@@ -125,7 +123,7 @@ const MenuContent = () => {
         {filteredCategories?.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
-              {lang === "vn" ? "Không tìm thấy món ăn nào" : "No dishes found"}
+              {t.menuNoDishes}
             </p>
           </div>
         )}
@@ -141,12 +139,10 @@ const MenuContent = () => {
           className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-background p-6 md:p-10 lg:p-14 text-center"
         >
           <h2 className="font-serif text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
-            {lang === "vn" ? "Sẵn sàng thưởng thức?" : "Ready to dine?"}
+            {t.menuReadyToDine}
           </h2>
           <p className="text-muted-foreground mb-6 md:mb-8 max-w-md mx-auto text-sm md:text-base">
-            {lang === "vn"
-              ? "Đặt bàn ngay để trải nghiệm ẩm thực Thái Lan đích thực tại Mix Food."
-              : "Reserve your table now for an authentic Thai dining experience at Mix Food."}
+            {t.menuReadyToDineDesc}
           </p>
           <a
             href={ROUTES.BOOKING}

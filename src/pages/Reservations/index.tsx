@@ -30,7 +30,7 @@ const ReservationsPage = () => {
     setIsRefreshDisabled(true);
     setHasAnimated(false);
     refreshReservations();
-    toast.success("Đã làm mới danh sách đặt bàn", {
+    toast.success(t.reservationsRefreshSuccess, {
       duration: 2000,
     });
     

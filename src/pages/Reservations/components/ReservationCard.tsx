@@ -6,6 +6,7 @@ import { Calendar, Clock, Phone, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ReservationStatusBadge } from './ReservationStatusBadge';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ReservationCardProps {
   reservation: Reservation;
@@ -24,6 +25,7 @@ interface ReservationCardProps {
 
 export const ReservationCard = ({ reservation, index, getStatusLabel, labels }: ReservationCardProps) => {
   const { formatDate } = useDateFormat();
+  const { t } = useLanguage();
 
   return (
     <motion.div
@@ -110,7 +112,7 @@ export const ReservationCard = ({ reservation, index, getStatusLabel, labels }: 
                 size="sm"
                 className="flex-1 lg:flex-none text-red-600 hover:text-white hover:bg-red-500 dark:hover:bg-red-900/20"
                 onClick={() => {
-                  toast.info("Tính năng hủy đặt bàn đang được phát triển");
+                  toast.info(t.reservationCancelComingSoon);
                 }}
               >
                 {labels.cancel}

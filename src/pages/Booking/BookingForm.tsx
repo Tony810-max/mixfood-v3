@@ -252,7 +252,7 @@ export const BookingForm = () => {
                       />
                     </FormControl>
                     <FormDescription className="text-xs text-amber-600">
-                      Giờ mở cửa: 09:00 - 21:50 (Đặt bàn trước ít nhất 3 tiếng)
+                      {t.bookingTimeHelp}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

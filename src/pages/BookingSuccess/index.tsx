@@ -1,11 +1,14 @@
 import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { INFORMATION_RESTAURANT } from "@/utils/const";
 
 const BookingSuccess = () => {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 flex flex-col">
       <Header />
@@ -56,7 +59,7 @@ const BookingSuccess = () => {
               transition={{ delay: 0.3 }}
               className="text-3xl font-bold text-gray-900 mb-3"
             >
-              Đặt Bàn Thành Công!
+              {t.bookingSuccessTitle}
             </motion.h1>
             
             <motion.p
@@ -65,9 +68,8 @@ const BookingSuccess = () => {
               transition={{ delay: 0.4 }}
               className="text-gray-600 mb-8"
             >
-              Cảm ơn bạn đã đặt bàn tại Mix Food. Chúng tôi sẽ liên hệ với bạn sớm nhất để xác nhận đặt bàn.
-            </motion.p>
-            
+              {t.bookingSuccessMessage}
+            </motion.p>            
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -76,13 +78,13 @@ const BookingSuccess = () => {
             >
               <Link to={ROUTES.HOME}>
                 <Button className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold h-12 shadow-lg hover:shadow-xl transition-shadow">
-                  Về Trang Chủ
+                  {t.bookingReturnHome}
                 </Button>
               </Link>
               
               <Link to={ROUTES.MENU}>
                 <Button variant="outline" className="w-full border-orange-200 text-orange-600 hover:bg-orange-50 font-semibold h-12">
-                  Xem Menu
+                  {t.bookingViewMenu}
                 </Button>
               </Link>
             </motion.div>
@@ -93,9 +95,9 @@ const BookingSuccess = () => {
               transition={{ delay: 0.6 }}
               className="mt-8 pt-6 border-t border-gray-200"
             >
-              <p className="text-sm text-gray-500 mb-2">Cần hỗ trợ?</p>
+              <p className="text-sm text-gray-500 mb-2">{t.bookingNeedHelp}</p>
               <p className="text-sm text-gray-600">
-                Gọi cho chúng tôi tại <a href="tel:0905473728" className="font-semibold text-orange-600 hover:underline">0905 473 728</a>
+                {t.bookingCallUs} <a href={`tel:${INFORMATION_RESTAURANT.phone.replace(/\s/g, "")}`} className="font-semibold text-orange-600 hover:underline">{INFORMATION_RESTAURANT.phone}</a>
               </p>
             </motion.div>
           </div>

@@ -8,6 +8,7 @@ interface ProfileSidebarProps {
   onNavigateToReservations: () => void;
   onLogout: () => void;
   labels: {
+    accountSettings: string;
     profileUpdateInfo: string;
     profileChangePassword: string;
     reservationsTitle: string;
@@ -32,9 +33,8 @@ export const ProfileSidebar = ({
       <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-6 sticky top-24">
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
           <Shield className="h-5 w-5 text-orange-500" />
-          Account Settings
-        </h3>
-        <nav className="space-y-2">
+          {labels.accountSettings}
+        </h3>        <nav className="space-y-2">
           <Button
             variant={activeSection === "info" ? "default" : "ghost"}
             className={`w-full justify-start h-12 transition-all duration-300 ${

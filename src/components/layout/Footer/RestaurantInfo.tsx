@@ -1,7 +1,9 @@
 import { SOCIAL_LINKS } from "@/utils/const";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 
 const RestaurantInfo = () => {
+  const { t } = useLanguage();
   const socialLinks = SOCIAL_LINKS.map(link => ({
     ...link,
     icon: link.name === "Facebook" ? Facebook : 
@@ -13,8 +15,7 @@ const RestaurantInfo = () => {
     <div className="space-y-3 md:space-y-4">
       <h3 className="text-lg md:text-xl font-bold text-red-500">Mix Food</h3>
       <p className="text-gray-300 text-xs md:text-sm">
-        Ẩm thực Thái chính thống tại Đà Nẵng. Thưởng thức hương vị đích
-        thực từ Thái Lan với các món ăn đặc sắc.
+        {t.footerAboutText}
       </p>
       <div className="flex space-x-3">
         {socialLinks.map((social) => {

@@ -11,12 +11,12 @@ interface SearchContentProps {
 }
 
 export default function SearchContent({ onSearchChange }: SearchContentProps) {
-    const { lang } = useLanguage()
+    const { t } = useLanguage()
 
     return (
         <InputGroup className="h-10 rounded-xl">
             <InputGroupInput 
-                placeholder={lang === "vn" ? "Tìm kiếm món ăn..." : "Search dishes..."} 
+                placeholder={t.menuSearchPlaceholder} 
                 className="focus-visible:ring-offset-0 focus-visible:border-input"
                 onChange={(e) => onSearchChange?.(e.target.value)}
             />

@@ -14,6 +14,7 @@ interface UpdateProfileFormProps {
   onInputChange: (field: string, value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   labels: {
+    title: string;
     fullName: string;
     email: string;
     phone: string;
@@ -39,7 +40,7 @@ export const UpdateProfileForm = ({
         <div className="p-2 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 rounded-lg">
           <User className="h-5 w-5 text-orange-600 dark:text-orange-400" />
         </div>
-        <h2 className="text-xl font-semibold text-foreground">Personal Information</h2>
+        <h2 className="text-xl font-semibold text-foreground">{labels.title}</h2>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">

@@ -7,7 +7,7 @@ const ContactInfo = () => {
 
   return (
     <div className="space-y-3 md:space-y-4">
-      <h4 className="text-base md:text-lg font-semibold">Liên hệ</h4>
+      <h4 className="text-base md:text-lg font-semibold">{t.footerContactUs}</h4>
       <div className="space-y-2 md:space-y-3">
         <div className="flex items-start space-x-2 md:space-x-3 text-gray-300 text-xs md:text-sm">
           <MapPin className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />

@@ -8,7 +8,7 @@ export const BookingRules = () => {
 
   return (
     <div className="mb-8">
-      <h3 className="text-lg font-semibold text-amber-900 mb-4">Quy định đặt bàn</h3>
+      <h3 className="text-lg font-semibold text-amber-900 mb-4">{t.bookingRulesTitle}</h3>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {bookingRules.map((rule, index) => (
           <Card key={index} className="border-amber-200 bg-amber-50/50 backdrop-blur">

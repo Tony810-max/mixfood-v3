@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Calendar, Shield, User } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProfileHeaderProps {
   user: {
@@ -9,6 +10,7 @@ interface ProfileHeaderProps {
 }
 
 export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
+  const { t } = useLanguage();
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 dark:from-orange-500/5 dark:via-amber-500/5 dark:to-orange-500/5" />
@@ -47,7 +49,7 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
           >
             <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 bg-clip-text text-transparent">
-                {user?.name || "User"}
+                {user?.name || t.headerUser}
               </h1>
               <div className="px-3 py-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold rounded-full shadow-md">
                 PRO
@@ -57,11 +59,11 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-orange-500" />
-                <span>Member since 2024</span>
+                <span>{t.profileMemberSince} 2024</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-orange-500" />
-                <span>Verified Account</span>
+                <span>{t.profileVerifiedAccount}</span>
               </div>
             </div>
           </motion.div>
@@ -75,11 +77,11 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
           >
             <div className="text-center px-6 py-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-orange-200 dark:border-orange-900/50">
               <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">12</div>
-              <div className="text-xs text-muted-foreground">Orders</div>
+              <div className="text-xs text-muted-foreground">{t.profileOrders}</div>
             </div>
             <div className="text-center px-6 py-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-orange-200 dark:border-orange-900/50">
               <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">4.8</div>
-              <div className="text-xs text-muted-foreground">Rating</div>
+              <div className="text-xs text-muted-foreground">{t.profileRating}</div>
             </div>
           </motion.div>
         </motion.div>

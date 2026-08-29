@@ -30,7 +30,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
       <button
         className="md:hidden text-foreground p-2 -mr-2 rounded-lg hover:bg-secondary/80 transition-colors active:scale-95"
         onClick={() => setMobileOpen(!mobileOpen)}
-        aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        aria-label={mobileOpen ? t.ariaMenuClose : t.ariaMenuOpen}
       >
         {mobileOpen ? <X size={28} /> : <Menu size={28} />}
       </button>
@@ -70,7 +70,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                 <button
                   onClick={() => setMobileOpen(false)}
                   className="p-3 rounded-full bg-secondary hover:bg-secondary/80 transition-colors active:scale-95"
-                  aria-label="Close menu"
+                  aria-label={t.ariaMenuClose}
                 >
                   <X size={24} />
                 </button>

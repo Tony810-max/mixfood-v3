@@ -1,24 +1,26 @@
 
 import { Flame, Leaf, Star } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const TagBadge = ({ tag, lang }: { tag: string; lang: "en" | "vn" }) => {
+const TagBadge = ({ tag }: { tag: string }) => {
+  const { t } = useLanguage();
   const config: Record<
     string,
-    { icon: typeof Star; label: { en: string; vn: string }; className: string }
+    { icon: typeof Star; label: string; className: string }
   > = {
     popular: {
       icon: Star,
-      label: { en: "Popular", vn: "Phổ biến" },
+      label: t.tagPopular,
       className: "bg-primary/90 text-primary-foreground",
     },
     spicy: {
       icon: Flame,
-      label: { en: "Spicy", vn: "Cay" },
+      label: t.tagSpicy,
       className: "bg-accent/90 text-accent-foreground",
     },
     veggie: {
       icon: Leaf,
-      label: { en: "Veggie", vn: "Chay" },
+      label: t.tagVeggie,
       className: "bg-primary/90 text-primary-foreground",
     },
   };
@@ -30,7 +32,7 @@ const TagBadge = ({ tag, lang }: { tag: string; lang: "en" | "vn" }) => {
       className={`flex items-center gap-1 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-full ${c.className}`}
     >
       <Icon size={12} className={tag === "popular" ? "fill-current" : ""} />
-      {c.label[lang]}
+      {c.label}
     </span>
   );
 };
