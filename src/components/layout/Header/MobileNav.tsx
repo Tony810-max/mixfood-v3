@@ -122,14 +122,15 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                 </div>
 
                 {/* Auth Section */}
-                <div className="p-4 pt-6">
+                <div className="px-4 pb-4 pt-2">
+                  <div className="border-t border-border/40 mb-5" />
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
                     {isAuthenticated ? (
-                      <div className="space-y-3">
+                      <div className="flex flex-col gap-4">
                         {/* User Profile Card */}
                         <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/50 rounded-2xl border border-primary/20">
                           <div className="p-3 rounded-xl bg-primary-gradient">
@@ -168,16 +169,16 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                         </button>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="flex flex-col gap-4">
                         <Link to={ROUTES.AUTH.LOGIN} onClick={() => setMobileOpen(false)}>
-                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:bg-secondary/50 transition-all active:scale-[0.98]">
-                            <User className="w-5 h-5 text-foreground/70" />
+                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-orange-200 dark:border-orange-800/60 hover:border-orange-300 dark:hover:border-orange-700 hover:bg-orange-50/50 dark:hover:bg-orange-950/30 transition-all active:scale-[0.98]">
+                            <User className="w-5 h-5 text-orange-500" />
                             <span className="text-base font-medium text-foreground/80">{t.headerSignIn}</span>
                           </button>
                         </Link>
 
                         <Link to={ROUTES.AUTH.REGISTER} onClick={() => setMobileOpen(false)}>
-                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-primary-gradient text-white shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-[0.98]">
+                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:opacity-90 transition-all active:scale-[0.98]">
                             <User className="w-5 h-5" />
                             <span className="text-base font-medium">{t.headerSignUp}</span>
                           </button>

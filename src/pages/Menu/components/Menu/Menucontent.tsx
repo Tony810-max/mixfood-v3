@@ -110,13 +110,13 @@ const MenuContent = () => {
       </section>
 
       {/* Search and Filter */}
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-3 md:gap-2 p-4 md:p-4">
+      <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 px-4 py-4 md:px-6 md:py-5">
         <SearchContent onSearchChange={setSearchQuery} />
         <DropdownCategory onSelectCategory={setSelectedCategory} />
       </div>
 
       {/* Category Sections */}
-      <div className="container mx-auto px-6 py-8 space-y-16 md:space-y-20">
+      <div className="container mx-auto px-4 md:px-6 py-8 space-y-16 md:space-y-20">
         {filteredCategories?.map((category) => (
           <CategorySection key={category.id} category={category} lang={lang} />
         ))}
@@ -146,7 +146,7 @@ const MenuContent = () => {
           </p>
           <a
             href={ROUTES.BOOKING}
-            className="rounded-xl bg-accent px-6 md:px-8 py-3 md:py-3.5 text-sm md:text-base font-semibold text-accent-foreground hover:-translate-y-0.5 transition-all active:scale-95 min-h-[44px] flex items-center justify-center"
+            className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 px-8 py-3.5 text-sm md:text-base font-semibold text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all active:scale-95 min-h-[48px]"
           >
             {t.reserveTable}
           </a>

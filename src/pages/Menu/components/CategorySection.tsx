@@ -54,33 +54,33 @@ const CategorySection = ({
       </div>
       
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-8">
+        <div className="flex items-center justify-center gap-2 mt-10">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-4 py-2 rounded-lg bg-secondary text-foreground disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
+            className="h-9 px-4 rounded-lg bg-secondary text-foreground text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
           >
             {t.menuPrevious}
           </button>
-          
+
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
               onClick={() => handlePageChange(page)}
-              className={`px-4 py-2 rounded-lg transition-colors ${
+              className={`h-9 w-9 rounded-lg text-sm font-medium transition-colors ${
                 currentPage === page
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm"
                   : "bg-secondary text-foreground hover:bg-secondary/80"
               }`}
             >
               {page}
             </button>
           ))}
-          
+
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 rounded-lg bg-secondary text-foreground disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
+            className="h-9 px-4 rounded-lg bg-secondary text-foreground text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
           >
             {t.menuNext}
           </button>

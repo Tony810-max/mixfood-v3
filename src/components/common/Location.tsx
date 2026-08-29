@@ -92,7 +92,9 @@ const Location = () => {
             >
               {t.reserveTable}
             </a> */}
-            <ReserveButton content={t.reserveTable} />
+            <div className="pt-2">
+              <ReserveButton content={t.reserveTable} className="h-11 px-8 shadow-md shadow-orange-500/20 hover:shadow-orange-500/30 transition-all" />
+            </div>
           </motion.div>
         </div>
       </div>
