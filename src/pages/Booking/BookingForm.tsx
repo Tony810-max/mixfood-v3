@@ -104,14 +104,14 @@ export const BookingForm = () => {
   }
 
   return (
-    <Card className="border-amber-200 bg-white/90 backdrop-blur shadow-xl">
-      <CardHeader className="bg-primary-gradient text-white rounded-t-lg">
+    <Card className="border-amber-200 dark:border-amber-800/50 bg-white/90 dark:bg-slate-800/80 backdrop-blur shadow-xl">
+      <CardHeader className="bg-primary-gradient text-white rounded-t-xl pb-5">
         <CardTitle className="text-xl md:text-2xl">{t.bookingFormTitle}</CardTitle>
         <CardDescription className="text-amber-100 text-sm md:text-base">
           {t.bookingFormDesc}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-4 md:pt-6">
+      <CardContent className="pt-5 md:pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
             <div className="grid md:grid-cols-2 gap-4 md:gap-6">
@@ -127,7 +127,7 @@ export const BookingForm = () => {
                     <FormControl>
                       <Input
                         placeholder={t.fullNamePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                         {...field}
                       />
                     </FormControl>
@@ -148,7 +148,7 @@ export const BookingForm = () => {
                     <FormControl>
                       <Input
                         placeholder={t.phonePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                         {...field}
                       />
                     </FormControl>
@@ -170,7 +170,7 @@ export const BookingForm = () => {
                   <FormControl>
                     <Input
                       placeholder={t.emailPlaceholder}
-                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                       {...field}
                     />
                   </FormControl>
@@ -185,7 +185,7 @@ export const BookingForm = () => {
                 name="date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                    <FormLabel className="flex items-center gap-2">
                       <CalendarIcon className="h-4 w-4" />
                       {t.bookingDate}
                     </FormLabel>
@@ -194,7 +194,7 @@ export const BookingForm = () => {
                         <FormControl>
                           <Button
                             variant="outline"
-                            className={`w-full pl-3 text-left font-normal border-amber-200 focus:border-amber-500 focus:ring-amber-500 hover:bg-primary-gradient hover:text-white hover:border-transparent ${
+                            className={`w-full pl-3 h-11 text-left font-normal border-amber-200 focus:border-amber-500 focus:ring-amber-500 hover:bg-primary-gradient hover:text-white hover:border-transparent ${
                               !field.value && "text-muted-foreground"
                             }`}
                           >
@@ -248,7 +248,7 @@ export const BookingForm = () => {
                         min={minTime}
                         max={BOOKING_WINDOW.LAST_BOOKING}
                         placeholder={t.bookingTimePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                         {...field}
                       />
                     </FormControl>
@@ -276,7 +276,7 @@ export const BookingForm = () => {
                       min="1"
                       max="50"
                       placeholder={t.bookingGuestsPlaceholder}
-                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                       {...field}
                     />
                   </FormControl>
@@ -309,7 +309,7 @@ export const BookingForm = () => {
 
             <Button
               type="submit"
-              className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold py-3 md:py-6 text-base md:text-lg min-h-[44px] md:min-h-[56px]"
+              className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold h-12 text-base shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition-all mt-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? t.bookingSubmitting : t.bookingSubmitButton}

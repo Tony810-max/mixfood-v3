@@ -59,11 +59,11 @@ const Hero = () => {
             <div className="flex flex-wrap gap-3 pt-2 items-center">
               <a
                 href={ROUTES.MENU}
-                className="rounded-lg border border-black min-w-[120px] min-h-[44px] px-5 py-3 text-sm font-semibold text-primary-foreground hover:-translate-y-0.5 transition-all active:scale-95 shadow-layered flex items-center justify-center"
+                className="inline-flex items-center justify-center rounded-lg border border-orange-300 dark:border-orange-700 min-w-[120px] min-h-[44px] px-5 py-2.5 text-sm font-semibold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50 hover:-translate-y-0.5 transition-all active:scale-95 shadow-sm hover:shadow-md"
               >
                 {t.viewMenu}
               </a>
-             <ReserveButton content={t.reserveTable} className="min-h-[44px]" />
+              <ReserveButton content={t.reserveTable} className="min-h-[44px]" />
             </div>
           </motion.div>
 

@@ -83,16 +83,16 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link to={ROUTES.AUTH.LOGIN}>
-            <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+            <Button variant="outline" size="sm" className="h-9 px-4 border-orange-300 dark:border-orange-700 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50 hover:border-orange-400 font-medium transition-all">
               {t.headerSignIn}
-            </button>
+            </Button>
           </Link>
           <Link to={ROUTES.AUTH.REGISTER}>
-            <button className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+            <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-medium shadow-sm hover:shadow-md transition-all">
               {t.headerSignUp}
-            </button>
+            </Button>
           </Link>
         </div>
       )}

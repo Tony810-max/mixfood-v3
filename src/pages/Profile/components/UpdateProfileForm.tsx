@@ -52,7 +52,7 @@ export const UpdateProfileForm = ({
             value={formData.name}
             onChange={(e) => onInputChange('name', e.target.value)}
             placeholder={labels.fullNamePlaceholder}
-            className="border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
+            className="h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
           />
         </div>
 
@@ -64,7 +64,7 @@ export const UpdateProfileForm = ({
             value={formData.email}
             readOnly
             placeholder={labels.emailPlaceholder}
-            className="border-orange-200 dark:border-orange-900 bg-muted/50 text-muted-foreground cursor-not-allowed focus:ring-0"
+            className="h-11 border-orange-200 dark:border-orange-900 bg-muted/50 text-muted-foreground cursor-not-allowed focus:ring-0"
           />
           <p className="text-xs text-muted-foreground">{labels.emailNote}</p>
         </div>
@@ -77,7 +77,7 @@ export const UpdateProfileForm = ({
             value={formData.phone}
             onChange={(e) => onInputChange('phone', e.target.value)}
             placeholder={labels.phonePlaceholder}
-            className="border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
+            className="h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
           />
         </div>
 
@@ -89,7 +89,7 @@ export const UpdateProfileForm = ({
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all mt-2"
           disabled={isLoading}
         >
           <Save className="h-4 w-4 mr-2" />

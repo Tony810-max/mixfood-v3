@@ -49,7 +49,7 @@ export const ChangePasswordForm = ({
             value={formData.currentPassword}
             onChange={(e) => onInputChange('currentPassword', e.target.value)}
             placeholder={labels.currentPasswordPlaceholder}
-            className={`border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.currentPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+            className={`h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.currentPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {errors.currentPassword && <p className="text-sm text-red-500">{errors.currentPassword}</p>}
         </div>
@@ -62,7 +62,7 @@ export const ChangePasswordForm = ({
             value={formData.newPassword}
             onChange={(e) => onInputChange('newPassword', e.target.value)}
             placeholder={labels.newPasswordPlaceholder}
-            className={`border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.newPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+            className={`h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.newPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {errors.newPassword && <p className="text-sm text-red-500">{errors.newPassword}</p>}
         </div>
@@ -75,14 +75,14 @@ export const ChangePasswordForm = ({
             value={formData.confirmPassword}
             onChange={(e) => onInputChange('confirmPassword', e.target.value)}
             placeholder={labels.confirmPasswordPlaceholder}
-            className={`border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+            className={`h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
         </div>
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all mt-2"
           disabled={isLoading}
         >
           <Lock className="h-4 w-4 mr-2" />
