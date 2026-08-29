@@ -15,4 +15,12 @@ export const reservationService = {
     const response = await axios.get<Reservation[]>("/reservations/my-reservations");
     return response.data;
   },
+
+  async cancelReservation(id: number): Promise<{ message: string; reservation: { id: number; status: string } }> {
+    const response = await axios.put<{ message: string; reservation: { id: number; status: string } }>(
+      `/reservations/${id}`,
+      { status: 'CANCELLED' },
+    );
+    return response.data;
+  },
 };

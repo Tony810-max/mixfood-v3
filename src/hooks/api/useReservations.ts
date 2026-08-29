@@ -69,6 +69,21 @@ export const useCreateReservation = () => {
   });
 };
 
+export const useCancelReservation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => reservationService.cancelReservation(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+    },
+    onError: (error) => {
+      logger.error('Reservation cancellation failed', error);
+      showApiErrorToast(error, 'Hủy đặt bàn thất bại');
+    },
+  });
+};
+
 export const useInvalidateReservations = () => {
   const queryClient = useQueryClient();
 

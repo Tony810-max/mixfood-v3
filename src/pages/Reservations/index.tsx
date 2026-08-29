@@ -6,11 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RESERVATION_STATUS } from "@/constants";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCancelReservation } from "@/hooks/api/useReservations";
 import { useReservations } from "@/hooks/useReservations";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { AlertCircle, Calendar, ChevronDown, Loader2, RefreshCw, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { ReservationCard } from "./components/ReservationCard";
 import { ReservationsStats } from "./components/ReservationsStats";
@@ -19,12 +20,14 @@ const ReservationsPage = () => {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { reservations, isLoading, stats, refreshReservations, filterReservations, sortReservations } = useReservations();
-  
+  const cancelMutation = useCancelReservation();
+
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("date-desc");
   const [isRefreshDisabled, setIsRefreshDisabled] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [cancellingId, setCancellingId] = useState<number | null>(null);
 
   const handleRefresh = () => {
     setIsRefreshDisabled(true);
@@ -33,10 +36,23 @@ const ReservationsPage = () => {
     toast.success(t.reservationsRefreshSuccess, {
       duration: 2000,
     });
-    
+
     setTimeout(() => {
       setIsRefreshDisabled(false);
     }, 5000);
+  };
+
+  const handleCancelReservation = (id: number) => {
+    setCancellingId(id);
+    cancelMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success(t.reservationCancelSuccess || "Reservation cancelled successfully");
+        setCancellingId(null);
+      },
+      onError: () => {
+        setCancellingId(null);
+      },
+    });
   };
 
   // Filter and sort reservations
@@ -44,15 +60,6 @@ const ReservationsPage = () => {
     filterReservations(activeTab === "all" ? undefined : activeTab, searchQuery),
     sortBy as 'date-desc' | 'date-asc' | 'status'
   );
-
-  useEffect(() => {
-    if (!hasAnimated && !isLoading && filteredAndSortedReservations.length > 0) {
-      const timer = setTimeout(() => {
-        setHasAnimated(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [filteredAndSortedReservations.length, hasAnimated, isLoading]);
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
@@ -106,18 +113,18 @@ const ReservationsPage = () => {
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 dark:from-orange-500/5 dark:via-amber-500/5 dark:to-orange-500/5" />
           <div className="absolute top-0 right-0 w-96 h-96 bg-orange-400/10 dark:bg-orange-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="text-center"
             >
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 bg-clip-text text-transparent mb-4">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 bg-clip-text text-transparent mb-4">
                 {t.reservationsTitle}
               </h1>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground">
                 {t.reservationsSubtitle}
               </p>
             </motion.div>
@@ -125,7 +132,7 @@ const ReservationsPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 text-orange-500 animate-spin" />
@@ -145,8 +152,8 @@ const ReservationsPage = () => {
 
               {/* Search and Filter Bar */}
               <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                  <div className="relative flex-1 w-full">
+                <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                  <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder={t.reservationsSearch || "Tìm kiếm..."}
@@ -155,33 +162,24 @@ const ReservationsPage = () => {
                       className="pl-10 w-full"
                     />
                   </div>
-                  <div className="flex items-center gap-2 w-full md:w-auto">
+                  <div className="flex items-center gap-2">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="flex-1 md:flex-none hover:bg-primary-gradient">
+                        <Button variant="outline" className="flex-1 sm:flex-none hover:bg-primary-gradient">
                           <ChevronDown className="h-4 w-4 mr-2" />
-                          {sortBy === "date-desc" ? (t.reservationsSortNewest || "Mới nhất") : 
+                          {sortBy === "date-desc" ? (t.reservationsSortNewest || "Mới nhất") :
                            sortBy === "date-asc" ? (t.reservationsSortOldest || "Cũ nhất") :
                            (t.reservationsSortStatus || "Theo trạng thái")}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={(e) => {
-                          e.preventDefault();
-                          setSortBy("date-desc");
-                        }}>
+                        <DropdownMenuItem onClick={(e) => { e.preventDefault(); setSortBy("date-desc"); }}>
                           {t.reservationsSortNewest || "Mới nhất"}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => {
-                          e.preventDefault();
-                          setSortBy("date-asc");
-                        }}>
+                        <DropdownMenuItem onClick={(e) => { e.preventDefault(); setSortBy("date-asc"); }}>
                           {t.reservationsSortOldest || "Cũ nhất"}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => {
-                          e.preventDefault();
-                          setSortBy("status");
-                        }}>
+                        <DropdownMenuItem onClick={(e) => { e.preventDefault(); setSortBy("status"); }}>
                           {t.reservationsSortStatus || "Theo trạng thái"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -191,7 +189,7 @@ const ReservationsPage = () => {
                       size="icon"
                       onClick={handleRefresh}
                       title={t.reservationsRefresh || "Làm mới"}
-                      className="hover:bg-primary-gradient"
+                      className="hover:bg-primary-gradient shrink-0"
                       disabled={isRefreshDisabled}
                     >
                       <RefreshCw className="h-4 w-4" />
@@ -202,17 +200,17 @@ const ReservationsPage = () => {
 
               {/* Filter Tabs */}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-                <TabsList className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-orange-200 dark:border-orange-900/50">
-                  <TabsTrigger value="all" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
+                <TabsList className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-orange-200 dark:border-orange-900/50 flex flex-wrap h-auto gap-1 p-1">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white text-xs sm:text-sm">
                     {t.reservationsTabAll || "Tất cả"} ({stats.total})
                   </TabsTrigger>
-                  <TabsTrigger value={RESERVATION_STATUS.PENDING} className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white">
+                  <TabsTrigger value={RESERVATION_STATUS.PENDING} className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white text-xs sm:text-sm">
                     {t.reservationsStatusPending || "Chờ xác nhận"} ({stats.pending})
                   </TabsTrigger>
-                  <TabsTrigger value={RESERVATION_STATUS.CONFIRMED} className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
+                  <TabsTrigger value={RESERVATION_STATUS.CONFIRMED} className="data-[state=active]:bg-green-500 data-[state=active]:text-white text-xs sm:text-sm">
                     {t.reservationsStatusConfirmed || "Đã xác nhận"} ({stats.confirmed})
                   </TabsTrigger>
-                  <TabsTrigger value={RESERVATION_STATUS.CANCELLED} className="data-[state=active]:bg-red-500 data-[state=active]:text-white">
+                  <TabsTrigger value={RESERVATION_STATUS.CANCELLED} className="data-[state=active]:bg-red-500 data-[state=active]:text-white text-xs sm:text-sm">
                     {t.reservationsStatusCancelled || "Đã hủy"} ({stats.cancelled})
                   </TabsTrigger>
                 </TabsList>
@@ -225,7 +223,7 @@ const ReservationsPage = () => {
                       transition={{ duration: 0.5 }}
                       className="text-center py-12"
                     >
-                      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-12">
+                      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-8 sm:p-12">
                         <Calendar className="h-16 w-16 text-orange-500 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold text-foreground mb-2">
                           {activeTab === "all" ? t.reservationsEmpty : (t.reservationsEmptyFiltered || "Không có đặt bàn nào")}
@@ -251,6 +249,8 @@ const ReservationsPage = () => {
                           reservation={reservation}
                           index={index}
                           getStatusLabel={getStatusLabel}
+                          onCancel={handleCancelReservation}
+                          isCancelling={cancellingId === reservation.id}
                           labels={{
                             date: t.reservationsDate || "Ngày",
                             time: t.reservationsTime || "Giờ",
@@ -259,6 +259,11 @@ const ReservationsPage = () => {
                             phone: t.reservationsPhone || "Điện thoại",
                             note: t.reservationsNote || "Ghi chú",
                             cancel: t.reservationsCancel || "Hủy",
+                            cancelDialogTitle: t.reservationCancelDialogTitle || "Cancel Reservation",
+                            cancelDialogDescription: t.reservationCancelDialogDescription || 'Are you sure you want to cancel the reservation for "{name}"?',
+                            cancelDialogCancel: t.reservationCancelDialogKeep || "Keep",
+                            cancelDialogConfirm: t.reservationCancelDialogConfirm || "Yes, cancel",
+                            cancelDialogConfirming: t.reservationCancelDialogConfirming || "Cancelling...",
                           }}
                         />
                       ))}
