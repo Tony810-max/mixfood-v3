@@ -84,7 +84,7 @@ export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
 
 // Menu Types
 export interface MenuItem {
-  id: string;
+  id: number;
   name: {
     en: string;
     vn: string;

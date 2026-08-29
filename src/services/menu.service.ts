@@ -19,7 +19,6 @@ interface ProductImageResponse {
 
 interface MenuItemResponse {
   id: number;
-  identifier: string;
   name: CategoryName | string;
   price: number;
   image: string | null;
@@ -63,7 +62,7 @@ const getItemImage = (menuItem: MenuItemResponse): string | null => {
 };
 
 const transformMenuItem = (menuItem: MenuItemResponse): MenuItem => ({
-  id: menuItem.identifier,
+  id: menuItem.id,
   name: normalizeName(menuItem.name),
   price: menuItem.price,
   image: getItemImage(menuItem),
