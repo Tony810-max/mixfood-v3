@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
-type Language = "en" | "vi";
+type Language = "en" | "vn";
 
 const translations = {
   en: {
@@ -270,7 +270,7 @@ const translations = {
     bookingRuleClosing: "Closing Time",
     bookingRuleClosingDesc: "Restaurant closes at 21:50",
   },
-  vi: {
+  vn: {
     home: "Trang Chủ",
     menu: "Thực Đơn",
     reserveTable: "Đặt Bàn",
@@ -567,7 +567,7 @@ const setCookie = (name: string, value: string, days = 365) => {
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLangState] = useState<Language>(() => {
     const saved = getCookie("lang");
-    return saved === "vi" ? "vi" : "en";
+    return saved === "vn" ? "vn" : "en";
   });
 
   const setLang = (l: Language) => {

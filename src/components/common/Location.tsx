@@ -56,7 +56,7 @@ const Location = () => {
               </div>
               <div>
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                  {lang === "vi" ? "Địa Chỉ" : "Address"}
+                  {lang === "vn" ? "Địa Chỉ" : "Address"}
                 </h3>
                 <p className="text-muted-foreground">{INFORMATION_RESTAURANT.address}</p>
               </div>
@@ -80,7 +80,7 @@ const Location = () => {
               </div>
               <div>
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                  {lang === "vi" ? "Điện Thoại" : "Phone"}
+                  {lang === "vn" ? "Điện Thoại" : "Phone"}
                 </h3>
                 <p className="text-muted-foreground">{INFORMATION_RESTAURANT.phone}</p>
               </div>

@@ -8,21 +8,21 @@ const reviews = [
     avatar: "SJ",
     rating: 5,
     en: "The Tom Yum Goong was absolutely divine! Authentic flavors that transported me straight to Bangkok. The ambiance is warm and elegant.",
-    vi: "Tom Yum Goong thật tuyệt vời! Hương vị đích thực đưa tôi trở lại Bangkok. Không gian ấm cúng và sang trọng.",
+    vn: "Tom Yum Goong thật tuyệt vời! Hương vị đích thực đưa tôi trở lại Bangkok. Không gian ấm cúng và sang trọng.",
   },
   {
     name: "Nguyễn Minh Tuấn",
     avatar: "NT",
     rating: 5,
     en: "Best Thai food in Da Nang, hands down. The Green Curry is perfectly balanced. We come here every weekend now.",
-    vi: "Đồ ăn Thái ngon nhất Đà Nẵng. Cà Ri Xanh cân bằng hoàn hảo. Tuần nào chúng tôi cũng đến đây.",
+    vn: "Đồ ăn Thái ngon nhất Đà Nẵng. Cà Ri Xanh cân bằng hoàn hảo. Tuần nào chúng tôi cũng đến đây.",
   },
   {
     name: "James Chen",
     avatar: "JC",
     rating: 5,
     en: "From the Pad Thai to the Mango Sticky Rice, everything was exceptional. The staff is incredibly welcoming. A must-visit!",
-    vi: "Từ Pad Thai đến Xôi Xoài, mọi thứ đều xuất sắc. Nhân viên rất thân thiện. Nhất định phải ghé!",
+    vn: "Từ Pad Thai đến Xôi Xoài, mọi thứ đều xuất sắc. Nhân viên rất thân thiện. Nhất định phải ghé!",
   },
 ];
 
@@ -58,7 +58,7 @@ const Reviews = () => {
                 ))}
               </div>
               <p className="text-foreground/80 text-sm leading-relaxed italic">
-                "{lang === "vi" ? review.vi : review.en}"
+                "{lang === "vn" ? review.vn : review.en}"
               </p>
               <div className="flex items-center gap-3 pt-2">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary shrink-0">

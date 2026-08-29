@@ -1,24 +1,24 @@
 
 import { Flame, Leaf, Star } from "lucide-react";
 
-const TagBadge = ({ tag, lang }: { tag: string; lang: "en" | "vi" }) => {
+const TagBadge = ({ tag, lang }: { tag: string; lang: "en" | "vn" }) => {
   const config: Record<
     string,
-    { icon: typeof Star; label: { en: string; vi: string }; className: string }
+    { icon: typeof Star; label: { en: string; vn: string }; className: string }
   > = {
     popular: {
       icon: Star,
-      label: { en: "Popular", vi: "Phổ biến" },
+      label: { en: "Popular", vn: "Phổ biến" },
       className: "bg-primary/90 text-primary-foreground",
     },
     spicy: {
       icon: Flame,
-      label: { en: "Spicy", vi: "Cay" },
+      label: { en: "Spicy", vn: "Cay" },
       className: "bg-accent/90 text-accent-foreground",
     },
     veggie: {
       icon: Leaf,
-      label: { en: "Veggie", vi: "Chay" },
+      label: { en: "Veggie", vn: "Chay" },
       className: "bg-primary/90 text-primary-foreground",
     },
   };

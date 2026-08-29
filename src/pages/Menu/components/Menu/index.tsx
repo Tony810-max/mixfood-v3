@@ -1,5 +1,6 @@
+import { MenuItem } from "@/types";
 import { motion } from "framer-motion";
-import { formatPrice, MenuItem } from "../../utils/const";
+import { formatPrice } from "../../utils/const";
 import TagBadge from "../TagBadge";
 
 const MenuItemCard = ({
@@ -8,7 +9,7 @@ const MenuItemCard = ({
   index,
 }: {
   item: MenuItem;
-  lang: "en" | "vi";
+  lang: "en" | "vn";
   index: number;
 }) => (
   <motion.div

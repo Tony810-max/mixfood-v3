@@ -87,7 +87,7 @@ export interface MenuItem {
   id: string;
   name: {
     en: string;
-    vi: string;
+    vn: string;
   };
   price: number;
   image: string | null;
@@ -99,7 +99,7 @@ export type MenuItemTag = "spicy" | "veggie" | "popular";
 export interface Category {
   id: string;
   en: string;
-  vi: string;
+  vn: string;
   items: MenuItem[];
 }
 

@@ -1,16 +1,77 @@
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useMenu } from "@/hooks/api/useMenu";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import restaurantImg from "../../../../assets/restaurant-interior.jpg";
-import { menuData } from "../../utils/const";
 import CategorySection from "../CategorySection";
 import DropdownCategory from "./DropdownCategory";
 import SearchContent from "./SearchContent";
 
 const MenuContent = () => {
   const { lang, t } = useLanguage();
+  const { data: categories, isLoading, error } = useMenu();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredCategories = categories?.filter((category) => {
+    const matchesCategory = !selectedCategory || selectedCategory === "all" || category.id === selectedCategory;
+    const matchesSearch = !searchQuery || category.items.some((item) => 
+      item.name.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.name.vn.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return matchesCategory && matchesSearch;
+  }).map((category) => ({
+    ...category,
+    items: category.items.filter((item) => 
+      !searchQuery || 
+      item.name.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.name.vn.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  })).filter((category) => category.items.length > 0);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+              <p className="mt-4 text-muted-foreground">
+                {lang === "vn" ? "Đang tải thực đơn..." : "Loading menu..."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <p className="text-destructive mb-4">
+                {lang === "vn" ? "Có lỗi xảy ra khi tải thực đơn" : "Error loading menu"}
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="text-primary hover:underline"
+              >
+                {lang === "vn" ? "Thử lại" : "Try again"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -32,7 +93,7 @@ const MenuContent = () => {
                 transition={{ duration: 0.6 }}
                 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-background mb-2 md:mb-3"
               >
-                {lang === "vi" ? "Thực Đơn" : "Our Menu"}
+                {lang === "vn" ? "Thực Đơn" : "Our Menu"}
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -40,7 +101,7 @@ const MenuContent = () => {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="font-body text-background/70 text-base md:text-lg "
               >
-                {lang === "vi"
+                {lang === "vn"
                   ? "Khám phá hương vị Thái Lan đích thực với nguyên liệu tươi ngon nhất"
                   : "Discover authentic Thai flavors crafted with the freshest ingredients"}
               </motion.p>
@@ -49,39 +110,24 @@ const MenuContent = () => {
         </div>
       </section>
 
-      {/* Quick Nav */}
-      {/* <section className="sticky top-[4.5rem] z-30 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-6">
-          <div className="flex gap-1 overflow-x-auto py-4 scrollbar-hide -mx-6 px-6">
-            {menuData.map((cat) => (
-              <a
-                key={cat.id}
-                href={`#${cat.id}`}
-                onClick={(e) => {
-                  handleHashChange(`#${cat.id}`);
-                }}
-                className={cn(
-                  "shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-all",
-                  getTabStyles(hash === `#${cat.id}`),
-                )}
-              >
-                {lang === "vi" ? cat.vi : cat.en}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section> */}
+      {/* Search and Filter */}
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-3 md:gap-2 p-4 md:p-4">
-        <SearchContent />
-        <DropdownCategory />
+        <SearchContent onSearchChange={setSearchQuery} />
+        <DropdownCategory onSelectCategory={setSelectedCategory} />
       </div>
-
 
       {/* Category Sections */}
       <div className="container mx-auto px-6 py-8 space-y-16 md:space-y-20">
-        {menuData.map((category) => (
+        {filteredCategories?.map((category) => (
           <CategorySection key={category.id} category={category} lang={lang} />
         ))}
+        {filteredCategories?.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              {lang === "vn" ? "Không tìm thấy món ăn nào" : "No dishes found"}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* CTA */}
@@ -94,10 +140,10 @@ const MenuContent = () => {
           className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-background p-6 md:p-10 lg:p-14 text-center"
         >
           <h2 className="font-serif text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-3 md:mb-4">
-            {lang === "vi" ? "Sẵn sàng thưởng thức?" : "Ready to dine?"}
+            {lang === "vn" ? "Sẵn sàng thưởng thức?" : "Ready to dine?"}
           </h2>
           <p className="text-muted-foreground mb-6 md:mb-8 max-w-md mx-auto text-sm md:text-base">
-            {lang === "vi"
+            {lang === "vn"
               ? "Đặt bàn ngay để trải nghiệm ẩm thực Thái Lan đích thực tại Mix Food."
               : "Reserve your table now for an authentic Thai dining experience at Mix Food."}
           </p>
