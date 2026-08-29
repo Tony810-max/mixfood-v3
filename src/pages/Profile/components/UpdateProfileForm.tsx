@@ -21,6 +21,7 @@ interface UpdateProfileFormProps {
     fullNamePlaceholder: string;
     emailPlaceholder: string;
     phonePlaceholder: string;
+    emailNote: string;
     save: string;
     saving: string;
   };
@@ -61,10 +62,11 @@ export const UpdateProfileForm = ({
             id="email"
             type="email"
             value={formData.email}
-            onChange={(e) => onInputChange('email', e.target.value)}
+            readOnly
             placeholder={labels.emailPlaceholder}
-            className="border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500"
+            className="border-orange-200 dark:border-orange-900 bg-muted/50 text-muted-foreground cursor-not-allowed focus:ring-0"
           />
+          <p className="text-xs text-muted-foreground">{labels.emailNote}</p>
         </div>
 
         <div className="space-y-2">

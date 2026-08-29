@@ -82,6 +82,7 @@ const ProfilePage = () => {
                       fullNamePlaceholder: t.fullNamePlaceholder,
                       emailPlaceholder: t.emailPlaceholder,
                       phonePlaceholder: t.phonePlaceholder,
+                      emailNote: t.profileEmailNote,
                       save: t.profileUpdateButton,
                       saving: t.profileUpdating,
                     }}

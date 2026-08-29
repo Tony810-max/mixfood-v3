@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/contexts/AuthContext"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useCreateReservation } from "@/hooks/api/useReservations"
+import { VALIDATION } from "@/constants"
 import { ROUTES } from "@/utils/const"
 import { logger } from "@/utils/logger"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -42,7 +43,7 @@ export const BookingForm = () => {
   // Calculate initial minTime when component mounts
   useEffect(() => {
     const now = new Date()
-    const minReservationTime = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+    const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
     const hours = minReservationTime.getHours().toString().padStart(2, '0')
     const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
     setMinTime(`${hours}:${minutes}`)
@@ -90,8 +91,8 @@ export const BookingForm = () => {
       today.setHours(0, 0, 0, 0)
       
       if (selectedDate.getTime() === today.getTime()) {
-        // If today, minimum time is current time + 3 hours
-        const minReservationTime = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+        // If today, minimum time is current time + advance booking window
+        const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
         const hours = minReservationTime.getHours().toString().padStart(2, '0')
         const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
         setMinTime(`${hours}:${minutes}`)

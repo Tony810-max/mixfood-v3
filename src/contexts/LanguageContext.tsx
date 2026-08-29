@@ -55,7 +55,7 @@ const translations = {
     openingHours: "Opening Hours",
     openingHoursValue: "Monday – Sunday: 10:00 – 21:50",
     policy: "Restaurant Policy",
-    policy1: "Reservations must be made at least 2 hours in advance",
+    policy1: "Reservations must be made at least 30 minutes in advance",
     policy2:
       "Tables are held for a maximum of 10 minutes after reservation time",
     policy3:
@@ -103,7 +103,7 @@ const translations = {
     bookingSelectTime: "Select time",
     bookingSelectGuests: "Select number of guests",
     bookingTimePlaceholder: "Select time",
-    bookingTimeHelp: "Opening hours: 09:00 - 21:50. Please book at least 3 hours in advance.",
+    bookingTimeHelp: "Opening hours: 09:00 - 21:50. Please book at least 30 minutes in advance.",
     bookingGuestsPlaceholder: "Enter number of guests",
     bookingSpecialRequests: "Special Requests (optional)",
     bookingSpecialRequestsPlaceholder: "E.g., Allergies, window seating, birthday cake...",
@@ -300,7 +300,7 @@ const translations = {
     bookingFailed: "Reservation failed",
     // Booking rules
     bookingRuleAdvance: "Advance Booking",
-    bookingRuleAdvanceDesc: "Reservations must be made at least 3 hours in advance",
+    bookingRuleAdvanceDesc: "Reservations must be made at least 30 minutes in advance",
     bookingRuleHold: "Table Hold Time",
     bookingRuleHoldDesc: "Tables are held for a maximum of 15 minutes after reservation time",
     bookingRuleCancel: "Cancellation Policy",
@@ -324,6 +324,7 @@ const translations = {
     profileOrders: "Orders",
     profileRating: "Rating",
     profileConfirmNewPassword: "Confirm New Password",
+    profileEmailNote: "Your email address cannot be changed.",
     // Menu extra
     menuTitle: "Our Menu",
     menuSubtitle: "Discover authentic Thai flavors crafted with the freshest ingredients",
@@ -406,7 +407,7 @@ const translations = {
     openingHours: "Giờ Mở Cửa",
     openingHoursValue: "Thứ Hai – Chủ Nhật: 9:00 – 21:50",
     policy: "Chính Sách Nhà Hàng",
-    policy1: "Đặt bàn phải được thực hiện ít nhất 2 giờ trước",
+    policy1: "Đặt bàn phải được thực hiện ít nhất 30 phút trước",
     policy2: "Bàn được giữ tối đa 10 phút sau giờ đặt",
     policy3: "Nhóm từ 8 khách trở lên vui lòng liên hệ trực tiếp nhà hàng",
     policy4: "Hủy đặt bàn phải thực hiện ít nhất 1 giờ trước",
@@ -452,7 +453,7 @@ const translations = {
     bookingSelectTime: "Chọn giờ",
     bookingSelectGuests: "Chọn số lượng khách",
     bookingTimePlaceholder: "Chọn giờ",
-    bookingTimeHelp: "Giờ mở cửa: 09:00 - 21:50. Vui lòng đặt bàn trước ít nhất 3 tiếng.",
+    bookingTimeHelp: "Giờ mở cửa: 09:00 - 21:50. Vui lòng đặt bàn trước ít nhất 30 phút.",
     bookingGuestsPlaceholder: "Nhập số lượng khách",
     bookingSpecialRequests: "Yêu cầu đặc biệt (tùy chọn)",
     bookingSpecialRequestsPlaceholder: "Ví dụ: Dị ứng, chỗ ngồi gần cửa sổ, bánh sinh nhật...",
@@ -654,7 +655,7 @@ const translations = {
     bookingFailed: "Đặt bàn thất bại",
     // Booking rules
     bookingRuleAdvance: "Đặt bàn trước",
-    bookingRuleAdvanceDesc: "Đặt bàn phải được thực hiện ít nhất 3 tiếng trước",
+    bookingRuleAdvanceDesc: "Đặt bàn phải được thực hiện ít nhất 30 phút trước",
     bookingRuleHold: "Thời gian giữ bàn",
     bookingRuleHoldDesc: "Bàn được giữ tối đa 15 phút sau giờ đặt",
     bookingRuleCancel: "Chính sách hủy",
@@ -678,6 +679,7 @@ const translations = {
     profileOrders: "Đơn Hàng",
     profileRating: "Đánh Giá",
     profileConfirmNewPassword: "Xác nhận mật khẩu mới",
+    profileEmailNote: "Địa chỉ email của bạn không thể thay đổi.",
     // Menu extra
     menuTitle: "Thực Đơn",
     menuSubtitle: "Khám phá hương vị Thái Lan đích thực với nguyên liệu tươi ngon nhất",

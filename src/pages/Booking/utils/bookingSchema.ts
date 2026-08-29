@@ -1,5 +1,6 @@
 import { LucideIcon } from "lucide-react";
 import { z } from "zod";
+import { VALIDATION } from "@/constants";
 
 export const bookingSchema = z.object({
   name: z.string().min(2, "Tên phải có ít nhất 2 ký tự").max(50, "Tên không được quá 50 ký tự"),
@@ -26,9 +27,9 @@ export const bookingSchema = z.object({
   const reservationDateTime = new Date(data.date);
   reservationDateTime.setHours(hours, minutes, 0, 0);
   
-  // Check if reservation is at least 3 hours in the future
+  // Check if reservation is at least 30 minutes in the future
   const now = new Date();
-  const minTime = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 tiếng sau
+  const minTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000);
   
   if (reservationDateTime < minTime) {
     return false;
@@ -44,7 +45,7 @@ export const bookingSchema = z.object({
   
   return true;
 }, {
-  message: "Đặt bàn phải trước ít nhất 3 tiếng và trước 21:50 (giờ đóng cửa)",
+  message: `Đặt bàn phải trước ít nhất ${VALIDATION.MIN_ADVANCE_BOOKING_MINUTES} phút và trước 21:50 (giờ đóng cửa)`,
   path: ["date"]
 })
 

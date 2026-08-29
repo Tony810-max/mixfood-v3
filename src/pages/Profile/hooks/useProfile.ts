@@ -34,16 +34,16 @@ export const useProfile = () => {
     e.preventDefault();
     setUpdateInfoErrors({});
 
-    if (!updateInfoForm.name || !updateInfoForm.email) {
+    if (!updateInfoForm.name) {
       setUpdateInfoErrors({ general: t.validationRequired });
       return;
     }
 
     setIsLoading(true);
     try {
+      // Email is immutable: only name & phone can be updated
       const response = await updateProfileMutation.mutateAsync({
         name: updateInfoForm.name,
-        email: updateInfoForm.email,
         phone: updateInfoForm.phone,
       });
       
@@ -51,7 +51,7 @@ export const useProfile = () => {
         const updatedUser = {
           ...user,
           name: response.user.name,
-          email: response.user.email,
+          phone: response.user.phone,
         };
         setUser(updatedUser);
       }
