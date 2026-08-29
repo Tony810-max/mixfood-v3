@@ -5,7 +5,7 @@
 
 export { useAuth } from '@/contexts/AuthContext';
 export { useLanguage } from '@/contexts/LanguageContext';
-export { useMobile } from './use-mobile';
+export { useIsMobile } from './use-mobile';
 export { useToast } from './use-toast';
 export { useDateFormat } from './useDateFormat';
 export { useReservations } from './useReservations';

@@ -1,71 +1,97 @@
 import axios from "@/lib/axios";
-import { Category, MenuItem } from "@/types";
+import { Category, MenuItem, MenuItemTag } from "@/types";
+
+interface CategoryName {
+  en: string;
+  vn?: string;
+  vi?: string;
+}
+
+interface ProductCategoryResponse {
+  id: number;
+  name: CategoryName | string;
+}
+
+interface ProductImageResponse {
+  secureUrl?: string | null;
+  url?: string | null;
+}
 
 interface MenuItemResponse {
   id: number;
   identifier: string;
-  name: string; // JSON string {en: "...", vn: "..."}
+  name: CategoryName | string;
   price: number;
   image: string | null;
-  tags: string | null; // JSON string or null
+  tags: string[] | null;
   categoryId: number;
   isActive: boolean;
-  category: {
-    id: number;
-    name: string; // JSON string {en: "...", vn: "..."}
-  };
+  category?: ProductCategoryResponse;
+  productImage?: ProductImageResponse | null;
 }
 
 interface CategoryResponse {
   id: number;
-  name: string; // JSON string {en: "...", vn: "..."}
+  name: CategoryName | string;
   products: MenuItemResponse[];
 }
 
-const parseName = (nameString: string): { en: string; vn: string } => {
-  try {
-    return JSON.parse(nameString);
-  } catch {
-    return { en: nameString, vn: nameString };
+const normalizeName = (name: CategoryName | string): { en: string; vn: string } => {
+  if (name && typeof name === "object") {
+    return {
+      en: name.en ?? "",
+      vn: name.vn ?? name.vi ?? "",
+    };
   }
+  return { en: String(name ?? ""), vn: String(name ?? "") };
 };
 
-const parseTags = (tagsString: string | null): string[] => {
-  if (!tagsString) return [];
-  try {
-    return JSON.parse(tagsString);
-  } catch {
-    return [];
-  }
+const normalizeTags = (tags: string[] | null): MenuItemTag[] => {
+  if (!Array.isArray(tags)) return [];
+  return tags
+    .filter((tag): tag is MenuItemTag => tag === "popular" || tag === "spicy" || tag === "veggie")
+    .slice();
+};
+
+const getItemImage = (menuItem: MenuItemResponse): string | null => {
+  return (
+    menuItem.image ??
+    menuItem.productImage?.secureUrl ??
+    menuItem.productImage?.url ??
+    null
+  );
 };
 
 const transformMenuItem = (menuItem: MenuItemResponse): MenuItem => ({
   id: menuItem.identifier,
-  name: parseName(menuItem.name),
+  name: normalizeName(menuItem.name),
   price: menuItem.price,
-  image: menuItem.image,
-  tags: parseTags(menuItem.tags) as any,
+  image: getItemImage(menuItem),
+  tags: normalizeTags(menuItem.tags),
 });
 
-const transformCategory = (category: CategoryResponse): Category => ({
-  id: `category-${category.id}`,
-  en: parseName(category.name).en,
-  vn: parseName(category.name).vn,
-  items: category.products
-    .filter((menuItem) => menuItem.isActive)
-    .map(transformMenuItem),
-});
+const transformCategory = (category: CategoryResponse): Category => {
+  const name = normalizeName(category.name);
+  return {
+    id: `category-${category.id}`,
+    en: name.en,
+    vn: name.vn,
+    items: (category.products ?? [])
+      .filter((menuItem) => menuItem.isActive !== false)
+      .map(transformMenuItem),
+  };
+};
 
 export const menuService = {
   async getAllCategories(): Promise<Category[]> {
     const response = await axios.get<CategoryResponse[]>("/categories");
-    return response.data.map(transformCategory);
+    return (response.data ?? []).map(transformCategory);
   },
 
   async getAllMenuItems(): Promise<MenuItem[]> {
     const response = await axios.get<MenuItemResponse[]>("/products");
-    return response.data
-      .filter((menuItem) => menuItem.isActive)
+    return (response.data ?? [])
+      .filter((menuItem) => menuItem.isActive !== false)
       .map(transformMenuItem);
   },
 };
