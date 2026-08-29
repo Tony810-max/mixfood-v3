@@ -1,29 +1,38 @@
-# Mix Food - Client (Vite + React)
+# Mix Food - Customer App (Vite + React)
 
-Customer-facing website for the **Mix Food** restaurant: menu browsing, product search, and table reservations.
+Customer-facing app for the **Mix Food** restaurant. Serves two roles:
+1. **Public website** — menu browsing, product search, table reservations.
+2. **QR Table Ordering** — customers scan a table QR code to browse the menu, place orders, chat with staff, and request payment — **no account or login required**.
 
 ## Tech Stack
 
 - **Build tool**: Vite 5
 - **Framework**: React 18 + TypeScript
-- **Routing**: React Router DOM
+- **Routing**: React Router v6
 - **UI**: Tailwind CSS + shadcn/ui (Radix UI) + framer-motion
 - **State/API**: TanStack Query + axios
-- **Testing**: Vitest + Playwright
+- **Real-time**: Socket.IO client
 - **Package manager**: pnpm (>= 9)
 
 ## Project structure
 
 ```
 src/
-├── components/       # Reusable UI components
-├── contexts/         # React contexts (auth, i18n...)
-├── hooks/            # Custom hooks (incl. API hooks)
-├── pages/            # Route pages (Home, Menu, Reservations, Booking...)
-├── services/         # API service layer
-├── types/            # Shared TypeScript types
-└── main.tsx          # App entry
-public/               # Static assets
+├── components/          # Reusable UI components
+├── contexts/
+│   ├── AuthContext.tsx       # Public site auth
+│   └── TableSessionContext.tsx  # QR session state (sessionToken, table, orders)
+├── hooks/               # Custom hooks (API, socket, etc.)
+├── pages/
+│   ├── Home/            # Public homepage
+│   ├── Menu/            # Public menu
+│   ├── Reservations/    # Table reservation form
+│   └── TableOrder/      # QR ordering page (/q/:token)
+├── services/
+│   ├── table-session.service.ts  # Customer session API calls
+│   └── ...                       # Other API services
+├── types/               # Shared TypeScript types
+└── main.tsx             # App entry
 ```
 
 ---
@@ -32,7 +41,7 @@ public/               # Static assets
 
 - [Node.js](https://nodejs.org) >= 20.19
 - [pnpm](https://pnpm.io) >= 9
-- The **Mix Food backend** running (API base URL)
+- The **Mix Food backend** running
 
 ---
 
@@ -50,91 +59,65 @@ pnpm install
 cp .env.example .env
 ```
 
-Set the backend URL:
-
 ```env
 VITE_API_BASE_URL=http://localhost:3001
+VITE_WS_URL=http://localhost:3001
 ```
 
-> `VITE_*` variables are **inlined at build time** — restart the dev/build server after changing them.
+> `VITE_*` variables are **inlined at build time** — restart the dev server after changing them.
 
 ### 1.3 Run
 
 ```bash
-pnpm dev        # development  -> http://localhost:8080
+pnpm dev        # development  -> http://localhost:5173
 pnpm build      # production build -> dist/
-pnpm preview    # preview the built site locally
-```
-
-> In dev the backend must already be running and allow CORS for the client origin.
-
-### 1.4 Tests
-
-```bash
-pnpm test          # vitest unit tests
-pnpm exec playwright test   # e2e tests (if Playwright browsers installed)
+pnpm preview    # preview the production build locally
 ```
 
 ---
 
-## 2. Build & run with Docker (production on a VPS)
+## 2. QR Table Ordering — how it works
 
-The client is a **static site** — the Docker image builds it with Vite and serves it with **nginx**. The API URL is baked in at build time, so pass it as a build arg.
+### Flow
 
-Expected on the VPS:
-- a shared Docker network `mixfood` (see the backend README),
-- nginx (host) reverse-proxying to the container, or the container exposed on a port.
-
-### 2.1 Build the image
-
-```bash
-# from the repo root
-docker compose build --build-arg VITE_API_BASE_URL=https://api.mix-food.io.vn .
+```
+Customer scans QR code
+       ↓
+GET /q/:token  (no auth required)
+       ↓
+Server finds or creates TableSession → issues session JWT
+       ↓
+App stores token in sessionStorage (cleared when tab closes)
+       ↓
+Customer browses menu / adds to cart / submits orders (Bearer: <session JWT>)
+       ↓
+Customer presses "Request Payment"
+       ↓
+Staff confirms payment (cash/transfer) in admin panel
+       ↓
+Session closed → customer sees "Thank you" screen
 ```
 
-Or set the env var first:
+### Key behaviours
 
-```bash
-export VITE_API_BASE_URL=https://api.mix-food.io.vn
-docker compose build
-```
+- **No login required** — the QR scan itself issues a short-lived session token automatically.
+- **Page refresh / tab restore** — if the session token is in `sessionStorage`, the app calls `/customer/session` to re-hydrate all state (table info, orders, messages).
+- **Multiple devices on same table** — all devices that scan the same QR join the same session and see the same orders.
+- **Returning via QR** — if the table already has an active session, the QR scan joins it (no duplicate sessions).
+- **Session expiry** — sessions expire after 8 hours. On expiry the customer sees a "Session ended" screen and can re-scan the QR.
+- **Session closed by admin** — a WebSocket event tells the app in real-time; the customer sees a "Payment confirmed" screen.
+- **Network error on submit** — the same idempotency key is re-sent on retry; the server returns the previously created order instead of creating a duplicate.
 
-### 2.2 Run
+### Real-time events (Socket.IO)
 
-```bash
-docker compose up -d
-```
+The app connects to `VITE_WS_URL` and joins the customer's session room. Handled events:
 
-The container serves the site on host port `8080 → 80` (nginx). Check it: `curl -I http://localhost:8080`.
-
-### 2.3 Reverse proxy (nginx)
-
-```nginx
-server {
-    listen 80;
-    server_name client.mix-food.io.vn;
-
-    location / {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Enable SSL with Certbot: `sudo certbot --nginx -d client.mix-food.io.vn`.
-
-> SPA routing is handled by nginx (`try_files ... /index.html`) via the bundled [`nginx.conf`](nginx.conf), so client-side routes work on refresh.
-
-### 2.4 Update / redeploy
-
-```bash
-git pull
-docker compose build --build-arg VITE_API_BASE_URL=https://api.mix-food.io.vn .
-docker compose up -d
-```
+| Event | Effect |
+|---|---|
+| `order.status_updated` | Updates order status badge live |
+| `message.received` | Shows new staff message in chat |
+| `payment.confirmed` | Shows "Payment confirmed, thank you!" screen |
+| `session.closed` | Shows session-ended screen |
 
 ---
 
@@ -143,8 +126,32 @@ docker compose up -d
 See [`.env.example`](.env.example).
 
 | Variable | Description |
-| --- | --- |
-| `VITE_API_BASE_URL` | Backend API base URL (inlined at build time) |
+|---|---|
+| `VITE_API_BASE_URL` | Backend API base URL (inlined at build) |
+| `VITE_WS_URL` | Socket.IO server URL (usually same as API) |
+
+---
+
+## 4. Build & run with Docker (production)
+
+The app is a **static site** — built with Vite and served by nginx.
+
+```bash
+docker compose build \
+  --build-arg VITE_API_BASE_URL=https://api.mix-food.io.vn \
+  --build-arg VITE_WS_URL=https://api.mix-food.io.vn
+docker compose up -d
+```
+
+The container serves the site on port `8080`. nginx handles SPA routing (`try_files ... /index.html`) so client-side routes work on refresh.
+
+For WebSocket support, add these headers to the nginx reverse proxy config:
+
+```nginx
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+```
 
 ---
 
