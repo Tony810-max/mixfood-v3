@@ -48,6 +48,25 @@ export const registerSchema = z.object({
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
 
+// Register step 1 - account details
+export const registerStep1Schema = registerSchema.omit({ verifyCode: true });
+
+// Register step 2 - email verification code
+export const registerStep2Schema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email address"),
+  verifyCode: z
+    .string()
+    .min(1, "Verification code is required")
+    .length(6, "Verification code must be exactly 6 digits")
+    .regex(/^\d+$/, "Verification code must contain only numbers"),
+});
+
+export type RegisterStep1FormData = z.infer<typeof registerStep1Schema>;
+export type RegisterStep2FormData = z.infer<typeof registerStep2Schema>;
+
 // Change password form schema
 export const changePasswordSchema = z.object({
   currentPassword: z
