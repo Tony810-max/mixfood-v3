@@ -6,82 +6,66 @@ interface ProfileHeaderProps {
   user: {
     name?: string;
     email?: string;
+    createdAt?: string;
   } | null;
 }
 
 export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   const { t } = useLanguage();
+
+  const memberSince = user?.createdAt
+    ? new Date(user.createdAt).getFullYear()
+    : new Date().getFullYear();
+
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 dark:from-orange-500/5 dark:via-amber-500/5 dark:to-orange-500/5" />
       <div className="absolute top-0 right-0 w-96 h-96 bg-orange-400/10 dark:bg-orange-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-400/10 dark:bg-amber-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-400/10 dark:bg-amber-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col lg:flex-row items-center gap-8"
+          className="flex flex-col sm:flex-row items-center sm:items-start gap-6"
         >
-          {/* Profile Avatar */}
+          {/* Avatar */}
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 20 }}
-            className="relative group"
+            className="relative shrink-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
-            <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 p-1 shadow-2xl border-4 border-white dark:border-orange-900/50">
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-orange-200 to-amber-200 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center overflow-hidden">
-                <User className="h-14 w-14 text-orange-600 dark:text-orange-400" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-500 rounded-full blur-xl opacity-25" />
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 p-1 shadow-2xl border-4 border-white dark:border-orange-900/50">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-orange-200 to-amber-200 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center">
+                <User className="h-12 w-12 sm:h-14 sm:w-14 text-orange-600 dark:text-orange-400" />
               </div>
             </div>
-            <div className="absolute bottom-1 right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-white dark:border-slate-900" />
+            <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-white dark:border-slate-900" />
           </motion.div>
 
           {/* User Info */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="text-center lg:text-left flex-1"
+            transition={{ delay: 0.35, duration: 0.5 }}
+            className="text-center sm:text-left flex-1 min-w-0"
           >
-            <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 bg-clip-text text-transparent">
-                {user?.name || t.headerUser}
-              </h1>
-              <div className="px-3 py-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold rounded-full shadow-md">
-                PRO
+            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 bg-clip-text text-transparent truncate mb-1">
+              {user?.name || t.headerUser}
+            </h1>
+            <p className="text-base text-muted-foreground mb-4 truncate">{user?.email}</p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                <span>{t.profileMemberSince} {memberSince}</span>
               </div>
-            </div>
-            <p className="text-lg text-muted-foreground mb-4">{user?.email}</p>
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-orange-500" />
-                <span>{t.profileMemberSince} 2024</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-orange-500" />
+              <div className="flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-orange-500 shrink-0" />
                 <span>{t.profileVerifiedAccount}</span>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Quick Stats */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="flex gap-4"
-          >
-            <div className="text-center px-6 py-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-orange-200 dark:border-orange-900/50">
-              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">12</div>
-              <div className="text-xs text-muted-foreground">{t.profileOrders}</div>
-            </div>
-            <div className="text-center px-6 py-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-orange-200 dark:border-orange-900/50">
-              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">4.8</div>
-              <div className="text-xs text-muted-foreground">{t.profileRating}</div>
             </div>
           </motion.div>
         </motion.div>

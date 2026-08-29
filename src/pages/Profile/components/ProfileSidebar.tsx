@@ -28,9 +28,9 @@ export const ProfileSidebar = ({
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
-      className="w-full xl:w-72"
+      className="w-full lg:w-64 shrink-0"
     >
-      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-6 sticky top-24">
+      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-5 lg:sticky lg:top-24">
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
           <Shield className="h-5 w-5 text-orange-500" />
           {labels.accountSettings}
