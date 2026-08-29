@@ -15,7 +15,7 @@ export const loginSchema = z.object({
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 // Register form schema
-export const registerSchema = z.object({
+const registerFields = {
   fullName: z
     .string()
     .min(1, "Full name is required")
@@ -41,15 +41,28 @@ export const registerSchema = z.object({
     .min(1, "Verification code is required")
     .length(6, "Verification code must be exactly 6 digits")
     .regex(/^\d+$/, "Verification code must contain only numbers"),
-}).refine((data) => data.password === data.confirmPassword, {
+} satisfies z.ZodRawShape;
+
+const passwordsMatch = (data: { password: string; confirmPassword: string }) =>
+  data.password === data.confirmPassword;
+
+const passwordMatchIssue = {
   message: "Passwords do not match",
   path: ["confirmPassword"],
-});
+};
+
+export const registerSchema = z
+  .object(registerFields)
+  .refine(passwordsMatch, passwordMatchIssue);
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
 
-// Register step 1 - account details
-export const registerStep1Schema = registerSchema.omit({ verifyCode: true });
+// Register step 1 - account details (no verification code, keeps password-match check)
+// Note: `.omit()` must be called on the ZodObject, not on the refined (ZodEffects) result.
+export const registerStep1Schema = z
+  .object(registerFields)
+  .omit({ verifyCode: true })
+  .refine(passwordsMatch, passwordMatchIssue);
 
 // Register step 2 - email verification code
 export const registerStep2Schema = z.object({
