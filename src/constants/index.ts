@@ -80,6 +80,14 @@ export const VALIDATION = {
   MIN_ADVANCE_BOOKING_MINUTES: 30,
 } as const;
 
+// Restaurant booking window (24h format, local time).
+// Reservations are not accepted within 1 hour of closing time.
+export const BOOKING_WINDOW = {
+  OPEN: "09:00",
+  CLOSE: "21:50",
+  LAST_BOOKING: "20:50",
+} as const;
+
 // Error messages
 export const ERROR_MESSAGES = {
   NETWORK_ERROR: "We could not reach the restaurant service. Please try again shortly.",

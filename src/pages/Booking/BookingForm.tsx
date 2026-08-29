@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/contexts/AuthContext"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useCreateReservation } from "@/hooks/api/useReservations"
-import { VALIDATION } from "@/constants"
+import { BOOKING_WINDOW, VALIDATION } from "@/constants"
 import { ROUTES } from "@/utils/const"
 import { logger } from "@/utils/logger"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -246,7 +246,7 @@ export const BookingForm = () => {
                       <Input
                         type="time"
                         min={minTime}
-                        max="21:50"
+                        max={BOOKING_WINDOW.LAST_BOOKING}
                         placeholder={t.bookingTimePlaceholder}
                         className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
                         {...field}
