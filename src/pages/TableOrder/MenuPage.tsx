@@ -1,13 +1,20 @@
 /**
  * MenuPage
  *
- * Displays the restaurant menu grouped by category, with a search box to
- * filter items by name and quick category chips to jump between sections.
+ * Displays the restaurant menu grouped by category, with a search box and a
+ * category select to narrow down a potentially long menu.
  * Reads menu data and cart actions from TableOrderContext.
  */
 
 import { useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useTableOrder } from './TableOrderContext';
 import { formatVND } from './helpers';
 
@@ -21,9 +28,14 @@ function normalize(text: string) {
 export default function MenuPage() {
   const { menu, cart, addToCart, updateQty } = useTableOrder();
   const [query, setQuery] = useState('');
-  const [activeCategoryId, setActiveCategoryId] = useState<number | 'all'>('all');
+  const [activeCategoryId, setActiveCategoryId] = useState<string>('all');
 
   const normalizedQuery = normalize(query.trim());
+
+  const categoriesWithItems = useMemo(
+    () => menu.filter((c) => c.products.some((p) => p.isActive)),
+    [menu],
+  );
 
   const filteredMenu = useMemo(() => {
     return menu
@@ -31,7 +43,7 @@ export default function MenuPage() {
         ...category,
         products: category.products.filter((p) => {
           if (!p.isActive) return false;
-          if (activeCategoryId !== 'all' && category.id !== activeCategoryId) return false;
+          if (activeCategoryId !== 'all' && String(category.id) !== activeCategoryId) return false;
           if (!normalizedQuery) return true;
           const name = (p.name as any)?.vn || (p.name as any)?.en || '';
           return normalize(name).includes(normalizedQuery);
@@ -40,29 +52,24 @@ export default function MenuPage() {
       .filter((category) => category.products.length > 0);
   }, [menu, normalizedQuery, activeCategoryId]);
 
-  const categoriesWithItems = useMemo(
-    () => menu.filter((c) => c.products.some((p) => p.isActive)),
-    [menu],
-  );
-
   const isEmpty = filteredMenu.length === 0;
 
   return (
     <div className="flex flex-col">
-      {/* Search bar */}
-      <div className="sticky top-0 z-10 bg-background p-4 pb-2 space-y-3">
+      {/* Search + filter bar */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm p-4 pb-3 space-y-2.5 border-b border-border/60">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Tìm món ăn…"
-            className="w-full h-10 pl-9 pr-9 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className="w-full h-11 pl-10 pr-9 rounded-2xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
               aria-label="Xóa tìm kiếm"
             >
               <X className="w-4 h-4" />
@@ -70,45 +77,38 @@ export default function MenuPage() {
           )}
         </div>
 
-        {/* Category chips */}
         {categoriesWithItems.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4">
-            <button
-              onClick={() => setActiveCategoryId('all')}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                activeCategoryId === 'all'
-                  ? 'bg-primary text-white border-primary'
-                  : 'bg-card text-muted-foreground border-border'
-              }`}
-            >
-              Tất cả
-            </button>
-            {categoriesWithItems.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategoryId(category.id)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                  activeCategoryId === category.id
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-card text-muted-foreground border-border'
-                }`}
-              >
-                {(category.name as any)?.vn || (category.name as any)?.en}
-              </button>
-            ))}
-          </div>
+          <Select value={activeCategoryId} onValueChange={setActiveCategoryId}>
+            <SelectTrigger className="h-9 rounded-xl text-sm bg-card border-border">
+              <SelectValue placeholder="Danh mục" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả danh mục</SelectItem>
+              {categoriesWithItems.map((category) => (
+                <SelectItem key={category.id} value={String(category.id)}>
+                  {(category.name as any)?.vn || (category.name as any)?.en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       </div>
 
       {/* Results */}
-      <div className="p-4 pt-2 space-y-6">
+      <div className="p-4 pt-3 space-y-6">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-            <Search className="w-10 h-10 mb-3 opacity-50" />
+            <Search className="w-10 h-10 mb-3 opacity-40" />
             <p className="text-sm">Không tìm thấy món ăn phù hợp</p>
-            {query && (
-              <button onClick={() => setQuery('')} className="mt-3 text-sm text-primary font-medium">
-                Xóa tìm kiếm
+            {(query || activeCategoryId !== 'all') && (
+              <button
+                onClick={() => {
+                  setQuery('');
+                  setActiveCategoryId('all');
+                }}
+                className="mt-3 text-sm text-primary font-medium"
+              >
+                Xóa bộ lọc
               </button>
             )}
           </div>
@@ -118,20 +118,24 @@ export default function MenuPage() {
               <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3">
                 {(category.name as any)?.vn || (category.name as any)?.en}
               </h2>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {category.products.map((product) => {
                   const cartItem = cart.find((c) => c.productId === product.id);
                   return (
                     <div
                       key={product.id}
-                      className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card"
+                      className={`flex items-center gap-3 p-3 rounded-2xl border bg-card shadow-layered transition-colors ${
+                        cartItem ? 'border-primary/40' : 'border-border'
+                      }`}
                     >
-                      {product.image && (
+                      {product.image ? (
                         <img
                           src={product.image}
                           alt=""
-                          className="w-16 h-16 rounded-lg object-cover shrink-0"
+                          className="w-16 h-16 rounded-xl object-cover shrink-0"
                         />
+                      ) : (
+                        <div className="w-16 h-16 rounded-xl bg-muted shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-foreground truncate">

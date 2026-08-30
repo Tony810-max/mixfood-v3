@@ -7,7 +7,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useTableOrder } from './TableOrderContext';
-import { formatVND, ORDER_STATUS_LABEL } from './helpers';
+import { formatVND, ORDER_STATUS_LABEL, ORDER_STATUS_STYLE } from './helpers';
 
 export default function OrdersPage() {
   const { orders } = useTableOrder();
@@ -19,49 +19,52 @@ export default function OrdersPage() {
   return (
     <div className="p-4 space-y-3">
       {nonCancelledOrders.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-center py-14 text-muted-foreground">
           <p className="text-4xl mb-3">🍽️</p>
-          <p>Chưa có món nào được gọi</p>
+          <p className="text-sm">Chưa có món nào được gọi</p>
           <Button className="mt-4" size="sm" onClick={() => navigate('../menu', { relative: 'path' })}>
             Xem thực đơn
           </Button>
         </div>
       )}
-      {nonCancelledOrders.map((order) => (
-        <div
-          key={order.id}
-          className="rounded-xl border border-border bg-card p-4 space-y-2"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold">Đơn #{order.id}</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-              {ORDER_STATUS_LABEL[order.status] ?? order.status}
-            </span>
-          </div>
-          {order.items.map((item) => (
-            <div
-              key={item.id}
-              className="flex justify-between text-sm text-muted-foreground"
-            >
-              <span>
-                {item.quantity}×{' '}
-                {(item.productNameSnapshot as any)?.vn ||
-                  (item.productNameSnapshot as any)?.en}
-                {item.notes && (
-                  <span className="italic ml-1 text-xs">({item.notes})</span>
-                )}
+      {nonCancelledOrders.map((order) => {
+        const style = ORDER_STATUS_STYLE[order.status] ?? ORDER_STATUS_STYLE.PENDING;
+        return (
+          <div
+            key={order.id}
+            className={`rounded-2xl border border-l-4 ${style.border} border-border bg-card shadow-layered p-4 space-y-2`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-bold text-foreground">Đơn #{order.id}</span>
+              <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${style.badge}`}>
+                {ORDER_STATUS_LABEL[order.status] ?? order.status}
               </span>
-              <span>{formatVND(item.subtotal)}</span>
             </div>
-          ))}
-          <div className="flex justify-between text-sm font-semibold pt-1 border-t border-border">
-            <span>Tổng đơn</span>
-            <span className="text-primary">{formatVND(order.total)}</span>
+            {order.items.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between text-sm text-muted-foreground"
+              >
+                <span>
+                  {item.quantity}×{' '}
+                  {(item.productNameSnapshot as any)?.vn ||
+                    (item.productNameSnapshot as any)?.en}
+                  {item.notes && (
+                    <span className="italic ml-1 text-xs">({item.notes})</span>
+                  )}
+                </span>
+                <span>{formatVND(item.subtotal)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between text-sm font-semibold pt-1 border-t border-border">
+              <span>Tổng đơn</span>
+              <span className="text-primary">{formatVND(order.total)}</span>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       {nonCancelledOrders.length > 0 && (
-        <div className="rounded-xl bg-muted p-4 flex justify-between font-bold">
+        <div className="rounded-2xl bg-muted p-4 flex justify-between font-bold sticky bottom-0">
           <span>Tổng cộng</span>
           <span className="text-primary">{formatVND(sessionTotal)}</span>
         </div>

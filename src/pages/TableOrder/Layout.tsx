@@ -69,31 +69,42 @@ export default function TableOrderLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto relative">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <header className="bg-primary text-white px-4 pt-safe-top pb-3">
+      <header className="bg-primary-gradient text-white px-4 pt-safe-top pb-4 rounded-b-2xl shadow-layered">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs opacity-80">Mix Food</p>
-            <h1 className="text-base font-bold">
-              Bàn {table?.tableNumber}
-              {table?.name ? ` · ${table.name}` : ''}
-            </h1>
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 font-bold">
+              {table?.tableNumber}
+            </div>
+            <div>
+              <p className="text-[11px] opacity-80 leading-none">Mix Food</p>
+              <h1 className="text-base font-bold leading-tight mt-0.5">
+                Bàn {table?.tableNumber}
+                {table?.name ? ` · ${table.name}` : ''}
+              </h1>
+            </div>
           </div>
           <div className="text-right">
-            <p className="text-xs opacity-80">Tổng</p>
-            <p className="text-sm font-bold">{formatVND(sessionTotal)}</p>
+            <p className="text-[11px] opacity-80 leading-none">Tổng</p>
+            <p className="text-sm font-bold mt-0.5 tabular-nums">{formatVND(sessionTotal)}</p>
           </div>
         </div>
       </header>
 
-      {/* ── Payment status banners ───────────────────────────────────────────── */}
+      {/* ── Payment status banners — surfaced right under the header ────────── */}
       {paymentRequested && !paymentPaid && (
-        <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-2 text-sm text-yellow-800 font-medium">
-          💰 Đang chờ nhân viên xác nhận thanh toán…
+        <div className="mx-4 mt-3 flex items-center gap-2.5 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-3.5 py-2.5">
+          <div className="w-4 h-4 rounded-full border-2 border-yellow-500 border-t-transparent animate-spin shrink-0" />
+          <p className="text-sm text-yellow-800 dark:text-yellow-300 font-medium">
+            Đang chờ nhân viên xác nhận thanh toán…
+          </p>
         </div>
       )}
       {paymentPaid && (
-        <div className="bg-green-50 border-b border-green-200 px-4 py-2 text-sm text-green-800 font-medium">
-          ✅ Đã thanh toán! Cảm ơn bạn.
+        <div className="mx-4 mt-3 flex items-center gap-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-3.5 py-2.5">
+          <span className="text-base shrink-0">✅</span>
+          <p className="text-sm text-green-800 dark:text-green-300 font-medium">
+            Đã thanh toán! Cảm ơn bạn.
+          </p>
         </div>
       )}
 
@@ -106,9 +117,12 @@ export default function TableOrderLayout() {
       {cart.length > 0 && !cartOpen && (
         <button
           onClick={() => setCartOpen(true)}
-          className="fixed bottom-24 right-4 flex items-center gap-2 bg-primary text-white rounded-full px-4 py-3 shadow-lg text-sm font-semibold z-20"
+          className="fixed bottom-24 right-4 flex items-center gap-2 bg-primary-gradient text-white rounded-full pl-3 pr-4 py-3 shadow-layered-hover text-sm font-semibold z-20"
         >
-          🛒 {cartCount} món · {formatVND(cartTotal)}
+          <span className="w-6 h-6 rounded-full bg-white/25 flex items-center justify-center text-xs">
+            {cartCount}
+          </span>
+          🛒 {formatVND(cartTotal)}
         </button>
       )}
 
@@ -119,14 +133,16 @@ export default function TableOrderLayout() {
           onClick={() => setCartOpen(false)}
         >
           <div
-            className="absolute bottom-0 left-0 right-0 max-w-lg mx-auto bg-background rounded-t-2xl p-5 space-y-4 max-h-[80vh] overflow-y-auto"
+            className="absolute bottom-0 left-0 right-0 max-w-lg mx-auto bg-background rounded-t-3xl p-5 space-y-4 max-h-[80vh] overflow-y-auto shadow-layered-hover"
             onClick={(e) => e.stopPropagation()}
           >
+            <div className="w-10 h-1 rounded-full bg-muted mx-auto -mt-1" />
+
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-foreground">Giỏ hàng</h3>
+              <h3 className="font-bold text-foreground text-lg">Giỏ hàng</h3>
               <button
                 onClick={() => setCartOpen(false)}
-                className="text-muted-foreground text-2xl leading-none"
+                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xl leading-none"
               >
                 ×
               </button>
@@ -134,16 +150,16 @@ export default function TableOrderLayout() {
 
             <div className="space-y-3">
               {cart.map((item) => (
-                <div key={item.productId} className="flex items-center gap-3">
+                <div key={item.productId} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
                       {item.name.vn || item.name.en}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-primary font-semibold">
                       {formatVND(item.price)} / món
                     </p>
                     <input
-                      className="mt-1 w-full text-xs border border-border rounded px-2 py-1 bg-background text-foreground"
+                      className="mt-1.5 w-full text-xs border border-border rounded-lg px-2 py-1.5 bg-background text-foreground"
                       placeholder="Ghi chú (không bắt buộc)"
                       value={item.notes}
                       onChange={(e) =>
@@ -180,14 +196,14 @@ export default function TableOrderLayout() {
 
             <div>
               <input
-                className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground"
+                className="w-full text-sm border border-border rounded-xl px-3 py-2.5 bg-background text-foreground"
                 placeholder="Ghi chú cho đơn hàng…"
                 value={orderNotes}
                 onChange={(e) => setOrderNotes(e.target.value)}
               />
             </div>
 
-            <div className="flex justify-between font-bold text-base">
+            <div className="flex justify-between font-bold text-base rounded-xl bg-muted px-4 py-3">
               <span>Tổng</span>
               <span className="text-primary">{formatVND(cartTotal)}</span>
             </div>
@@ -205,8 +221,8 @@ export default function TableOrderLayout() {
       )}
 
       {/* ── Bottom Nav ───────────────────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-background border-t border-border z-10">
-        <div className="grid grid-cols-4">
+      <nav className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-background border-t border-border z-10 rounded-t-2xl shadow-layered">
+        <div className="grid grid-cols-4 px-1.5 pt-1.5">
           {[
             { id: 'menu', label: 'Thực đơn', emoji: '🍜' },
             {
@@ -226,14 +242,14 @@ export default function TableOrderLayout() {
             <button
               key={id}
               onClick={() => navigate(id)}
-              className={`flex flex-col items-center gap-0.5 py-3 relative transition-colors ${
-                activeTab === id ? 'text-primary' : 'text-muted-foreground'
+              className={`flex flex-col items-center gap-0.5 py-2.5 relative rounded-xl transition-colors ${
+                activeTab === id ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
               }`}
             >
               <span className="text-xl leading-none">{emoji}</span>
               <span className="text-[10px] font-medium">{label}</span>
               {badge !== undefined && badge > 0 && (
-                <span className="absolute top-2 right-6 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                <span className="absolute top-1 right-4 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
                   {badge}
                 </span>
               )}
@@ -242,19 +258,22 @@ export default function TableOrderLayout() {
         </div>
 
         {/* Staff call buttons */}
-        <div className="border-t border-border flex">
+        <div className="border-t border-border/60 flex px-1.5 py-1.5 gap-1.5 mt-1">
           <button
-            className={`flex-1 py-2 text-xs font-medium flex items-center justify-center gap-1.5 ${
-              pendingCallTypes.has('CALL_STAFF') ? 'text-orange-500' : 'text-muted-foreground'
+            className={`flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors ${
+              pendingCallTypes.has('CALL_STAFF')
+                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                : 'bg-muted text-muted-foreground'
             }`}
             onClick={() => handleCallStaff('CALL_STAFF')}
           >
             🔔 {pendingCallTypes.has('CALL_STAFF') ? 'Đã gọi' : 'Gọi nhân viên'}
           </button>
-          <div className="w-px bg-border" />
           <button
-            className={`flex-1 py-2 text-xs font-medium flex items-center justify-center gap-1.5 ${
-              pendingCallTypes.has('REQUEST_BILL') ? 'text-yellow-600' : 'text-muted-foreground'
+            className={`flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors ${
+              pendingCallTypes.has('REQUEST_BILL')
+                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                : 'bg-muted text-muted-foreground'
             }`}
             onClick={() => {
               handleCallStaff('REQUEST_BILL');

@@ -6,6 +6,7 @@
  * from context. This page only renders the message list and scroll target.
  */
 
+import { MessageCircle } from 'lucide-react';
 import { useTableOrder } from './TableOrderContext';
 
 export default function ChatPage() {
@@ -13,11 +14,12 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-full p-4">
-      <div className="flex-1 space-y-2 min-h-64">
+      <div className="flex-1 space-y-2.5 min-h-64">
         {messages.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-8">
-            Nhắn tin cho nhân viên…
-          </p>
+          <div className="flex flex-col items-center justify-center py-14 text-center text-muted-foreground">
+            <MessageCircle className="w-10 h-10 mb-3 opacity-40" />
+            <p className="text-sm">Nhắn tin cho nhân viên…</p>
+          </div>
         )}
         {messages.map((msg) => (
           <div
@@ -25,14 +27,14 @@ export default function ChatPage() {
             className={`flex ${msg.senderType === 'CUSTOMER' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${
+              className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm shadow-layered ${
                 msg.senderType === 'CUSTOMER'
                   ? 'bg-primary text-white rounded-br-sm'
-                  : 'bg-muted text-foreground rounded-bl-sm'
+                  : 'bg-card border border-border text-foreground rounded-bl-sm'
               }`}
             >
               {msg.senderType !== 'CUSTOMER' && (
-                <p className="text-xs opacity-70 mb-0.5">Nhân viên</p>
+                <p className="text-xs font-semibold text-primary mb-0.5">Nhân viên</p>
               )}
               <p>{msg.message}</p>
               <p
