@@ -15,17 +15,39 @@ interface StepProgressProps {
 }
 
 export const StepProgress = ({ currentStep, steps, className }: StepProgressProps) => {
+  const n = steps.length;
+  // Half a column's width, as a percentage of the row — this is exactly
+  // the horizontal offset from the row edge to the first/last circle's
+  // center. Using a fixed rem inset here (the previous attempt) only
+  // works if every column is exactly as wide as the circle; in practice
+  // each column's width is set by its (wider) label text, so the circle
+  // ends up centered somewhere past that fixed offset — which is exactly
+  // why a stray bit of line kept poking out to the left of the first step.
+  // A CSS grid with equal-width columns removes that assumption entirely:
+  // column i is always centered at (i + 0.5) / n of the row, full stop.
+  const halfColumn = `${50 / n}%`;
+
   return (
     <div className={cn("w-full mb-8", className)}>
-      <div className="flex items-center justify-between relative">
-        {/* Progress line */}
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-700 -translate-y-1/2 rounded-full" />
-        <motion.div
-          className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-500 -translate-y-1/2 rounded-full"
-          initial={{ width: '0%' }}
-          animate={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-        />
+      <div
+        className="relative grid items-start"
+        style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
+      >
+        {/* Progress line track — spans center-to-center between the first
+            and last column, so it starts/ends exactly under those circles
+            regardless of how wide each step's label text is. */}
+        <div
+          className="absolute top-6 h-0.5 -translate-y-1/2"
+          style={{ left: halfColumn, right: halfColumn }}
+        >
+          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 rounded-full" />
+          <motion.div
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"
+            initial={{ width: '0%' }}
+            animate={{ width: `${((currentStep - 1) / (n - 1)) * 100}%` }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+          />
+        </div>
 
         {/* Steps */}
         {steps.map((step, index) => {

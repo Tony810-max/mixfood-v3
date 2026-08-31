@@ -12,6 +12,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTableSession } from '@/contexts/TableSessionContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { QuantityStepper } from '@/components/ui/quantity-stepper';
 import { useTableOrder } from './TableOrderContext';
 import { formatVND } from './helpers';
 
@@ -67,9 +68,16 @@ export default function TableOrderLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto relative">
+    // h-dvh (not min-h-screen) so this container never grows past the visible
+    // viewport — that's what makes the tab-content div below the sole
+    // scroller. With min-h-screen the container could grow taller than the
+    // viewport and the whole page (header included) would scroll instead.
+    <div className="h-dvh bg-background flex flex-col max-w-lg mx-auto relative">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <header className="bg-primary-gradient text-white px-4 pt-safe-top pb-4 rounded-b-2xl shadow-layered">
+      <header
+        className="sticky top-0 z-20 shrink-0 bg-primary-gradient text-white px-4 pb-4 rounded-b-2xl shadow-layered"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1.25rem)' }}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 font-bold">
@@ -92,7 +100,7 @@ export default function TableOrderLayout() {
 
       {/* ── Payment status banners — surfaced right under the header ────────── */}
       {paymentRequested && !paymentPaid && (
-        <div className="mx-4 mt-3 flex items-center gap-2.5 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-3.5 py-2.5">
+        <div className="mx-4 mt-3 shrink-0 flex items-center gap-2.5 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-3.5 py-2.5">
           <div className="w-4 h-4 rounded-full border-2 border-yellow-500 border-t-transparent animate-spin shrink-0" />
           <p className="text-sm text-yellow-800 dark:text-yellow-300 font-medium">
             Đang chờ nhân viên xác nhận thanh toán…
@@ -100,7 +108,7 @@ export default function TableOrderLayout() {
         </div>
       )}
       {paymentPaid && (
-        <div className="mx-4 mt-3 flex items-center gap-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-3.5 py-2.5">
+        <div className="mx-4 mt-3 shrink-0 flex items-center gap-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-3.5 py-2.5">
           <span className="text-base shrink-0">✅</span>
           <p className="text-sm text-green-800 dark:text-green-300 font-medium">
             Đã thanh toán! Cảm ơn bạn.
@@ -109,7 +117,10 @@ export default function TableOrderLayout() {
       )}
 
       {/* ── Tab content ─────────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto pb-32">
+      {/* min-h-0 overrides the flex item's default min-height:auto, which
+          would otherwise let this div grow to fit its content instead of
+          being clipped to the remaining space and scrolling internally. */}
+      <div className="flex-1 min-h-0 overflow-y-auto pb-32">
         <Outlet />
       </div>
 
@@ -173,23 +184,12 @@ export default function TableOrderLayout() {
                       }
                     />
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      className="w-7 h-7 rounded-full border border-border flex items-center justify-center"
-                      onClick={() => updateQty(item.productId, item.quantity - 1)}
-                    >
-                      −
-                    </button>
-                    <span className="w-5 text-center text-sm font-semibold">
-                      {item.quantity}
-                    </span>
-                    <button
-                      className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center"
-                      onClick={() => updateQty(item.productId, item.quantity + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
+                  <QuantityStepper
+                    className="shrink-0"
+                    value={item.quantity}
+                    onChange={(qty) => updateQty(item.productId, qty)}
+                    max={99}
+                  />
                 </div>
               ))}
             </div>

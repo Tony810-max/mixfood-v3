@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { QuantityStepper } from '@/components/ui/quantity-stepper';
 import { useTableOrder } from './TableOrderContext';
 import { formatVND } from './helpers';
 
@@ -146,23 +147,12 @@ export default function MenuPage() {
                         </p>
                       </div>
                       {cartItem ? (
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-foreground hover:bg-muted"
-                            onClick={() => updateQty(product.id, cartItem.quantity - 1)}
-                          >
-                            −
-                          </button>
-                          <span className="w-5 text-center text-sm font-semibold">
-                            {cartItem.quantity}
-                          </span>
-                          <button
-                            className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center"
-                            onClick={() => addToCart(product)}
-                          >
-                            +
-                          </button>
-                        </div>
+                        <QuantityStepper
+                          className="shrink-0"
+                          value={cartItem.quantity}
+                          onChange={(qty) => updateQty(product.id, qty)}
+                          max={99}
+                        />
                       ) : (
                         <button
                           className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0"

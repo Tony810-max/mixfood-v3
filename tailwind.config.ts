@@ -91,8 +91,13 @@ export default {
       },
       spacing: {
         "72": "18rem",
-        "safe-top": "env(safe-area-inset-top)",
-        "safe-bottom": "env(safe-area-inset-bottom)",
+        // max(..., Npx) so there's always a little breathing room even
+        // where env(safe-area-inset-*) resolves to 0 (desktop browsers,
+        // most mobile browser chrome, non-notch devices) — relying on the
+        // env() value alone made the top/bottom bars look just as flush
+        // as before on anything but an actual notched PWA.
+        "safe-top": "max(env(safe-area-inset-top), 0.75rem)",
+        "safe-bottom": "max(env(safe-area-inset-bottom), 0.75rem)",
       },
     },
   },
