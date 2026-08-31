@@ -10,16 +10,11 @@ export const bookingSchema = z.object({
     required_error: "Vui lòng chọn ngày đặt bàn",
   }),
   time: z.string().min(1, "Vui lòng chọn giờ"),
-  guests: z.string().min(1, "Vui lòng nhập số lượng khách").transform((val) => {
-    const num = parseInt(val);
-    if (isNaN(num) || num < 1) {
-      throw new Error("Số lượng khách phải ít nhất 1");
-    }
-    if (num > 50) {
-      throw new Error("Số lượng khách tối đa 50");
-    }
-    return num;
-  }),
+  guests: z.coerce
+    .number({ required_error: "Vui lòng nhập số lượng khách", invalid_type_error: "Vui lòng nhập số lượng khách" })
+    .int()
+    .min(1, "Số lượng khách phải ít nhất 1")
+    .max(50, "Số lượng khách tối đa 50"),
   specialRequests: z.string().max(500, "Yêu cầu đặc biệt không được quá 500 ký tự").optional(),
 }).refine((data) => {
   // Combine date and time to create full datetime

@@ -259,20 +259,40 @@ export function TableOrderProvider({
 
   const sendChat = async (text: string) => {
     if (!sessionToken || !text.trim()) return;
-    const msg = await sendMessage(sessionToken, text.trim());
-    setMessages((prev) => [...prev, { ...msg, senderType: 'CUSTOMER' }]);
+    try {
+      let msg;
+      try {
+        msg = await sendMessage(sessionToken, text.trim());
+      } catch {
+        // One silent retry — masks a transient timeout/cold-start blip
+        // instead of the user having to notice the failure and resend.
+        msg = await sendMessage(sessionToken, text.trim());
+      }
+      setMessages((prev) => [...prev, { ...msg, senderType: 'CUSTOMER' }]);
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Gửi tin nhắn thất bại. Vui lòng thử lại.');
+    }
   };
 
   // ── Staff calls ─────────────────────────────────────────────────────────────
 
   const handleCallStaff = async (type: string) => {
     if (!sessionToken) return;
-    const call = await callStaff(sessionToken, type);
-    setStaffCalls((prev) => [
-      ...prev.filter((c) => c.type !== type || c.status === 'RESOLVED'),
-      call,
-    ]);
-    alert('✅ Nhân viên đã được thông báo!');
+    try {
+      let call;
+      try {
+        call = await callStaff(sessionToken, type);
+      } catch {
+        call = await callStaff(sessionToken, type);
+      }
+      setStaffCalls((prev) => [
+        ...prev.filter((c) => c.type !== type || c.status === 'RESOLVED'),
+        call,
+      ]);
+      alert('✅ Nhân viên đã được thông báo!');
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
+    }
   };
 
   // ── Payment request ─────────────────────────────────────────────────────────

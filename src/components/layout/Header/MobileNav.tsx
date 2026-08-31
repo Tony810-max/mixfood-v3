@@ -57,7 +57,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
               className="fixed inset-0 bg-gradient-to-b from-background via-background to-secondary/20 z-[60] md:hidden flex flex-col"
             >
               {/* Safe Area Top */}
-              <div className="safe-area-top" />
+              <div className="pt-safe-top" />
 
               {/* Header */}
               <div className="flex items-center justify-between p-4 pt-6 border-b border-border/50 bg-background/80 backdrop-blur-lg">

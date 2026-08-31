@@ -221,7 +221,7 @@ export default function TableOrderLayout() {
       )}
 
       {/* ── Bottom Nav ───────────────────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-background border-t border-border z-10 rounded-t-2xl shadow-layered">
+      <nav className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-background border-t border-border z-10 rounded-t-2xl shadow-layered pb-safe-bottom">
         <div className="grid grid-cols-4 px-1.5 pt-1.5">
           {[
             { id: 'menu', label: 'Thực đơn', emoji: '🍜' },
