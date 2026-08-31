@@ -1,309 +1,216 @@
-/**
- * TableOrderLayout
- *
- * Wraps all tab pages. Renders the shared header, payment banners, floating cart
- * button, cart sheet, bottom nav (with staff-call row), and the chat input.
- *
- * <Outlet /> renders whichever tab route is active.
- */
+import { FormEvent, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  BellRing,
+  CheckCircle2,
+  ClipboardList,
+  ConciergeBell,
+  LoaderCircle,
+  MessageCircle,
+  ReceiptText,
+  Send,
+  ShoppingBag,
+  UtensilsCrossed,
+} from "lucide-react";
+import { useTableSession } from "@/contexts/TableSessionContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { useTableOrder } from "./TableOrderContext";
+import { formatVND } from "./helpers";
 
-import { useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useTableSession } from '@/contexts/TableSessionContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { QuantityStepper } from '@/components/ui/quantity-stepper';
-import { useTableOrder } from './TableOrderContext';
-import { formatVND } from './helpers';
+const tabs = [
+  { id: "menu", label: "Thực đơn", icon: UtensilsCrossed },
+  { id: "orders", label: "Đơn món", icon: ClipboardList },
+  { id: "chat", label: "Hỗ trợ", icon: MessageCircle },
+  { id: "bill", label: "Thanh toán", icon: ReceiptText },
+] as const;
 
 export default function TableOrderLayout() {
   const { table } = useTableSession();
   const {
-    orders,
-    messages,
-    staffCalls,
-    paymentRequested,
-    paymentPaid,
-    cart,
-    setCart,
-    cartOpen,
-    setCartOpen,
-    cartTotal,
-    cartCount,
-    orderNotes,
-    setOrderNotes,
-    submitting,
-    updateQty,
-    submitOrder,
-    handleCallStaff,
-    sendChat,
+    orders, staffCalls, paymentRequested, paymentPaid, cart, setCart, cartOpen,
+    setCartOpen, cartTotal, cartCount, orderNotes, setOrderNotes, submitting,
+    updateQty, submitOrder, handleCallStaff, sendChat,
   } = useTableOrder();
-
-  const location = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [chatInput, setChatInput] = useState("");
 
-  // Derive active tab from the last path segment
-  const activeTab = location.pathname.split('/').pop() as
-    | 'menu'
-    | 'orders'
-    | 'chat'
-    | 'bill';
-
-  // Local chat input state — lives here because the input is in the bottom nav
-  const [chatInput, setChatInput] = useState('');
-
-  const nonCancelledOrders = orders.filter((o) => o.status !== 'CANCELLED');
-  const sessionTotal = nonCancelledOrders.reduce((sum, o) => sum + o.total, 0);
+  const activeTab = pathname.split("/").pop() ?? "menu";
+  const activeOrders = orders.filter((order) => order.status !== "CANCELLED");
+  const sessionTotal = activeOrders.reduce((sum, order) => sum + order.total, 0);
   const pendingCallTypes = new Set(
     staffCalls
-      .filter((c) => c.status === 'PENDING' || c.status === 'ACKNOWLEDGED')
-      .map((c) => c.type),
+      .filter((call) => call.status === "PENDING" || call.status === "ACKNOWLEDGED")
+      .map((call) => call.type),
   );
 
-  const handleSendChat = async () => {
-    if (!chatInput.trim()) return;
-    const text = chatInput;
-    setChatInput('');
-    await sendChat(text);
+  const handleSendChat = async (event?: FormEvent) => {
+    event?.preventDefault();
+    const message = chatInput.trim();
+    if (!message) return;
+    setChatInput("");
+    await sendChat(message);
   };
 
   return (
-    // h-dvh (not min-h-screen) so this container never grows past the visible
-    // viewport — that's what makes the tab-content div below the sole
-    // scroller. With min-h-screen the container could grow taller than the
-    // viewport and the whole page (header included) would scroll instead.
-    <div className="h-dvh bg-background flex flex-col max-w-lg mx-auto relative">
-      {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <header
-        className="sticky top-0 z-20 shrink-0 bg-primary-gradient text-white px-4 pb-4 rounded-b-2xl shadow-layered"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1.25rem)' }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 font-bold">
+    <div className="relative mx-auto flex h-dvh max-w-lg flex-col overflow-hidden bg-background shadow-2xl">
+      <header className="z-20 shrink-0 border-b border-white/15 bg-primary-gradient px-4 pb-4 text-primary-foreground pt-safe-top">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/15 text-sm font-bold ring-1 ring-white/25">
               {table?.tableNumber}
             </div>
-            <div>
-              <p className="text-[11px] opacity-80 leading-none">Mix Food</p>
-              <h1 className="text-base font-bold leading-tight mt-0.5">
-                Bàn {table?.tableNumber}
-                {table?.name ? ` · ${table.name}` : ''}
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">Mix Food · Gọi món tại bàn</p>
+              <h1 className="truncate text-base font-bold text-white">
+                Bàn {table?.tableNumber}{table?.name ? ` · ${table.name}` : ""}
               </h1>
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-[11px] opacity-80 leading-none">Tổng</p>
-            <p className="text-sm font-bold mt-0.5 tabular-nums">{formatVND(sessionTotal)}</p>
+          <div className="shrink-0 text-right">
+            <p className="text-[11px] text-white/70">Tạm tính</p>
+            <p className="text-sm font-bold tabular-nums text-white">{formatVND(sessionTotal)}</p>
           </div>
         </div>
       </header>
 
-      {/* ── Payment status banners — surfaced right under the header ────────── */}
-      {paymentRequested && !paymentPaid && (
-        <div className="mx-4 mt-3 shrink-0 flex items-center gap-2.5 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-3.5 py-2.5">
-          <div className="w-4 h-4 rounded-full border-2 border-yellow-500 border-t-transparent animate-spin shrink-0" />
-          <p className="text-sm text-yellow-800 dark:text-yellow-300 font-medium">
-            Đang chờ nhân viên xác nhận thanh toán…
-          </p>
-        </div>
-      )}
-      {paymentPaid && (
-        <div className="mx-4 mt-3 shrink-0 flex items-center gap-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-3.5 py-2.5">
-          <span className="text-base shrink-0">✅</span>
-          <p className="text-sm text-green-800 dark:text-green-300 font-medium">
-            Đã thanh toán! Cảm ơn bạn.
-          </p>
-        </div>
-      )}
-
-      {/* ── Tab content ─────────────────────────────────────────────────────── */}
-      {/* min-h-0 overrides the flex item's default min-height:auto, which
-          would otherwise let this div grow to fit its content instead of
-          being clipped to the remaining space and scrolling internally. */}
-      <div className="flex-1 min-h-0 overflow-y-auto pb-32">
-        <Outlet />
-      </div>
-
-      {/* ── Floating Cart Button ─────────────────────────────────────────────── */}
-      {cart.length > 0 && !cartOpen && (
-        <button
-          onClick={() => setCartOpen(true)}
-          className="fixed bottom-24 right-4 flex items-center gap-2 bg-primary-gradient text-white rounded-full pl-3 pr-4 py-3 shadow-layered-hover text-sm font-semibold z-20"
-        >
-          <span className="w-6 h-6 rounded-full bg-white/25 flex items-center justify-center text-xs">
-            {cartCount}
-          </span>
-          🛒 {formatVND(cartTotal)}
-        </button>
-      )}
-
-      {/* ── Cart Sheet ───────────────────────────────────────────────────────── */}
-      {cartOpen && (
+      {paymentRequested && (
         <div
-          className="fixed inset-0 z-30 bg-black/50"
-          onClick={() => setCartOpen(false)}
+          className={cn(
+            "mx-4 mt-3 flex shrink-0 items-center gap-2.5 rounded-xl border px-3.5 py-2.5 text-sm font-medium",
+            paymentPaid
+              ? "border-success/25 bg-success/10 text-success"
+              : "border-warning/30 bg-warning/10 text-warning-foreground",
+          )}
+          role="status"
+          aria-live="polite"
         >
-          <div
-            className="absolute bottom-0 left-0 right-0 max-w-lg mx-auto bg-background rounded-t-3xl p-5 pb-safe-bottom space-y-4 max-h-[80vh] overflow-y-auto shadow-layered-hover"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="w-10 h-1 rounded-full bg-muted mx-auto -mt-1" />
-
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-foreground text-lg">Giỏ hàng</h3>
-              <button
-                onClick={() => setCartOpen(false)}
-                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xl leading-none"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {cart.map((item) => (
-                <div key={item.productId} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">
-                      {item.name.vn || item.name.en}
-                    </p>
-                    <p className="text-xs text-primary font-semibold">
-                      {formatVND(item.price)} / món
-                    </p>
-                    <input
-                      className="mt-1.5 w-full text-xs border border-border rounded-lg px-2 py-1.5 bg-background text-foreground"
-                      placeholder="Ghi chú (không bắt buộc)"
-                      value={item.notes}
-                      onChange={(e) =>
-                        setCart((prev) =>
-                          prev.map((c) =>
-                            c.productId === item.productId
-                              ? { ...c, notes: e.target.value }
-                              : c,
-                          ),
-                        )
-                      }
-                    />
-                  </div>
-                  <QuantityStepper
-                    className="shrink-0"
-                    value={item.quantity}
-                    onChange={(qty) => updateQty(item.productId, qty)}
-                    max={99}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <input
-                className="w-full text-sm border border-border rounded-xl px-3 py-2.5 bg-background text-foreground"
-                placeholder="Ghi chú cho đơn hàng…"
-                value={orderNotes}
-                onChange={(e) => setOrderNotes(e.target.value)}
-              />
-            </div>
-
-            <div className="flex justify-between font-bold text-base rounded-xl bg-muted px-4 py-3">
-              <span>Tổng</span>
-              <span className="text-primary">{formatVND(cartTotal)}</span>
-            </div>
-
-            <Button
-              className="w-full"
-              size="lg"
-              onClick={submitOrder}
-              disabled={submitting || cart.length === 0}
-            >
-              {submitting ? 'Đang đặt món…' : `Đặt món (${formatVND(cartTotal)})`}
-            </Button>
-          </div>
+          {paymentPaid ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <LoaderCircle className="h-4 w-4 shrink-0 animate-spin" />}
+          {paymentPaid ? "Đã thanh toán · Cảm ơn bạn!" : "Đang chờ nhân viên xác nhận thanh toán"}
         </div>
       )}
 
-      {/* ── Bottom Nav ───────────────────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-background border-t border-border z-10 rounded-t-2xl shadow-layered pb-safe-bottom">
-        <div className="grid grid-cols-4 px-1.5 pt-1.5">
-          {[
-            { id: 'menu', label: 'Thực đơn', emoji: '🍜' },
-            {
-              id: 'orders',
-              label: 'Đơn hàng',
-              emoji: '📋',
-              badge: nonCancelledOrders.filter((o) => o.status === 'PENDING').length,
-            },
-            {
-              id: 'chat',
-              label: 'Nhắn tin',
-              emoji: '💬',
-              badge: messages.filter((m) => m.senderType !== 'CUSTOMER').length,
-            },
-            { id: 'bill', label: 'Thanh toán', emoji: '💰' },
-          ].map(({ id, label, emoji, badge }) => (
-            <button
-              key={id}
-              onClick={() => navigate(id)}
-              className={`flex flex-col items-center gap-0.5 py-2.5 relative rounded-xl transition-colors ${
-                activeTab === id ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
-              }`}
-            >
-              <span className="text-xl leading-none">{emoji}</span>
-              <span className="text-[10px] font-medium">{label}</span>
-              {badge !== undefined && badge > 0 && (
-                <span className="absolute top-1 right-4 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
-                  {badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+      <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-40" id="table-order-content">
+        <Outlet />
+      </main>
 
-        {/* Staff call buttons */}
-        <div className="border-t border-border/60 flex px-1.5 py-1.5 gap-1.5 mt-1">
+      {cartCount > 0 && !cartOpen && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-36 z-30 mx-auto flex max-w-lg justify-end px-4">
           <button
-            className={`flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors ${
-              pendingCallTypes.has('CALL_STAFF')
-                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-                : 'bg-muted text-muted-foreground'
-            }`}
-            onClick={() => handleCallStaff('CALL_STAFF')}
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-background shadow-layered-hover transition-transform hover:-translate-y-0.5"
+            aria-label={`Mở giỏ hàng, ${cartCount} món, tổng ${formatVND(cartTotal)}`}
           >
-            🔔 {pendingCallTypes.has('CALL_STAFF') ? 'Đã gọi' : 'Gọi nhân viên'}
-          </button>
-          <button
-            className={`flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors ${
-              pendingCallTypes.has('REQUEST_BILL')
-                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                : 'bg-muted text-muted-foreground'
-            }`}
-            onClick={() => {
-              handleCallStaff('REQUEST_BILL');
-              navigate('bill');
-            }}
-          >
-            🧾 {pendingCallTypes.has('REQUEST_BILL') ? 'Đang xử lý' : 'Xin hóa đơn'}
+            <span className="grid h-7 min-w-7 place-items-center rounded-full bg-primary px-1 text-xs text-white">{cartCount}</span>
+            <ShoppingBag className="h-4 w-4" />
+            {formatVND(cartTotal)}
           </button>
         </div>
+      )}
 
-        {/* Chat input (shown only on chat tab) */}
-        {activeTab === 'chat' && (
-          <div className="border-t border-border flex items-center gap-2 px-3 py-2">
-            <Input
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Nhắn tin cho nhân viên…"
-              className="h-8 text-sm"
-              onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
-            />
-            <Button
-              size="sm"
-              className="h-8 px-3 shrink-0"
-              onClick={handleSendChat}
-              disabled={!chatInput.trim()}
-            >
-              Gửi
-            </Button>
+      <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+        <SheetContent side="bottom" className="inset-x-0 mx-auto max-h-[88dvh] max-w-lg overflow-y-auto rounded-t-3xl border-x p-5 pb-safe-bottom">
+          <SheetHeader className="pr-10 text-left">
+            <SheetTitle className="text-xl">Giỏ hàng của bạn</SheetTitle>
+            <SheetDescription>Kiểm tra số lượng và thêm ghi chú trước khi gửi bếp.</SheetDescription>
+          </SheetHeader>
+
+          <div className="my-5 space-y-3">
+            {cart.map((item) => (
+              <div key={item.productId} className="rounded-2xl border border-border/80 bg-card p-3.5">
+                <div className="flex items-start gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{item.name.vn || item.name.en}</p>
+                    <p className="mt-0.5 text-sm font-semibold text-primary">{formatVND(item.price)}</p>
+                  </div>
+                  <QuantityStepper value={item.quantity} onChange={(quantity) => updateQty(item.productId, quantity)} max={99} />
+                </div>
+                <Input
+                  className="mt-3 min-h-10 bg-background text-sm"
+                  aria-label={`Ghi chú cho ${item.name.vn || item.name.en}`}
+                  placeholder="Ví dụ: không cay, không hành…"
+                  value={item.notes}
+                  onChange={(event) => setCart((current) => current.map((cartItem) => cartItem.productId === item.productId ? { ...cartItem, notes: event.target.value } : cartItem))}
+                />
+              </div>
+            ))}
           </div>
+
+          <Input
+            aria-label="Ghi chú chung cho đơn hàng"
+            placeholder="Ghi chú chung cho đơn hàng…"
+            value={orderNotes}
+            onChange={(event) => setOrderNotes(event.target.value)}
+          />
+          <div className="my-4 flex items-center justify-between rounded-2xl bg-muted px-4 py-3.5 font-bold">
+            <span>Tổng cộng</span>
+            <span className="tabular-nums text-primary">{formatVND(cartTotal)}</span>
+          </div>
+          <Button className="w-full" size="lg" onClick={submitOrder} disabled={submitting || cart.length === 0}>
+            {submitting && <LoaderCircle className="animate-spin" />}
+            {submitting ? "Đang gửi bếp…" : `Xác nhận gọi món · ${formatVND(cartTotal)}`}
+          </Button>
+        </SheetContent>
+      </Sheet>
+
+      <nav className="absolute inset-x-0 bottom-0 z-20 border-t border-border/80 bg-card/95 pb-safe-bottom shadow-[0_-12px_32px_-24px_rgba(0,0,0,.45)] backdrop-blur-xl" aria-label="Điều hướng gọi món">
+        {activeTab === "chat" && (
+          <form className="flex items-center gap-2 border-b border-border/70 px-3 py-2" onSubmit={handleSendChat}>
+            <Input value={chatInput} onChange={(event) => setChatInput(event.target.value)} placeholder="Nhắn cho nhân viên…" aria-label="Tin nhắn cho nhân viên" className="min-h-10" />
+            <Button type="submit" size="icon" className="h-10 min-h-10 w-10 shrink-0" disabled={!chatInput.trim()} aria-label="Gửi tin nhắn">
+              <Send />
+            </Button>
+          </form>
         )}
+
+        <div className="flex gap-2 border-b border-border/60 px-3 py-2">
+          <button
+            type="button"
+            onClick={() => handleCallStaff("CALL_STAFF")}
+            className={cn("flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-semibold", pendingCallTypes.has("CALL_STAFF") ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}
+          >
+            <ConciergeBell className="h-3.5 w-3.5" />
+            {pendingCallTypes.has("CALL_STAFF") ? "Đã gọi nhân viên" : "Gọi nhân viên"}
+          </button>
+          <button
+            type="button"
+            onClick={() => { handleCallStaff("REQUEST_BILL"); navigate("bill"); }}
+            className={cn("flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-semibold", pendingCallTypes.has("REQUEST_BILL") ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground")}
+          >
+            <BellRing className="h-3.5 w-3.5" />
+            {pendingCallTypes.has("REQUEST_BILL") ? "Đang xử lý" : "Xin hóa đơn"}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-4 px-1.5 pt-1.5">
+          {tabs.map(({ id, label, icon: Icon }) => {
+            const badge = id === "orders" ? activeOrders.filter((order) => order.status === "PENDING").length : 0;
+            return (
+              <button
+                type="button"
+                key={id}
+                onClick={() => navigate(id)}
+                aria-current={activeTab === id ? "page" : undefined}
+                className={cn("relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold transition-colors", activeTab === id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted")}
+              >
+                <Icon className="h-5 w-5" />
+                {label}
+                {badge > 0 && <span className="absolute right-3 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-destructive px-1 text-[9px] text-white">{badge}</span>}
+              </button>
+            );
+          })}
+        </div>
       </nav>
     </div>
   );

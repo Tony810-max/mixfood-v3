@@ -14,13 +14,12 @@ export default function ReserveButton({
   ...props
 }: ReserveButtonProps) {
   return (
-    <Link to={ROUTES.BOOKING}>
-      <Button
-        className={cn("hover:opacity-70 bg-primary-gradient min-w-32", className)}
+    <Button
+        asChild
+        className={cn("min-w-32 bg-primary-gradient hover:-translate-y-0.5 hover:opacity-95", className)}
         {...props}
       >
-        {content}
+        <Link to={ROUTES.BOOKING}>{content}</Link>
       </Button>
-    </Link>
   );
 }

@@ -20,7 +20,7 @@ export default {
     extend: {
       fontFamily: {
         serif: ["Fraunces", "Georgia", "serif"],
-        body: ["Public Sans", "system-ui", "sans-serif"],
+        body: ["DM Sans", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -39,6 +39,18 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -87,7 +99,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       backgroundImage: {
-        "primary-gradient": "linear-gradient(to right, rgb(249 115 22), rgb(245 158 11))",
+        "primary-gradient": "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))",
       },
       spacing: {
         "72": "18rem",

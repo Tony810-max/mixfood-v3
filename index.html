@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="vn">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
 
@@ -90,7 +90,7 @@
 
     <!-- Additional SEO Meta Tags -->
 
-    <meta name="theme-color" content="#dc2626" />
+    <meta name="theme-color" content="#bd3e1a" />
 
     <meta name="apple-mobile-web-app-title" content="Mix Food" />
 
@@ -100,15 +100,25 @@
 
     <!-- Favicon and App Icons -->
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
 
     <!-- Structured Data for SEO -->
 
-    <script type="application/ld+json" src="/structured-data.json"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Mix Food",
+        "url": "https://mixfood.vn",
+        "servesCuisine": ["Thai", "Asian"],
+        "priceRange": "$$",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Đà Nẵng",
+          "addressCountry": "VN"
+        }
+      }
+    </script>
   </head>
 
   <body>

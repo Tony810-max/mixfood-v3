@@ -17,6 +17,11 @@ Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
+Disallow: /q/
+Disallow: /profile
+Disallow: /reservations
+Disallow: /login
+Disallow: /register
 Disallow: /*.json$
 Disallow: /src/
 
@@ -25,7 +30,6 @@ Allow: /images/
 Allow: /css/
 Allow: /js/
 Allow: /favicon.ico
-Allow: /favicon.svg
 
 # Sitemap location
 Sitemap: https://mixfood.vn/sitemap.xml

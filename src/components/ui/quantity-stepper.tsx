@@ -23,8 +23,8 @@ export const QuantityStepper = React.forwardRef<HTMLDivElement, QuantityStepperP
   ({ value, onChange, min = 0, max = 99, disabled, className, size = "default" }, ref) => {
     const dec = () => onChange(Math.max(min, value - 1));
     const inc = () => onChange(Math.min(max, value + 1));
-    const height = size === "sm" ? "h-7" : "h-8";
-    const buttonWidth = size === "sm" ? "w-7" : "w-8";
+    const height = size === "sm" ? "h-9" : "h-10";
+    const buttonWidth = size === "sm" ? "w-9" : "w-10";
     const iconSize = size === "sm" ? "w-3 h-3" : "w-3.5 h-3.5";
 
     return (
@@ -50,7 +50,7 @@ export const QuantityStepper = React.forwardRef<HTMLDivElement, QuantityStepperP
         >
           <Minus className={iconSize} />
         </button>
-        <span className="min-w-7 px-0.5 text-center text-sm font-semibold tabular-nums select-none">
+        <span className="min-w-8 px-0.5 text-center text-sm font-semibold tabular-nums select-none">
           {value}
         </span>
         <button

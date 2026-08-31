@@ -20,6 +20,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
+import { CheckCircle2, QrCode, RefreshCw, TriangleAlert } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useTableSession } from '@/contexts/TableSessionContext';
 import {
   scanQrCode,
@@ -31,6 +33,7 @@ import {
   type StaffCallResponse,
 } from '@/services/table-session.service';
 import { TableOrderProvider } from './TableOrderContext';
+import { getApiError } from './helpers';
 
 // ─── Session init state (kept local — not in context) ─────────────────────────
 
@@ -143,20 +146,15 @@ export default function TableOrderPage() {
           paymentRequested: false,
           paymentPaid: false,
         });
-      } catch (err: any) {
-        const code =
-          err?.response?.data?.error?.code || err?.response?.data?.code;
-        const msg =
-          err?.response?.data?.message ||
-          err?.message ||
-          'Could not connect to the restaurant.';
+      } catch (err: unknown) {
+        const { code } = getApiError(err);
         if (code === 'TABLE_INACTIVE' || code === 'TABLE_OUT_OF_SERVICE') {
-          setError('This table is currently not available. Please ask the staff for help.');
+          setError('Bàn này đang tạm ngưng phục vụ. Vui lòng nhờ nhân viên hỗ trợ.');
         } else if (code === 'SESSION_CLOSED' || code === 'SESSION_EXPIRED') {
           setSessionEnded(true);
           clearSession();
         } else {
-          setError(msg);
+          setError('Không thể kết nối tới nhà hàng. Vui lòng kiểm tra mạng và thử lại.');
         }
       }
       setLoading(false);
@@ -169,10 +167,14 @@ export default function TableOrderPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-3">
-          <div className="w-10 h-10 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto" />
-          <p className="text-muted-foreground text-sm">Đang kết nối…</p>
+      <div className="grid min-h-dvh place-items-center bg-background px-6">
+        <div className="surface-panel w-full max-w-sm p-7 text-center" role="status" aria-live="polite">
+          <div className="relative mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
+            <QrCode className="h-7 w-7" />
+            <span className="absolute inset-0 animate-ping rounded-2xl border border-primary/25" />
+          </div>
+          <h1 className="text-xl font-bold">Đang mở bàn của bạn</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Mix Food đang tải thực đơn và thông tin phiên gọi món…</p>
         </div>
       </div>
     );
@@ -180,10 +182,10 @@ export default function TableOrderPage() {
 
   if (sessionEnded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-6">
-        <div className="text-center space-y-4 max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto text-3xl">
-            ✅
+      <div className="grid min-h-dvh place-items-center bg-background px-6">
+        <div className="surface-panel w-full max-w-sm p-7 text-center">
+          <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-success/10 text-success">
+            <CheckCircle2 className="h-8 w-8" />
           </div>
           <h1 className="text-xl font-bold text-foreground">Phiên đã kết thúc</h1>
           <p className="text-muted-foreground text-sm">
@@ -198,13 +200,16 @@ export default function TableOrderPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-6">
-        <div className="text-center space-y-4 max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto text-3xl">
-            ❌
+      <div className="grid min-h-dvh place-items-center bg-background px-6">
+        <div className="surface-panel w-full max-w-sm p-7 text-center" role="alert">
+          <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-destructive/10 text-destructive">
+            <TriangleAlert className="h-8 w-8" />
           </div>
           <h1 className="text-xl font-bold text-foreground">Không thể kết nối</h1>
           <p className="text-muted-foreground text-sm">{error}</p>
+          <Button className="mt-5 w-full" variant="outline" onClick={() => window.location.reload()}>
+            <RefreshCw /> Thử kết nối lại
+          </Button>
         </div>
       </div>
     );

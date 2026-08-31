@@ -13,24 +13,39 @@ export function generateIdempotencyKey() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+interface ApiErrorPayload {
+  message?: string;
+  code?: string;
+  error?: { code?: string };
+}
+
+export function getApiError(error: unknown) {
+  if (!axios.isAxiosError<ApiErrorPayload>(error)) return {};
+  return {
+    code: error.response?.data?.error?.code ?? error.response?.data?.code,
+    message: error.response?.data?.message,
+  };
+}
+
 export const ORDER_STATUS_LABEL: Record<string, string> = {
-  PENDING:   '⏳ Đang chờ',
-  CONFIRMED: '✅ Đã xác nhận',
-  PREPARING: '👨‍🍳 Đang chuẩn bị',
-  READY:     '🔔 Sẵn sàng',
-  SERVED:    '🍽️ Đã phục vụ',
-  COMPLETED: '✅ Hoàn thành',
-  CANCELLED: '❌ Đã hủy',
+  PENDING:   'Đang chờ',
+  CONFIRMED: 'Đã xác nhận',
+  PREPARING: 'Đang chuẩn bị',
+  READY:     'Sẵn sàng',
+  SERVED:    'Đã phục vụ',
+  COMPLETED: 'Hoàn thành',
+  CANCELLED: 'Đã hủy',
 };
 
 // Tailwind classes for order status pills + a matching left-border accent,
 // mirroring the color language used on the admin side.
 export const ORDER_STATUS_STYLE: Record<string, { badge: string; border: string }> = {
-  PENDING:   { badge: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', border: 'border-l-yellow-400' },
-  CONFIRMED: { badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',          border: 'border-l-blue-400' },
-  PREPARING: { badge: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',  border: 'border-l-orange-400' },
-  READY:     { badge: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',      border: 'border-l-green-400' },
-  SERVED:    { badge: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',  border: 'border-l-purple-400' },
-  COMPLETED: { badge: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',              border: 'border-l-gray-300' },
-  CANCELLED: { badge: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',               border: 'border-l-red-400' },
+  PENDING:   { badge: 'bg-warning/15 text-warning-foreground', border: 'border-l-warning' },
+  CONFIRMED: { badge: 'bg-info/15 text-info',                  border: 'border-l-info' },
+  PREPARING: { badge: 'bg-primary/10 text-primary',            border: 'border-l-primary' },
+  READY:     { badge: 'bg-success/15 text-success',            border: 'border-l-success' },
+  SERVED:    { badge: 'bg-accent/15 text-accent',              border: 'border-l-accent' },
+  COMPLETED: { badge: 'bg-muted text-muted-foreground',        border: 'border-l-muted-foreground' },
+  CANCELLED: { badge: 'bg-destructive/10 text-destructive',    border: 'border-l-destructive' },
 };
+import axios from 'axios';

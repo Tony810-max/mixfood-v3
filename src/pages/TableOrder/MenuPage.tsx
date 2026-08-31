@@ -7,7 +7,7 @@
  */
 
 import { useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { ImageOff, Plus, Search, X } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -46,7 +46,7 @@ export default function MenuPage() {
           if (!p.isActive) return false;
           if (activeCategoryId !== 'all' && String(category.id) !== activeCategoryId) return false;
           if (!normalizedQuery) return true;
-          const name = (p.name as any)?.vn || (p.name as any)?.en || '';
+          const name = p.name.vn || p.name.en || '';
           return normalize(name).includes(normalizedQuery);
         }),
       }))
@@ -56,12 +56,14 @@ export default function MenuPage() {
   const isEmpty = filteredMenu.length === 0;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" aria-label="Thực đơn tại bàn">
       {/* Search + filter bar */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm p-4 pb-3 space-y-2.5 border-b border-border/60">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
+            type="search"
+            aria-label="Tìm món ăn"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Tìm món ăn…"
@@ -87,7 +89,7 @@ export default function MenuPage() {
               <SelectItem value="all">Tất cả danh mục</SelectItem>
               {categoriesWithItems.map((category) => (
                 <SelectItem key={category.id} value={String(category.id)}>
-                  {(category.name as any)?.vn || (category.name as any)?.en}
+                  {category.name.vn || category.name.en}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -116,8 +118,8 @@ export default function MenuPage() {
         ) : (
           filteredMenu.map((category) => (
             <div key={category.id}>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                {(category.name as any)?.vn || (category.name as any)?.en}
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                {category.name.vn || category.name.en}
               </h2>
               <div className="space-y-2.5">
                 {category.products.map((product) => {
@@ -125,22 +127,26 @@ export default function MenuPage() {
                   return (
                     <div
                       key={product.id}
-                      className={`flex items-center gap-3 p-3 rounded-2xl border bg-card shadow-layered transition-colors ${
+                      className={`flex items-center gap-3 rounded-2xl border bg-card p-3 shadow-layered transition-[border-color,box-shadow] ${
                         cartItem ? 'border-primary/40' : 'border-border'
                       }`}
                     >
                       {product.image ? (
                         <img
                           src={product.image}
-                          alt=""
+                          alt={product.name.vn || product.name.en || 'Món ăn'}
+                          loading="lazy"
+                          decoding="async"
                           className="w-16 h-16 rounded-xl object-cover shrink-0"
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-xl bg-muted shrink-0" />
+                        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground" aria-hidden="true">
+                          <ImageOff className="h-5 w-5" />
+                        </div>
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-foreground truncate">
-                          {(product.name as any)?.vn || (product.name as any)?.en}
+                            {product.name.vn || product.name.en || 'Món chưa đặt tên'}
                         </p>
                         <p className="text-primary font-semibold text-sm">
                           {formatVND(product.price)}
@@ -155,10 +161,12 @@ export default function MenuPage() {
                         />
                       ) : (
                         <button
-                          className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center shrink-0"
+                          type="button"
+                          aria-label={`Thêm ${product.name.vn || product.name.en} vào giỏ`}
+                          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
                           onClick={() => addToCart(product)}
                         >
-                          +
+                          <Plus className="h-5 w-5" />
                         </button>
                       )}
                     </div>

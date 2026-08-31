@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Ban } from 'lucide-react';
+import { Ban, ClipboardList } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,7 +42,7 @@ export default function OrdersPage() {
     <div className="p-4 space-y-3">
       {nonCancelledOrders.length === 0 && (
         <div className="text-center py-14 text-muted-foreground">
-          <p className="text-4xl mb-3">🍽️</p>
+          <ClipboardList className="mx-auto mb-3 h-10 w-10 opacity-40" />
           <p className="text-sm">Chưa có món nào được gọi</p>
           <Button className="mt-4" size="sm" onClick={() => navigate('../menu', { relative: 'path' })}>
             Xem thực đơn
@@ -65,7 +65,7 @@ export default function OrdersPage() {
                 {order.status === 'PENDING' && (
                   <button
                     onClick={() => setCancelTarget(order.id)}
-                    className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 font-medium"
+                    className="flex min-h-9 items-center gap-1 rounded-lg px-2 text-xs font-medium text-destructive hover:bg-destructive/10"
                   >
                     <Ban className="w-3.5 h-3.5" />
                     Hủy
@@ -82,8 +82,7 @@ export default function OrdersPage() {
                 >
                   <span>
                     {item.quantity}×{' '}
-                    {(item.productNameSnapshot as any)?.vn ||
-                      (item.productNameSnapshot as any)?.en}
+                    {item.productNameSnapshot.vn || item.productNameSnapshot.en}
                     {item.notes && (
                       <span className="italic ml-1 text-xs">({item.notes})</span>
                     )}
@@ -122,7 +121,7 @@ export default function OrdersPage() {
                 handleConfirmCancel();
               }}
               disabled={cancelling}
-              className="bg-red-500 hover:bg-red-600 text-white"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {cancelling ? 'Đang hủy…' : 'Hủy đơn'}
             </AlertDialogAction>

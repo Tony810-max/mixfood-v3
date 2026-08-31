@@ -14,7 +14,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-full p-4">
-      <div className="flex-1 space-y-2.5 min-h-64">
+      <div className="flex-1 space-y-2.5 min-h-64" role="log" aria-live="polite" aria-label="Tin nhắn với nhân viên">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center py-14 text-center text-muted-foreground">
             <MessageCircle className="w-10 h-10 mb-3 opacity-40" />

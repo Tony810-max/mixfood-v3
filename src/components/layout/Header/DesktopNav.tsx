@@ -28,13 +28,13 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
   return (
     <nav className="hidden md:flex items-center gap-8">
       {navItems.map((item) => (
-        <a
+        <Link
           key={item.href}
-          href={item.href}
+          to={item.href}
           className="font-body text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
         >
           {item.label}
-        </a>
+        </Link>
       ))}
 
       <LanguageToggle variant="desktop" />

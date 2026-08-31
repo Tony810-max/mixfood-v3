@@ -14,7 +14,7 @@ interface MobileNavProps {
   setMobileOpen: (open: boolean) => void;
 }
 
-const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
+const MobileNav = ({ navItems: _navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
   const { t } = useLanguage();
   const { user, isAuthenticated, setUser } = useAuth();
   const logoutMutation = useLogout();
@@ -88,20 +88,19 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                   {menuItems.map((item, index) => {
                     const Icon = item.icon;
                     return (
-                      <motion.a
+                      <motion.div
                         key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileOpen(false)}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all active:scale-[0.98] group"
                       >
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 group-hover:from-primary/30 group-hover:to-primary/10 transition-all">
-                          <Icon className="w-5 h-5 text-primary" />
-                        </div>
-                        <span className="text-base font-medium text-foreground group-hover:text-primary transition-colors">{item.label}</span>
-                      </motion.a>
+                        <Link to={item.href} onClick={() => setMobileOpen(false)} className="group flex items-center gap-4 rounded-2xl border border-border/50 bg-card p-4 transition-all hover:border-primary/50 hover:shadow-lg active:scale-[0.98]">
+                          <div className="rounded-xl bg-primary/10 p-3 transition-all group-hover:bg-primary/20">
+                            <Icon className="w-5 h-5 text-primary" />
+                          </div>
+                          <span className="text-base font-medium text-foreground transition-colors group-hover:text-primary">{item.label}</span>
+                        </Link>
+                      </motion.div>
                     );
                   })}
                 </div>

@@ -2,33 +2,49 @@ import { ProtectedRoute } from "@/components/auth";
 import { BlockedUserToast } from "@/components/common/BlockedUserToast";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import RouteProgress from "@/components/common/RouteProgress";
+import RouteMeta from "@/components/seo/RouteMeta";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { TableSessionProvider } from "@/contexts/TableSessionContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import ForgotPasswordPage from "./pages/Auth/ForgotPassword/index.tsx";
-import LoginPage from "./pages/Auth/Login/index.tsx";
-import RegisterPage from "./pages/Auth/Register/index.tsx";
-import Booking from "./pages/Booking/index.tsx";
-import BookingSuccess from "./pages/BookingSuccess/index.tsx";
-import Index from "./pages/Index.tsx";
-import MenuPage from "./pages/Menu/index.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import ProfilePage from "./pages/Profile/index.tsx";
-import ReservationsPage from "./pages/Reservations/index.tsx";
-import TableOrderPage from "./pages/TableOrder/index.tsx";
-import TableOrderLayout from "./pages/TableOrder/Layout.tsx";
-import TableMenuPage from "./pages/TableOrder/MenuPage.tsx";
-import TableOrdersPage from "./pages/TableOrder/OrdersPage.tsx";
-import TableChatPage from "./pages/TableOrder/ChatPage.tsx";
-import TableBillPage from "./pages/TableOrder/BillPage.tsx";
 import { ROUTES } from "./utils/const.ts";
 
-const queryClient = new QueryClient();
+const Index = lazy(() => import("./pages/Index.tsx"));
+const MenuPage = lazy(() => import("./pages/Menu/index.tsx"));
+const Booking = lazy(() => import("./pages/Booking/index.tsx"));
+const BookingSuccess = lazy(() => import("./pages/BookingSuccess/index.tsx"));
+const LoginPage = lazy(() => import("./pages/Auth/Login/index.tsx"));
+const RegisterPage = lazy(() => import("./pages/Auth/Register/index.tsx"));
+const ForgotPasswordPage = lazy(() => import("./pages/Auth/ForgotPassword/index.tsx"));
+const ProfilePage = lazy(() => import("./pages/Profile/index.tsx"));
+const ReservationsPage = lazy(() => import("./pages/Reservations/index.tsx"));
+const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const TableOrderPage = lazy(() => import("./pages/TableOrder/index.tsx"));
+const TableOrderLayout = lazy(() => import("./pages/TableOrder/Layout.tsx"));
+const TableMenuPage = lazy(() => import("./pages/TableOrder/MenuPage.tsx"));
+const TableOrdersPage = lazy(() => import("./pages/TableOrder/OrdersPage.tsx"));
+const TableChatPage = lazy(() => import("./pages/TableOrder/ChatPage.tsx"));
+const TableBillPage = lazy(() => import("./pages/TableOrder/BillPage.tsx"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false },
+    mutations: { retry: false },
+  },
+});
+
+const RouteFallback = () => (
+  <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-live="polite">
+    <div className="flex items-center gap-3 rounded-full border bg-card px-5 py-3 text-sm text-muted-foreground shadow-layered">
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      Đang tải nội dung…
+    </div>
+  </div>
+);
 
 const App = () => (
   <ErrorBoundary>
@@ -37,50 +53,47 @@ const App = () => (
         <AuthProvider>
           <LanguageProvider>
             <TooltipProvider>
-              <Toaster  />
-              <Sonner />
+              <Sonner richColors position="top-center" />
               <BlockedUserToast />
               <BrowserRouter>
                 <RouteProgress />
-                <Routes>
-                  {/* QR Table Ordering — no auth required */}
-                  <Route path="/q/:token" element={<TableOrderPage />}>
-                    <Route index element={<Navigate to="menu" replace />} />
-                    <Route element={<TableOrderLayout />}>
-                      <Route path="menu" element={<TableMenuPage />} />
-                      <Route path="orders" element={<TableOrdersPage />} />
-                      <Route path="chat" element={<TableChatPage />} />
-                      <Route path="bill" element={<TableBillPage />} />
+                <RouteMeta />
+                <Suspense fallback={<RouteFallback />}>
+                  <Routes>
+                    {/* QR Table Ordering — no auth required */}
+                    <Route path="/q/:token" element={<TableOrderPage />}>
+                      <Route index element={<Navigate to="menu" replace />} />
+                      <Route element={<TableOrderLayout />}>
+                        <Route path="menu" element={<TableMenuPage />} />
+                        <Route path="orders" element={<TableOrdersPage />} />
+                        <Route path="chat" element={<TableChatPage />} />
+                        <Route path="bill" element={<TableBillPage />} />
+                      </Route>
                     </Route>
-                  </Route>
-                  <Route path={ROUTES.HOME} element={<Index />} />
-                  <Route path={ROUTES.MENU} element={<MenuPage />} />
-                  <Route path={ROUTES.BOOKING} element={<Booking />} />
-                  <Route path={ROUTES.BOOKING_SUCCESS} element={<BookingSuccess />} />
-                <Route path={ROUTES.PROFILE} element={
-                  <ProtectedRoute requireAuth={true}>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                } />
-                <Route path={ROUTES.RESERVATIONS} element={
-                  <ProtectedRoute requireAuth={true}>
-                    <ReservationsPage />
-                  </ProtectedRoute>
-                } />
-                <Route path={ROUTES.AUTH.LOGIN} element={
-                  <ProtectedRoute requireAuth={false}>
-                    <LoginPage />
-                  </ProtectedRoute>
-                } />
-                <Route path={ROUTES.AUTH.REGISTER} element={
-                  <ProtectedRoute requireAuth={false}>
-                    <RegisterPage />
-                  </ProtectedRoute>
-                } />
-                  <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                    <Route path={ROUTES.HOME} element={<Index />} />
+                    <Route path={ROUTES.MENU} element={<MenuPage />} />
+                    <Route path={ROUTES.BOOKING} element={<Booking />} />
+                    <Route path={ROUTES.BOOKING_SUCCESS} element={<BookingSuccess />} />
+                    <Route
+                      path={ROUTES.PROFILE}
+                      element={<ProtectedRoute requireAuth><ProfilePage /></ProtectedRoute>}
+                    />
+                    <Route
+                      path={ROUTES.RESERVATIONS}
+                      element={<ProtectedRoute requireAuth><ReservationsPage /></ProtectedRoute>}
+                    />
+                    <Route
+                      path={ROUTES.AUTH.LOGIN}
+                      element={<ProtectedRoute requireAuth={false}><LoginPage /></ProtectedRoute>}
+                    />
+                    <Route
+                      path={ROUTES.AUTH.REGISTER}
+                      element={<ProtectedRoute requireAuth={false}><RegisterPage /></ProtectedRoute>}
+                    />
+                    <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
               </BrowserRouter>
             </TooltipProvider>
           </LanguageProvider>

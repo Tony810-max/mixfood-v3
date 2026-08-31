@@ -5,6 +5,7 @@ import { useMenu } from "@/hooks/api/useMenu";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import restaurantImg from "../../../../assets/restaurant-interior.jpg";
 import CategorySection from "../CategorySection";
 import DropdownCategory from "./DropdownCategory";
@@ -78,6 +79,7 @@ const MenuContent = () => {
       <Header />
 
       {/* Hero */}
+      <main>
       <section className="pt-[4.5rem]">
         <div className="relative h-[240px] md:h-[280px] lg:h-[360px] overflow-hidden">
           <img
@@ -144,14 +146,15 @@ const MenuContent = () => {
           <p className="text-muted-foreground mb-6 md:mb-8 max-w-md mx-auto text-sm md:text-base">
             {t.menuReadyToDineDesc}
           </p>
-          <a
-            href={ROUTES.BOOKING}
-            className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 px-8 py-3.5 text-sm md:text-base font-semibold text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all active:scale-95 min-h-[48px]"
+          <Link
+            to={ROUTES.BOOKING}
+            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary-gradient px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl md:text-base"
           >
             {t.reserveTable}
-          </a>
+          </Link>
         </motion.div>
       </section>
+      </main>
 
       <Footer />
     </div>
