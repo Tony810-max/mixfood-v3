@@ -138,6 +138,13 @@ export async function createOrder(
   return res.data;
 }
 
+/** Cancel your own order — only allowed while it's still PENDING. */
+export async function cancelOrder(sessionToken: string, orderId: number): Promise<OrderResponse> {
+  const api = sessionApi(sessionToken);
+  const res = await api.post(`/customer/orders/${orderId}/cancel`);
+  return res.data;
+}
+
 /** Get current orders. */
 export async function getOrders(sessionToken: string): Promise<OrderResponse[]> {
   const api = sessionApi(sessionToken);

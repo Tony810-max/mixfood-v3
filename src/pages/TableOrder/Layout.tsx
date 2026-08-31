@@ -133,7 +133,7 @@ export default function TableOrderLayout() {
           onClick={() => setCartOpen(false)}
         >
           <div
-            className="absolute bottom-0 left-0 right-0 max-w-lg mx-auto bg-background rounded-t-3xl p-5 space-y-4 max-h-[80vh] overflow-y-auto shadow-layered-hover"
+            className="absolute bottom-0 left-0 right-0 max-w-lg mx-auto bg-background rounded-t-3xl p-5 pb-safe-bottom space-y-4 max-h-[80vh] overflow-y-auto shadow-layered-hover"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-10 h-1 rounded-full bg-muted mx-auto -mt-1" />

@@ -18,9 +18,12 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { io, type Socket } from 'socket.io-client';
+import { toast } from '@/components/ui/sonner';
 import { useTableSession } from '@/contexts/TableSessionContext';
 import {
   createOrder,
+  cancelOrder as cancelOrderRequest,
+  getOrders,
   sendMessage,
   callStaff,
   requestPayment,
@@ -74,6 +77,7 @@ export interface TableOrderContextValue {
   removeFromCart: (productId: number) => void;
   updateQty: (productId: number, qty: number) => void;
   submitOrder: () => Promise<void>;
+  cancelOrder: (orderId: number) => Promise<void>;
   sendChat: (text: string) => Promise<void>;
   handleCallStaff: (type: string) => Promise<void>;
   handleRequestPayment: () => Promise<void>;
@@ -150,7 +154,22 @@ export function TableOrderProvider({
 
     socketRef.current = socket;
 
-    socket.on('ORDER_STATUS_UPDATED', ({ orderId, status }: any) => {
+    socket.on('ORDER_STATUS_UPDATED', async ({ orderId, status, itemCancelled }: any) => {
+      // Item-level cancels don't necessarily change the order's own status
+      // (e.g. cancelling 1 of 3 items leaves it PENDING) — a full refetch
+      // keeps items/totals in sync instead of trying to patch them in place.
+      if (itemCancelled) {
+        try {
+          setOrders(await getOrders(sessionToken));
+        } catch {
+          setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
+        }
+        toast.info('Đơn hàng của bạn vừa được cập nhật. Xem tin nhắn để biết chi tiết.');
+        return;
+      }
+      if (status === 'CANCELLED') {
+        toast.info('Đơn hàng của bạn vừa được cập nhật. Xem tin nhắn để biết chi tiết.');
+      }
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
     });
 
@@ -249,10 +268,23 @@ export function TableOrderProvider({
         clearSession();
         onSessionEnded();
       } else {
-        alert(err?.response?.data?.message || 'Đặt món thất bại. Vui lòng thử lại.');
+        toast.error(err?.response?.data?.message || 'Đặt món thất bại. Vui lòng thử lại.');
       }
     }
     setSubmitting(false);
+  };
+
+  // ── Cancel order (customer self-service — only while PENDING) ──────────────
+
+  const cancelOrder = async (orderId: number) => {
+    if (!sessionToken) return;
+    try {
+      await cancelOrderRequest(sessionToken, orderId);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: 'CANCELLED' } : o)));
+      toast.success('Đã hủy đơn hàng.');
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Không thể hủy đơn hàng này. Vui lòng nhắn tin cho nhân viên.');
+    }
   };
 
   // ── Chat ────────────────────────────────────────────────────────────────────
@@ -270,7 +302,7 @@ export function TableOrderProvider({
       }
       setMessages((prev) => [...prev, { ...msg, senderType: 'CUSTOMER' }]);
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Gửi tin nhắn thất bại. Vui lòng thử lại.');
+      toast.error(err?.response?.data?.message || 'Gửi tin nhắn thất bại. Vui lòng thử lại.');
     }
   };
 
@@ -289,9 +321,9 @@ export function TableOrderProvider({
         ...prev.filter((c) => c.type !== type || c.status === 'RESOLVED'),
         call,
       ]);
-      alert('✅ Nhân viên đã được thông báo!');
+      toast.success('✅ Nhân viên đã được thông báo!');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
+      toast.error(err?.response?.data?.message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
     }
   };
 
@@ -310,13 +342,13 @@ export function TableOrderProvider({
     } catch (err: any) {
       const code = err?.response?.data?.error?.code;
       if (code === 'NO_ORDERS') {
-        alert('Chưa có đơn hàng nào để thanh toán.');
+        toast.error('Chưa có đơn hàng nào để thanh toán.');
       } else if (code === 'SESSION_NOT_ACTIVE') {
         setSessionEnded(true);
         clearSession();
         onSessionEnded();
       } else {
-        alert(err?.response?.data?.message || 'Không thể yêu cầu thanh toán. Vui lòng thử lại.');
+        toast.error(err?.response?.data?.message || 'Không thể yêu cầu thanh toán. Vui lòng thử lại.');
       }
     }
     setRequestingPayment(false);
@@ -352,6 +384,7 @@ export function TableOrderProvider({
     removeFromCart,
     updateQty,
     submitOrder,
+    cancelOrder,
     sendChat,
     handleCallStaff,
     handleRequestPayment,

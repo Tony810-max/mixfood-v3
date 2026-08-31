@@ -190,7 +190,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
               </div>
 
               {/* Footer Contact */}
-              <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-border/50 bg-background/95 backdrop-blur-lg">
+              <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe-bottom border-t border-border/50 bg-background/95 backdrop-blur-lg">
                 <motion.a
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
