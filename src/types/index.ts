@@ -74,6 +74,8 @@ export interface Reservation {
   numberOfGuests: number;
   note: string | null;
   status: ReservationStatus;
+  rejectionReason: string | null;
+  cancelledBy: "USER" | "ADMIN" | null;
   createdAt: string;
   updatedAt: string;
   userId: number | null;

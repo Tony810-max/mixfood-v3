@@ -3,7 +3,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useLogout } from '@/hooks/api/useAuth';
 import { useChangePassword, useUpdateProfile } from '@/hooks/api/useUser';
 import { changePasswordSchema, type ChangePasswordFormData } from '@/lib/validation';
-import { useState } from 'react';
+import { authStorage } from '@/utils/storage';
+import { useEffect, useState } from 'react';
 
 export const useProfile = () => {
   const { t } = useLanguage();
@@ -21,6 +22,17 @@ export const useProfile = () => {
     phone: user?.phone || "",
   });
   const [updateInfoErrors, setUpdateInfoErrors] = useState<Record<string, string>>({});
+
+  // Auth is restored asynchronously on a hard reload. Populate the form when
+  // that user arrives instead of keeping the empty first-render values.
+  useEffect(() => {
+    if (!user) return;
+    setUpdateInfoForm({
+      name: user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+    });
+  }, [user]);
 
   // Change Password Form State
   const [changePasswordForm, setChangePasswordForm] = useState<ChangePasswordFormData>({
@@ -54,6 +66,8 @@ export const useProfile = () => {
           phone: response.user.phone,
         };
         setUser(updatedUser);
+        const location: 'local' | 'session' = localStorage.getItem('mixfood.access-token') ? 'local' : 'session';
+        authStorage.setUser(updatedUser, location);
       }
     } catch (error) {
       // Error is handled by the mutation

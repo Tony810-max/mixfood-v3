@@ -34,6 +34,7 @@ import {
 } from '@/services/table-session.service';
 import { API_BASE, generateIdempotencyKey } from './helpers';
 import { getApiError } from './helpers';
+import { speakVietnamese, vietnameseTableNumber } from '@/lib/vietnamese-speech';
 
 interface OrderStatusEvent {
   orderId: number;
@@ -131,7 +132,7 @@ export function TableOrderProvider({
   initialPaymentRequested = false,
   initialPaymentPaid = false,
 }: TableOrderProviderProps) {
-  const { session, clearSession } = useTableSession();
+  const { session, table, clearSession } = useTableSession();
   const navigate = useNavigate();
 
   // ── Data state ──────────────────────────────────────────────────────────────
@@ -333,6 +334,14 @@ export function TableOrderProvider({
         call,
       ]);
       toast.success('✅ Nhân viên đã được thông báo!');
+      if (table?.tableNumber) {
+        const tableLabel = vietnameseTableNumber(table.tableNumber);
+        speakVietnamese(
+          type === 'REQUEST_BILL'
+            ? `Đã yêu cầu hóa đơn cho bàn ${tableLabel}`
+            : `Đã gọi nhân viên cho bàn ${tableLabel}`,
+        );
+      }
     } catch (err: unknown) {
       toast.error(getApiError(err).message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
     }

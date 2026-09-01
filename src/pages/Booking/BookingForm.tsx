@@ -26,7 +26,7 @@ export const BookingForm = () => {
   const { user } = useAuth()
   const createReservation = useCreateReservation()
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
-  const [minTime, setMinTime] = useState<string>("09:00")
+  const [minTime, setMinTime] = useState<string>(BOOKING_WINDOW.OPEN)
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -46,7 +46,8 @@ export const BookingForm = () => {
     const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
     const hours = minReservationTime.getHours().toString().padStart(2, '0')
     const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
-    setMinTime(`${hours}:${minutes}`)
+    const earliest = `${hours}:${minutes}`
+    setMinTime(earliest < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : earliest)
   }, [])
 
   const onSubmit = async (data: BookingFormValues) => {
@@ -58,7 +59,9 @@ export const BookingForm = () => {
         name: data.name,
         phone: data.phone,
         email: data.email || undefined,
-        reservationDate: data.date.toISOString(),
+        // Send a calendar date, not a browser-timezone timestamp. The booking
+        // date must remain the same business day on every server timezone.
+        reservationDate: format(data.date, 'yyyy-MM-dd'),
         reservationTime: data.time,
         numberOfGuests: Number(data.guests), // Convert to number for API
         note: data.specialRequests || undefined,
@@ -95,10 +98,11 @@ export const BookingForm = () => {
         const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
         const hours = minReservationTime.getHours().toString().padStart(2, '0')
         const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
-        setMinTime(`${hours}:${minutes}`)
+        const earliest = `${hours}:${minutes}`
+        setMinTime(earliest < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : earliest)
       } else {
         // If future date, minimum time is opening time (09:00)
-        setMinTime("09:00")
+        setMinTime(BOOKING_WINDOW.OPEN)
       }
     }
   }

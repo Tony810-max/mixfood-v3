@@ -29,8 +29,16 @@ export const bookingSchema = z.object({
   if (reservationDateTime < minTime) {
     return false;
   }
+
+  const [openingHours, openingMinutes] = BOOKING_WINDOW.OPEN.split(':').map(Number);
+  const openingTime = new Date(reservationDateTime);
+  openingTime.setHours(openingHours, openingMinutes, 0, 0);
+
+  if (reservationDateTime < openingTime) {
+    return false;
+  }
   
-  // Check that reservation is before the last booking time (1 hour before closing)
+  // Enforce the restaurant's final booking time.
   const [lastBookingHours, lastBookingMinutes] = BOOKING_WINDOW.LAST_BOOKING.split(':').map(Number);
   const lastBookingTime = new Date(reservationDateTime);
   lastBookingTime.setHours(lastBookingHours, lastBookingMinutes, 0, 0);
@@ -41,7 +49,7 @@ export const bookingSchema = z.object({
   
   return true;
 }, {
-  message: `Đặt bàn phải trước ít nhất ${VALIDATION.MIN_ADVANCE_BOOKING_MINUTES} phút và trước ${BOOKING_WINDOW.LAST_BOOKING} (1 tiếng trước giờ đóng cửa)`,
+  message: `Giờ đặt bàn phải trong khung ${BOOKING_WINDOW.OPEN} - ${BOOKING_WINDOW.LAST_BOOKING} và trước ít nhất ${VALIDATION.MIN_ADVANCE_BOOKING_MINUTES} phút`,
   path: ["date"]
 })
 

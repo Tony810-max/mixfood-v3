@@ -27,6 +27,10 @@ interface ReservationCardProps {
     cancelDialogCancel: string;
     cancelDialogConfirm: string;
     cancelDialogConfirming: string;
+    cancelledBy: string;
+    cancelledByUser: string;
+    cancelledByAdmin: string;
+    cancellationReason: string;
   };
 }
 
@@ -120,6 +124,25 @@ export const ReservationCard = ({
                   <p className="text-sm text-amber-700 dark:text-amber-400">
                     <span className="font-medium">{labels.note}:</span> {reservation.note}
                   </p>
+                </div>
+              )}
+
+              {reservation.status === RESERVATION_STATUS.CANCELLED && (
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
+                  <p>
+                    <span className="font-medium">{labels.cancelledBy}:</span>{' '}
+                    {reservation.cancelledBy === 'ADMIN'
+                      ? labels.cancelledByAdmin
+                      : reservation.cancelledBy === 'USER'
+                        ? labels.cancelledByUser
+                        : '—'}
+                  </p>
+                  {reservation.rejectionReason && (
+                    <p className="mt-1">
+                      <span className="font-medium">{labels.cancellationReason}:</span>{' '}
+                      {reservation.rejectionReason}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

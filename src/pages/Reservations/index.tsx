@@ -17,7 +17,7 @@ import { ReservationCard } from "./components/ReservationCard";
 import { ReservationsStats } from "./components/ReservationsStats";
 
 const ReservationsPage = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { reservations, isLoading, stats, refreshReservations, filterReservations, sortReservations } = useReservations();
   const cancelMutation = useCancelReservation();
@@ -264,6 +264,10 @@ const ReservationsPage = () => {
                             cancelDialogCancel: t.reservationCancelDialogKeep || "Keep",
                             cancelDialogConfirm: t.reservationCancelDialogConfirm || "Yes, cancel",
                             cancelDialogConfirming: t.reservationCancelDialogConfirming || "Cancelling...",
+                            cancelledBy: lang === 'vn' ? 'Người huỷ' : 'Cancelled by',
+                            cancelledByUser: lang === 'vn' ? 'Bạn' : 'You',
+                            cancelledByAdmin: lang === 'vn' ? 'Nhà hàng' : 'Restaurant admin',
+                            cancellationReason: lang === 'vn' ? 'Lý do' : 'Reason',
                           }}
                         />
                       ))}
