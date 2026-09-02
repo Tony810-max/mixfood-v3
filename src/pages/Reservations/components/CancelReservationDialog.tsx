@@ -37,7 +37,7 @@ export const CancelReservationDialog = ({
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+          <AlertDialogTitle className="flex items-center gap-2 text-destructive">
             <XCircle className="h-5 w-5 flex-shrink-0" />
             {labels.title}
           </AlertDialogTitle>
@@ -58,7 +58,7 @@ export const CancelReservationDialog = ({
           <AlertDialogAction
             onClick={onConfirm}
             disabled={isPending}
-            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white focus:ring-red-600"
+            className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:ring-destructive"
           >
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {isPending ? labels.confirming : labels.confirm}

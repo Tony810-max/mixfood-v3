@@ -42,7 +42,7 @@ export const StepProgress = ({ currentStep, steps, className }: StepProgressProp
         >
           <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 rounded-full" />
           <motion.div
-            className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"
+            className="absolute inset-y-0 left-0 bg-primary-gradient rounded-full"
             initial={{ width: '0%' }}
             animate={{ width: `${((currentStep - 1) / (n - 1)) * 100}%` }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -63,8 +63,8 @@ export const StepProgress = ({ currentStep, steps, className }: StepProgressProp
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300",
-                  isCompleted && "bg-gradient-to-r from-orange-500 to-amber-500 border-orange-500 text-white shadow-lg",
-                  isCurrent && "bg-white dark:bg-slate-800 border-orange-500 text-orange-500 shadow-md scale-110",
+                  isCompleted && "bg-primary-gradient border-primary text-primary-foreground shadow-lg",
+                  isCurrent && "bg-white dark:bg-slate-800 border-primary text-primary shadow-md scale-110",
                   isPending && "bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600 text-gray-400"
                 )}
               >
@@ -80,8 +80,8 @@ export const StepProgress = ({ currentStep, steps, className }: StepProgressProp
                 transition={{ delay: index * 0.1 + 0.2 }}
                 className={cn(
                   "mt-2 text-xs font-medium whitespace-nowrap",
-                  isCurrent && "text-orange-600 dark:text-orange-400",
-                  isCompleted && "text-orange-600 dark:text-orange-400",
+                  isCurrent && "text-primary",
+                  isCompleted && "text-primary",
                   isPending && "text-gray-400"
                 )}
               >

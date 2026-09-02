@@ -84,7 +84,7 @@ const ForgotPasswordPage = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <AuthLogo icon={<Mail className="w-full h-full text-orange-600 dark:text-orange-400 p-4" />} />
+      <AuthLogo icon={<Mail className="w-full h-full text-primary p-4" />} />
       <AuthHeader
         title={t.forgotPasswordTitle}
         subtitle={t.forgotPasswordSubtitle}
@@ -100,16 +100,16 @@ const ForgotPasswordPage = () => {
               id="email"
               type="email"
               placeholder={t.loginEmailPlaceholderAddress}
-              className={`pl-10 h-11 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 h-11 ${error ? 'border-destructive focus:border-destructive focus:ring-destructive' : 'border-primary/30 focus:border-primary focus:ring-primary'}`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <Button
-          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="w-full h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
           size="lg"
           onClick={handleSendOTP}
           disabled={isLoading || !email}
@@ -128,7 +128,7 @@ const ForgotPasswordPage = () => {
         </Button>
         <Button
           variant="ghost"
-          className="w-full text-muted-foreground hover:text-foreground"
+          className="w-full border border-border bg-secondary/70 text-secondary-foreground hover:bg-secondary hover:text-secondary-foreground"
           onClick={() => navigate(ROUTES.AUTH.LOGIN)}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -147,14 +147,14 @@ const ForgotPasswordPage = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <AuthLogo icon={<ShieldCheck className="w-full h-full text-orange-600 dark:text-orange-400 p-4" />} />
+      <AuthLogo icon={<ShieldCheck className="w-full h-full text-primary p-4" />} />
       <AuthHeader
         title={t.fpStepOtp}
         subtitle={`${t.fpOtpSubtitle} ${email}`}
       />
       <div className="space-y-4">
-        <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-          <p className="text-sm text-orange-800 dark:text-orange-200">
+        <div className="bg-primary/10 p-4 rounded-lg border border-primary/25">
+          <p className="text-sm text-foreground">
             {t.fpOtpNote}
           </p>
         </div>
@@ -176,7 +176,7 @@ const ForgotPasswordPage = () => {
         <div className="flex gap-3">
           <Button
             variant="outline"
-            className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50"
+            className="flex-1 border-primary/30 text-primary hover:bg-primary/10"
             onClick={handleBack}
             disabled={isLoading}
           >
@@ -184,7 +184,7 @@ const ForgotPasswordPage = () => {
             {t.registerBack}
           </Button>
           <Button
-            className="flex-1 h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+            className="flex-1 h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
             onClick={handleVerifyOTP}
             disabled={isLoading || otp.length !== 6}
           >
@@ -214,7 +214,7 @@ const ForgotPasswordPage = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <AuthLogo icon={<Lock className="w-full h-full text-orange-600 dark:text-orange-400 p-4" />} />
+      <AuthLogo icon={<Lock className="w-full h-full text-primary p-4" />} />
       <AuthHeader
         title={t.fpNewPasswordTitle}
         subtitle={t.fpNewPasswordSubtitle}
@@ -230,7 +230,7 @@ const ForgotPasswordPage = () => {
               id="newPassword"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              className={`pl-10 pr-10 h-11 ${errors.newPassword || error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 pr-10 h-11 ${errors.newPassword || error ? 'border-destructive focus:border-destructive focus:ring-destructive' : 'border-primary/30 focus:border-primary focus:ring-primary'}`}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               disabled={isLoading}
@@ -243,7 +243,7 @@ const ForgotPasswordPage = () => {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          {errors.newPassword && <p className="text-sm text-red-500">{errors.newPassword}</p>}
+          {errors.newPassword && <p className="text-sm text-destructive">{errors.newPassword}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirmPassword" className="text-sm font-medium">
@@ -255,7 +255,7 @@ const ForgotPasswordPage = () => {
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
-              className={`pl-10 pr-10 h-11 ${errors.confirmPassword || error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 pr-10 h-11 ${errors.confirmPassword || error ? 'border-destructive focus:border-destructive focus:ring-destructive' : 'border-primary/30 focus:border-primary focus:ring-primary'}`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
@@ -268,12 +268,12 @@ const ForgotPasswordPage = () => {
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
         </div>
         <div className="flex gap-3">
           <Button
             variant="outline"
-            className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50"
+            className="flex-1 border-primary/30 text-primary hover:bg-primary/10"
             onClick={handleBack}
             disabled={isLoading}
           >
@@ -281,7 +281,7 @@ const ForgotPasswordPage = () => {
             {t.registerBack}
           </Button>
           <Button
-            className="flex-1 h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+            className="flex-1 h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
             onClick={handleResetPassword}
             disabled={isLoading || !newPassword || !confirmPassword}
           >
@@ -329,7 +329,7 @@ const ForgotPasswordPage = () => {
           </p>
         </div>
         <Button
-          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="w-full h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
           size="lg"
           onClick={() => navigate(ROUTES.AUTH.LOGIN)}
         >
