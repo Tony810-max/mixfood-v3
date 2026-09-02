@@ -3,9 +3,8 @@ import { motion } from 'framer-motion';
 import { Clock, Lock, LogOut, Shield, User } from 'lucide-react';
 
 interface ProfileSidebarProps {
-  activeSection: 'info' | 'password';
-  onSectionChange: (section: 'info' | 'password') => void;
-  onNavigateToReservations: () => void;
+  activeSection: 'info' | 'password' | 'reservations';
+  onSectionChange: (section: 'info' | 'password' | 'reservations') => void;
   onLogout: () => void;
   labels: {
     accountSettings: string;
@@ -19,7 +18,6 @@ interface ProfileSidebarProps {
 export const ProfileSidebar = ({
   activeSection,
   onSectionChange,
-  onNavigateToReservations,
   onLogout,
   labels,
 }: ProfileSidebarProps) => {
@@ -60,9 +58,13 @@ export const ProfileSidebar = ({
             <span className="font-medium">{labels.profileChangePassword}</span>
           </Button>
           <Button
-            variant="ghost"
-            className="w-full justify-start h-12 hover:bg-orange-100 dark:hover:bg-orange-900/30 text-foreground transition-all duration-300"
-            onClick={onNavigateToReservations}
+            variant={activeSection === "reservations" ? "default" : "ghost"}
+            className={`w-full justify-start h-12 transition-all duration-300 ${
+              activeSection === "reservations"
+                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
+                : "hover:bg-orange-100 dark:hover:bg-orange-900/30 text-foreground"
+            }`}
+            onClick={() => onSectionChange("reservations")}
           >
             <Clock className="mr-3 h-5 w-5" />
             <span className="font-medium">{labels.reservationsTitle}</span>

@@ -13,7 +13,7 @@ export const useProfile = () => {
   const updateProfileMutation = useUpdateProfile();
   const changePasswordMutation = useChangePassword();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeSection, setActiveSection] = useState<"info" | "password">("info");
+  const [activeSection, setActiveSection] = useState<"info" | "password" | "reservations">("info");
 
   // Update Info Form State
   const [updateInfoForm, setUpdateInfoForm] = useState({

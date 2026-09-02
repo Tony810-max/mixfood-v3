@@ -53,7 +53,7 @@ const Header = () => {
             : "bg-transparent"
         }`}
       >
-        <div className="page-container flex h-[72px] items-center justify-between">
+        <div className="page-container flex h-[80px] items-center justify-between pb-2">
           <Link to={ROUTES.HOME} className="group flex items-center gap-2.5" aria-label="Mix Food - Trang chủ">
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary-gradient font-serif text-lg font-bold text-white shadow-sm transition-transform group-hover:-rotate-3">M</span>
             <span className="font-serif text-xl font-bold tracking-tight text-foreground md:text-2xl">Mix Food</span>

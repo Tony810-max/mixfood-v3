@@ -12,7 +12,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative flex min-h-[min(900px,100svh)] items-center overflow-hidden pt-[72px]"
+      className="relative flex min-h-[min(900px,100svh)] items-center overflow-hidden pt-[80px]"
     >
       {/* Background decorative circle */}
       <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/10 blur-3xl pointer-events-none md:block hidden" />

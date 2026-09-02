@@ -74,7 +74,7 @@ const ReservationsPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
         <Header />
-        <div className="min-h-[calc(100vh-72px)] pt-[72px] flex items-center justify-center">
+        <div className="min-h-[calc(100vh-80px)] pt-[80px] flex items-center justify-center">
           <div className="text-center px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -108,7 +108,7 @@ const ReservationsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <Header />
-      <div className="min-h-[calc(100vh-72px)] pt-[72px]">
+      <div className="min-h-[calc(100vh-80px)] pt-[80px]">
         {/* Hero Section */}
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 dark:from-orange-500/5 dark:via-amber-500/5 dark:to-orange-500/5" />

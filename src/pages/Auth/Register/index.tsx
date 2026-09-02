@@ -16,7 +16,7 @@ import { ROUTES } from "@/utils/const";
 import { formatPhoneNumber } from "@/utils/formatters";
 import { showErrorToast } from "@/utils/toastHelpers";
 import { motion } from "framer-motion";
-import { Info, Lock, Mail, Phone, Shield, User } from "lucide-react";
+import { Eye, EyeOff, Info, Lock, Mail, Phone, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -42,6 +42,7 @@ const RegisterPage = () => {
   const [countdown, setCountdown] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -214,12 +215,21 @@ const RegisterPage = () => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder={t.registerPasswordPlaceholder}
-                    className={`pl-10 h-11 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400"}`}
+                    className={`pl-10 pr-10 h-11 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400"}`}
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-pressed={showPassword}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
                 {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
               </div>
@@ -231,12 +241,21 @@ const RegisterPage = () => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="confirmPassword"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder={t.registerConfirmPasswordPlaceholder}
-                    className={`pl-10 h-11 ${errors.confirmPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400"}`}
+                    className={`pl-10 pr-10 h-11 ${errors.confirmPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400"}`}
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                    aria-label={showPassword ? "Hide passwords" : "Show passwords"}
+                    aria-pressed={showPassword}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
                 {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
               </div>
@@ -295,7 +314,7 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-end gap-2">
                 <Button
                   type="button"
                   variant="outline"

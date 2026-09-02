@@ -20,14 +20,17 @@ export function vietnameseTableNumber(value: string) {
     .trim();
 }
 
+/** Use the browser's Vietnamese voice when installed, while retaining a safe fallback. */
 export function speakVietnamese(text: string) {
   if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
   const synthesis = window.speechSynthesis;
   const speak = () => {
     const voice = synthesis.getVoices().find((candidate) =>
       candidate.lang.toLowerCase().replace('_', '-').startsWith('vi'),
     );
     synthesis.cancel();
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'vi-VN';
     utterance.rate = 0.95;
@@ -39,6 +42,7 @@ export function speakVietnamese(text: string) {
     speak();
     return;
   }
+
   const onVoicesChanged = () => speak();
   synthesis.addEventListener('voiceschanged', onVoicesChanged, { once: true });
   window.setTimeout(() => {
