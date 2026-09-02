@@ -55,8 +55,8 @@ export const useProfile = () => {
     try {
       // Email is immutable: only name & phone can be updated
       const response = await updateProfileMutation.mutateAsync({
-        name: updateInfoForm.name,
-        phone: updateInfoForm.phone,
+        name: updateInfoForm.name.trim(),
+        phone: updateInfoForm.phone.trim(),
       });
       
       if (response.user) {

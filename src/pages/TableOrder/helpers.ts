@@ -16,6 +16,7 @@ export function generateIdempotencyKey() {
 interface ApiErrorPayload {
   message?: string;
   code?: string;
+  retryAfterSeconds?: number;
   error?: { code?: string };
 }
 
@@ -24,6 +25,8 @@ export function getApiError(error: unknown) {
   return {
     code: error.response?.data?.error?.code ?? error.response?.data?.code,
     message: error.response?.data?.message,
+    status: error.response?.status,
+    retryAfterSeconds: error.response?.data?.retryAfterSeconds,
   };
 }
 

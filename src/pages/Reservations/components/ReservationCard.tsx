@@ -131,11 +131,11 @@ export const ReservationCard = ({
                 <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300">
                   <p>
                     <span className="font-medium">{labels.cancelledBy}:</span>{' '}
-                    {reservation.cancelledBy === 'ADMIN'
-                      ? labels.cancelledByAdmin
-                      : reservation.cancelledBy === 'USER'
-                        ? labels.cancelledByUser
-                        : '—'}
+                    {reservation.cancelledBy
+                      ? `${reservation.cancelledBy.name} (${reservation.cancelledBy.role === 'ADMIN'
+                          ? labels.cancelledByAdmin
+                          : labels.cancelledByUser})`
+                      : '—'}
                   </p>
                   {reservation.rejectionReason && (
                     <p className="mt-1">

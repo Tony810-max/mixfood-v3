@@ -93,6 +93,7 @@ export interface StaffCallResponse {
   type: string;
   status: string;
   createdAt: string;
+  isReminder?: boolean;
 }
 
 export interface PaymentRequestResponse {

@@ -75,7 +75,10 @@ export interface Reservation {
   note: string | null;
   status: ReservationStatus;
   rejectionReason: string | null;
-  cancelledBy: "USER" | "ADMIN" | null;
+  cancelledBy: {
+    name: string;
+    role: "USER" | "ADMIN";
+  } | null;
   createdAt: string;
   updatedAt: string;
   userId: number | null;

@@ -34,7 +34,6 @@ import {
 } from '@/services/table-session.service';
 import { API_BASE, generateIdempotencyKey } from './helpers';
 import { getApiError } from './helpers';
-import { speakVietnamese, vietnameseTableNumber } from '@/lib/vietnamese-speech';
 
 interface OrderStatusEvent {
   orderId: number;
@@ -132,7 +131,7 @@ export function TableOrderProvider({
   initialPaymentRequested = false,
   initialPaymentPaid = false,
 }: TableOrderProviderProps) {
-  const { session, table, clearSession } = useTableSession();
+  const { session, clearSession } = useTableSession();
   const navigate = useNavigate();
 
   // ── Data state ──────────────────────────────────────────────────────────────
@@ -153,6 +152,7 @@ export function TableOrderProvider({
 
   const socketRef = useRef<Socket | null>(null);
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  const staffCallInFlightRef = useRef(new Set<string>());
 
   // ── WebSocket ───────────────────────────────────────────────────────────────
 
@@ -321,29 +321,31 @@ export function TableOrderProvider({
   // ── Staff calls ─────────────────────────────────────────────────────────────
 
   const handleCallStaff = async (type: string) => {
-    if (!sessionToken) return;
+    if (!sessionToken || staffCallInFlightRef.current.has(type)) return;
+    staffCallInFlightRef.current.add(type);
     try {
-      let call;
-      try {
-        call = await callStaff(sessionToken, type);
-      } catch {
-        call = await callStaff(sessionToken, type);
-      }
+      const call = await callStaff(sessionToken, type);
       setStaffCalls((prev) => [
         ...prev.filter((c) => c.type !== type || c.status === 'RESOLVED'),
         call,
       ]);
-      toast.success('✅ Nhân viên đã được thông báo!');
-      if (table?.tableNumber) {
-        const tableLabel = vietnameseTableNumber(table.tableNumber);
-        speakVietnamese(
-          type === 'REQUEST_BILL'
-            ? `Đã yêu cầu hóa đơn cho bàn ${tableLabel}`
-            : `Đã gọi nhân viên cho bàn ${tableLabel}`,
-        );
-      }
+      toast.success(
+        call.isReminder
+          ? 'Đã nhắc lại nhân viên. Vui lòng chờ trong giây lát.'
+          : 'Nhân viên đã nhận được yêu cầu của bạn!',
+      );
     } catch (err: unknown) {
-      toast.error(getApiError(err).message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
+      const { code, message, retryAfterSeconds } = getApiError(err);
+      if (code === 'STAFF_CALL_COOLDOWN') {
+        toast.info(
+          message ||
+            `Nhân viên đã nhận được yêu cầu. Bạn có thể gọi lại sau ${retryAfterSeconds ?? 30} giây nếu vẫn cần hỗ trợ.`,
+        );
+      } else {
+        toast.error(message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
+      }
+    } finally {
+      staffCallInFlightRef.current.delete(type);
     }
   };
 
