@@ -107,7 +107,7 @@ axiosInstance.interceptors.response.use(
     
     const messageString = Array.isArray(blockCheckMessage) ? blockCheckMessage.join(' ') : String(blockCheckMessage);
     
-    if (messageString.toLowerCase().includes('blocked')) {
+    if (messageString.toLowerCase().includes('blocked') || messageString.toLowerCase().includes('deactivated')) {
       console.log('[Axios] User is blocked, forcing logout');
       // Set flag for toast notification (BlockedUserToast component will handle showing it)
       localStorage.setItem('mixfood.showBlockedToast', 'true');
@@ -143,7 +143,7 @@ axiosInstance.interceptors.response.use(
         
         // Check if it's a blocked user message (in case the first check missed it)
         const authMessageString = Array.isArray(authErrorMessage) ? authErrorMessage.join(' ') : String(authErrorMessage);
-        if (authMessageString.toLowerCase().includes('blocked')) {
+        if (authMessageString.toLowerCase().includes('blocked') || authMessageString.toLowerCase().includes('deactivated')) {
           localStorage.setItem('mixfood.showBlockedToast', 'true');
         }
         

@@ -146,6 +146,7 @@ const ReservationsPage = () => {
                   total: t.reservationsTotal || "Tổng",
                   pending: t.reservationsStatusPending || "Chờ xác nhận",
                   confirmed: t.reservationsStatusConfirmed || "Đã xác nhận",
+                  arrived: "Đã đến",
                   cancelled: t.reservationsStatusCancelled || "Đã hủy",
                 }}
               />

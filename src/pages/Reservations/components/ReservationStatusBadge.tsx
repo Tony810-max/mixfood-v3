@@ -16,6 +16,10 @@ export const ReservationStatusBadge = ({ status, label }: ReservationStatusBadge
       icon: CheckCircle,
       colors: STATUS_COLORS.CONFIRMED,
     },
+    [RESERVATION_STATUS.ARRIVED]: {
+      icon: CheckCircle,
+      colors: STATUS_COLORS.ARRIVED,
+    },
     [RESERVATION_STATUS.CANCELLED]: {
       icon: XCircle,
       colors: STATUS_COLORS.CANCELLED,

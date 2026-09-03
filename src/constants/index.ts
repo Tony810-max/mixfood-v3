@@ -32,6 +32,7 @@ export const API_CONFIG = {
 export const RESERVATION_STATUS = {
   PENDING: "PENDING" as const,
   CONFIRMED: "CONFIRMED" as const,
+  ARRIVED: "ARRIVED" as const,
   CANCELLED: "CANCELLED" as const,
 } as const;
 
@@ -44,6 +45,10 @@ export const STATUS_COLORS = {
   CONFIRMED: {
     bg: "bg-green-100 dark:bg-green-900/30",
     text: "text-green-700 dark:text-green-400",
+  },
+  ARRIVED: {
+    bg: "bg-blue-100 dark:bg-blue-900/30",
+    text: "text-blue-700 dark:text-blue-400",
   },
   CANCELLED: {
     bg: "bg-red-100 dark:bg-red-900/30",

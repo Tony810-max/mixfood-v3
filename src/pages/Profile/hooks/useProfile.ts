@@ -13,7 +13,9 @@ export const useProfile = () => {
   const updateProfileMutation = useUpdateProfile();
   const changePasswordMutation = useChangePassword();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeSection, setActiveSection] = useState<"info" | "password" | "reservations">("info");
+  const [activeSection, setActiveSection] = useState<"info" | "password" | "reservations">(
+    () => new URLSearchParams(window.location.search).get('section') === 'reservations' ? 'reservations' : 'info',
+  );
 
   // Update Info Form State
   const [updateInfoForm, setUpdateInfoForm] = useState({

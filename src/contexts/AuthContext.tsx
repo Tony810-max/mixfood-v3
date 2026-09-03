@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Handle both string and array message formats
         const messageString = Array.isArray(errorMessage) ? errorMessage.join(' ') : String(errorMessage);
         
-        if (messageString.toLowerCase().includes('blocked')) {
+        if (messageString.toLowerCase().includes('blocked') || messageString.toLowerCase().includes('deactivated')) {
           console.log('[AuthContext] User is blocked, setting flag for toast');
           // Set localStorage flag to show toast after app is fully loaded
           localStorage.setItem('mixfood.showBlockedToast', 'true');

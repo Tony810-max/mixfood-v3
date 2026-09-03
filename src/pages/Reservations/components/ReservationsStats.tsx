@@ -6,12 +6,14 @@ interface ReservationsStatsProps {
     total: number;
     pending: number;
     confirmed: number;
+    arrived: number;
     cancelled: number;
   };
   labels: {
     total: string;
     pending: string;
     confirmed: string;
+    arrived: string;
     cancelled: string;
   };
 }
@@ -49,7 +51,7 @@ const StatCard = ({
 
 export const ReservationsStats = ({ stats, labels }: ReservationsStatsProps) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
       <StatCard
         icon={Calendar}
         label={labels.total}
@@ -71,6 +73,7 @@ export const ReservationsStats = ({ stats, labels }: ReservationsStatsProps) => 
         color="text-green-600 dark:text-green-400"
         bgColor="bg-green-100 dark:bg-green-900/30"
       />
+      <StatCard icon={CheckCircle} label={labels.arrived} value={stats.arrived} color="text-blue-600 dark:text-blue-400" bgColor="bg-blue-100 dark:bg-blue-900/30" />
       <StatCard
         icon={XCircle}
         label={labels.cancelled}

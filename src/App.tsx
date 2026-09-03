@@ -21,7 +21,6 @@ const LoginPage = lazy(() => import("./pages/Auth/Login/index.tsx"));
 const RegisterPage = lazy(() => import("./pages/Auth/Register/index.tsx"));
 const ForgotPasswordPage = lazy(() => import("./pages/Auth/ForgotPassword/index.tsx"));
 const ProfilePage = lazy(() => import("./pages/Profile/index.tsx"));
-const ReservationsPage = lazy(() => import("./pages/Reservations/index.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const TableOrderPage = lazy(() => import("./pages/TableOrder/index.tsx"));
 const TableOrderLayout = lazy(() => import("./pages/TableOrder/Layout.tsx"));
@@ -90,10 +89,7 @@ const App = () => (
                       path={ROUTES.PROFILE}
                       element={<ProtectedRoute requireAuth><ProfilePage /></ProtectedRoute>}
                     />
-                    <Route
-                      path={ROUTES.RESERVATIONS}
-                      element={<ProtectedRoute requireAuth><ReservationsPage /></ProtectedRoute>}
-                    />
+                    <Route path={ROUTES.RESERVATIONS} element={<Navigate to={`${ROUTES.PROFILE}?section=reservations`} replace />} />
                     <Route
                       path={ROUTES.AUTH.LOGIN}
                       element={<ProtectedRoute requireAuth={false}><LoginPage /></ProtectedRoute>}

@@ -84,7 +84,7 @@ export interface Reservation {
   userId: number | null;
 }
 
-export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+export type ReservationStatus = "PENDING" | "CONFIRMED" | "ARRIVED" | "CANCELLED";
 
 // Menu Types
 export interface MenuItem {
