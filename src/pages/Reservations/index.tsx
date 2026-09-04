@@ -42,9 +42,9 @@ const ReservationsPage = () => {
     }, 5000);
   };
 
-  const handleCancelReservation = (id: number) => {
+  const handleCancelReservation = (id: number, reason: string) => {
     setCancellingId(id);
-    cancelMutation.mutate(id, {
+    cancelMutation.mutate({ id, reason }, {
       onSuccess: () => {
         toast.success(t.reservationCancelSuccess || "Reservation cancelled successfully");
         setCancellingId(null);
@@ -65,6 +65,7 @@ const ReservationsPage = () => {
     const labels: Record<string, string> = {
       [RESERVATION_STATUS.PENDING]: t.reservationsStatusPending,
       [RESERVATION_STATUS.CONFIRMED]: t.reservationsStatusConfirmed,
+      [RESERVATION_STATUS.ARRIVED]: t.reservationsStatusArrived,
       [RESERVATION_STATUS.CANCELLED]: t.reservationsStatusCancelled,
     };
     return labels[status] || status;
@@ -269,6 +270,8 @@ const ReservationsPage = () => {
                             cancelledByUser: lang === 'vn' ? 'Bạn' : 'You',
                             cancelledByAdmin: lang === 'vn' ? 'Nhà hàng' : 'Restaurant admin',
                             cancellationReason: lang === 'vn' ? 'Lý do' : 'Reason',
+                            cancellationReasonPlaceholder: t.reservationsCancellationReasonPlaceholder,
+                            cancellationReasonHint: t.reservationsCancellationReasonHint,
                           }}
                         />
                       ))}

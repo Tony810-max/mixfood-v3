@@ -12,7 +12,7 @@ interface ReservationCardProps {
   reservation: Reservation;
   index: number;
   getStatusLabel: (status: string) => string;
-  onCancel: (id: number) => void;
+  onCancel: (id: number, reason: string) => void;
   isCancelling?: boolean;
   labels: {
     date: string;
@@ -31,6 +31,8 @@ interface ReservationCardProps {
     cancelledByUser: string;
     cancelledByAdmin: string;
     cancellationReason: string;
+    cancellationReasonPlaceholder: string;
+    cancellationReasonHint: string;
   };
 }
 
@@ -45,8 +47,8 @@ export const ReservationCard = ({
   const { formatDate } = useDateFormat();
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
-  const handleCancelConfirm = () => {
-    onCancel(reservation.id);
+  const handleCancelConfirm = (reason: string) => {
+    onCancel(reservation.id, reason);
     setShowCancelDialog(false);
   };
 
@@ -177,6 +179,9 @@ export const ReservationCard = ({
           cancel: labels.cancelDialogCancel,
           confirm: labels.cancelDialogConfirm,
           confirming: labels.cancelDialogConfirming,
+          reasonLabel: labels.cancellationReason,
+          reasonPlaceholder: labels.cancellationReasonPlaceholder,
+          reasonHint: labels.cancellationReasonHint,
         }}
       />
     </>

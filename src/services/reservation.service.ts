@@ -16,10 +16,10 @@ export const reservationService = {
     return response.data;
   },
 
-  async cancelReservation(id: number): Promise<{ message: string; reservation: { id: number; status: string } }> {
+  async cancelReservation(id: number, reason: string): Promise<{ message: string; reservation: { id: number; status: string } }> {
     const response = await axios.put<{ message: string; reservation: { id: number; status: string } }>(
       `/reservations/${id}`,
-      { status: 'CANCELLED' },
+      { status: 'CANCELLED', reason },
     );
     return response.data;
   },

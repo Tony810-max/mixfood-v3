@@ -9,12 +9,14 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Loader2, XCircle } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { useEffect, useState } from 'react';
 
 interface CancelReservationDialogProps {
   isOpen: boolean;
   reservationName?: string;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: (reason: string) => void;
   isPending?: boolean;
   labels: {
     title: string;
@@ -22,6 +24,9 @@ interface CancelReservationDialogProps {
     cancel: string;
     confirm: string;
     confirming: string;
+    reasonLabel: string;
+    reasonPlaceholder: string;
+    reasonHint: string;
   };
 }
 
@@ -33,6 +38,17 @@ export const CancelReservationDialog = ({
   isPending = false,
   labels,
 }: CancelReservationDialogProps) => {
+  const [reason, setReason] = useState('');
+
+  useEffect(() => {
+    if (isOpen) setReason('');
+  }, [isOpen]);
+
+  const handleConfirm = () => {
+    const trimmedReason = reason.trim();
+    if (trimmedReason) onConfirm(trimmedReason);
+  };
+
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
       <AlertDialogContent className="sm:max-w-md">
@@ -47,6 +63,20 @@ export const CancelReservationDialog = ({
               : labels.description.replace(' "{name}"', '')}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <div className="space-y-2">
+          <label htmlFor="reservation-cancellation-reason" className="text-sm font-medium">
+            {labels.reasonLabel} <span className="text-destructive">*</span>
+          </label>
+          <Textarea
+            id="reservation-cancellation-reason"
+            value={reason}
+            onChange={(event) => setReason(event.target.value)}
+            placeholder={labels.reasonPlaceholder}
+            maxLength={500}
+            disabled={isPending}
+          />
+          <p className="text-xs text-muted-foreground">{labels.reasonHint}</p>
+        </div>
         <AlertDialogFooter className="flex-col-reverse sm:flex-row gap-2">
           <AlertDialogCancel
             onClick={onCancel}
@@ -56,8 +86,8 @@ export const CancelReservationDialog = ({
             {labels.cancel}
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={onConfirm}
-            disabled={isPending}
+            onClick={handleConfirm}
+            disabled={isPending || !reason.trim()}
             className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:ring-destructive"
           >
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
