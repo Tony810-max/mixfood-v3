@@ -23,6 +23,7 @@ import { useParams, Outlet } from 'react-router-dom';
 import { CheckCircle2, QrCode, RefreshCw, TriangleAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTableSession } from '@/contexts/TableSessionContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   scanQrCode,
   getSessionState,
@@ -47,6 +48,7 @@ interface SessionInitData {
 }
 
 export default function TableOrderPage() {
+  const { t } = useLanguage();
   const { token } = useParams<{ token: string }>();
   const { sessionToken, session, table, setSessionData, clearSession } = useTableSession();
 
@@ -130,7 +132,7 @@ export default function TableOrderPage() {
 
         // Fresh scan (no stored token, or recovery failed)
         if (!token) {
-          setError('Invalid QR code.');
+          setError(t.invalidQr);
           setLoading(false);
           return;
         }
@@ -149,12 +151,12 @@ export default function TableOrderPage() {
       } catch (err: unknown) {
         const { code } = getApiError(err);
         if (code === 'TABLE_INACTIVE' || code === 'TABLE_OUT_OF_SERVICE') {
-          setError('Bàn này đang tạm ngưng phục vụ. Vui lòng nhờ nhân viên hỗ trợ.');
+          setError(t.tableUnavailable);
         } else if (code === 'SESSION_CLOSED' || code === 'SESSION_EXPIRED') {
           setSessionEnded(true);
           clearSession();
         } else {
-          setError('Không thể kết nối tới nhà hàng. Vui lòng kiểm tra mạng và thử lại.');
+          setError(t.restaurantUnreachable);
         }
       }
       setLoading(false);
@@ -173,8 +175,8 @@ export default function TableOrderPage() {
             <QrCode className="h-7 w-7" />
             <span className="absolute inset-0 animate-ping rounded-2xl border border-primary/25" />
           </div>
-          <h1 className="text-xl font-bold">Đang mở bàn của bạn</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Mix Food đang tải thực đơn và thông tin phiên gọi món…</p>
+          <h1 className="text-xl font-bold">{t.openingYourTable}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{t.loadingTableSession}</p>
         </div>
       </div>
     );
@@ -187,11 +189,11 @@ export default function TableOrderPage() {
           <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-success/10 text-success">
             <CheckCircle2 className="h-8 w-8" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">Phiên đã kết thúc</h1>
+          <h1 className="text-xl font-bold text-foreground">{t.sessionEnded}</h1>
           <p className="text-muted-foreground text-sm">
             {paymentPaidOnEnd
-              ? 'Cảm ơn bạn đã đến Mix Food! Hẹn gặp lại.'
-              : 'Phiên gọi món của bạn đã kết thúc. Vui lòng quét mã QR để bắt đầu lại.'}
+              ? t.sessionEndedPaid
+              : t.sessionEndedUnpaid}
           </p>
         </div>
       </div>
@@ -205,10 +207,10 @@ export default function TableOrderPage() {
           <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-destructive/10 text-destructive">
             <TriangleAlert className="h-8 w-8" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">Không thể kết nối</h1>
+          <h1 className="text-xl font-bold text-foreground">{t.connectionError}</h1>
           <p className="text-muted-foreground text-sm">{error}</p>
           <Button className="mt-5 w-full" variant="outline" onClick={() => window.location.reload()}>
-            <RefreshCw /> Thử kết nối lại
+            <RefreshCw /> {t.reconnect}
           </Button>
         </div>
       </div>

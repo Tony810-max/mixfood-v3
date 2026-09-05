@@ -44,28 +44,28 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
       {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:bg-primary-gradient focus:bg-primary-gradient hover:text-white hover:opacity-80 transition-colors">
+            <Button variant="ghost" className="primary-action-on-hover flex h-10 items-center gap-2 rounded-xl border border-transparent px-4 text-sm font-semibold text-foreground/80 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:text-primary-foreground hover:shadow-md data-[state=open]:border-primary/20 data-[state=open]:text-primary-foreground">
               <User className="w-4 h-4" />
               <span>{user?.name || t.headerUser}</span>
               <ChevronDown className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 ">
-            <DropdownMenuLabel className="font-normal">
+          <DropdownMenuContent align="end" className="w-60 rounded-2xl border-border/80 bg-popover p-1.5 shadow-lg">
+            <DropdownMenuLabel className="rounded-xl bg-muted/60 px-3 py-2.5 font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user?.name || t.headerUser}</p>
                 <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to={ROUTES.PROFILE} className="cursor-pointer hover:text-white hover:bg-primary-gradient focus:bg-transparent">
+            <DropdownMenuItem asChild className="primary-action-on-highlight rounded-xl transition-colors focus:text-primary-foreground">
+              <Link to={ROUTES.PROFILE} className="cursor-pointer">
                 <User className="mr-2 h-4 w-4" />
                 <span>{t.profileTitle}</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to={ROUTES.RESERVATIONS} className="cursor-pointer hover:bg-primary-gradient focus:bg-transparent">
+            <DropdownMenuItem asChild className="primary-action-on-highlight rounded-xl transition-colors focus:text-primary-foreground">
+              <Link to={ROUTES.RESERVATIONS} className="cursor-pointer">
                 <Calendar className="mr-2 h-4 w-4" />
                 <span>{t.reservationsTitle}</span>
               </Link>
@@ -76,7 +76,7 @@ const DesktopNav = ({ navItems }: DesktopNavProps) => {
               e.stopPropagation();
               setUser(null);
               logoutMutation.mutate();
-            }} className="cursor-pointer text-red-600 hover:text-white focus:bg-primary-gradient hover:bg-primary-gradient">
+            }} className="primary-action-on-highlight cursor-pointer rounded-xl text-destructive transition-colors hover:text-primary-foreground focus:text-primary-foreground">
               <LogOut className="mr-2 h-4 w-4" />
               <span>{t.headerLogout}</span>
             </DropdownMenuItem>

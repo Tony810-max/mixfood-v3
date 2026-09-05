@@ -161,10 +161,10 @@ const MobileNav = ({ navItems: _navItems, mobileOpen, setMobileOpen }: MobileNav
                             logoutMutation.mutate();
                             setMobileOpen(false);
                           }}
-                          className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-50 border border-red-200 hover:bg-red-100 transition-all active:scale-[0.98]"
+                          className="w-full flex items-center gap-4 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 transition-all hover:bg-destructive/15 active:scale-[0.98]"
                         >
-                          <LogOut className="w-5 h-5 text-red-500" />
-                          <span className="text-base font-medium text-red-500">{t.headerLogout}</span>
+                          <LogOut className="w-5 h-5 text-destructive" />
+                          <span className="text-base font-medium text-destructive">{t.headerLogout}</span>
                         </button>
                       </div>
                     ) : (
@@ -201,7 +201,7 @@ const MobileNav = ({ navItems: _navItems, mobileOpen, setMobileOpen }: MobileNav
                     <Phone className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs text-muted-foreground">Hotline</p>
+                    <p className="text-xs text-muted-foreground">{t.hotline}</p>
                     <p className="font-semibold text-primary">{INFORMATION_RESTAURANT.phone}</p>
                   </div>
                 </motion.a>

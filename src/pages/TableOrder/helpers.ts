@@ -30,12 +30,14 @@ export function getApiError(error: unknown) {
   };
 }
 
+// Retained for non-UI consumers and legacy tests. Screen labels are resolved
+// from LanguageContext in OrdersPage so they follow the active language.
 export const ORDER_STATUS_LABEL: Record<string, string> = {
-  PENDING:   'Đang chờ',
+  PENDING: 'Đang chờ',
   CONFIRMED: 'Đã xác nhận',
   PREPARING: 'Đang chuẩn bị',
-  READY:     'Sẵn sàng',
-  SERVED:    'Đã phục vụ',
+  READY: 'Sẵn sàng',
+  SERVED: 'Đã phục vụ',
   COMPLETED: 'Hoàn thành',
   CANCELLED: 'Đã hủy',
 };

@@ -13,6 +13,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { useTableSession } from "@/contexts/TableSessionContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
@@ -27,14 +28,8 @@ import { cn } from "@/lib/utils";
 import { useTableOrder } from "./TableOrderContext";
 import { formatVND } from "./helpers";
 
-const tabs = [
-  { id: "menu", label: "Thực đơn", icon: UtensilsCrossed },
-  { id: "orders", label: "Đơn món", icon: ClipboardList },
-  { id: "chat", label: "Hỗ trợ", icon: MessageCircle },
-  { id: "bill", label: "Thanh toán", icon: ReceiptText },
-] as const;
-
 export default function TableOrderLayout() {
+  const { t, lang } = useLanguage();
   const { table } = useTableSession();
   const {
     orders, staffCalls, paymentRequested, paymentPaid, cart, setCart, cartOpen,
@@ -44,6 +39,13 @@ export default function TableOrderLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [chatInput, setChatInput] = useState("");
+  const tabs = [
+    { id: "menu", label: t.menu, icon: UtensilsCrossed },
+    { id: "orders", label: t.orders, icon: ClipboardList },
+    { id: "chat", label: t.messageStaff, icon: MessageCircle },
+    { id: "bill", label: t.payment, icon: ReceiptText },
+  ] as const;
+  const itemName = (item: { name: { vn?: string; en?: string } }) => lang === 'vn' ? item.name.vn || item.name.en : item.name.en || item.name.vn;
 
   const activeTab = pathname.split("/").pop() ?? "menu";
   const activeOrders = orders.filter((order) => order.status !== "CANCELLED");
@@ -71,14 +73,14 @@ export default function TableOrderLayout() {
               {table?.tableNumber}
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">Mix Food · Gọi món tại bàn</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">Mix Food · {t.tableOrder}</p>
               <h1 className="truncate text-base font-bold text-white">
-                Bàn {table?.tableNumber}{table?.name ? ` · ${table.name}` : ""}
+                {t.tableLabel.replace('{number}', table?.tableNumber ?? '')}{table?.name ? ` · ${table.name}` : ""}
               </h1>
             </div>
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-[11px] text-white/70">Tạm tính</p>
+            <p className="text-[11px] text-white/70">{t.subtotal}</p>
             <p className="text-sm font-bold tabular-nums text-white">{formatVND(sessionTotal)}</p>
           </div>
         </div>
@@ -96,7 +98,7 @@ export default function TableOrderLayout() {
           aria-live="polite"
         >
           {paymentPaid ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <LoaderCircle className="h-4 w-4 shrink-0 animate-spin" />}
-          {paymentPaid ? "Đã thanh toán · Cảm ơn bạn!" : "Đang chờ nhân viên xác nhận thanh toán"}
+          {paymentPaid ? t.paidThankYou : t.waitingPayment}
         </div>
       )}
 
@@ -110,7 +112,7 @@ export default function TableOrderLayout() {
             type="button"
             onClick={() => setCartOpen(true)}
             className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-full bg-primary-gradient px-4 text-sm font-semibold text-primary-foreground shadow-layered-hover transition-transform hover:-translate-y-0.5"
-            aria-label={`Mở giỏ hàng, ${cartCount} món, tổng ${formatVND(cartTotal)}`}
+            aria-label={t.cartOpen.replace('{count}', String(cartCount)).replace('{total}', formatVND(cartTotal))}
           >
             <span className="grid h-7 min-w-7 place-items-center rounded-full bg-primary px-1 text-xs text-white">{cartCount}</span>
             <ShoppingBag className="h-4 w-4" />
@@ -122,8 +124,8 @@ export default function TableOrderLayout() {
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
         <SheetContent side="bottom" className="inset-x-0 mx-auto max-h-[88dvh] max-w-lg overflow-y-auto rounded-t-3xl border-x p-5 pb-safe-bottom">
           <SheetHeader className="pr-10 text-left">
-            <SheetTitle className="text-xl">Giỏ hàng của bạn</SheetTitle>
-            <SheetDescription>Kiểm tra số lượng và thêm ghi chú trước khi gửi bếp.</SheetDescription>
+            <SheetTitle className="text-xl">{t.yourCart}</SheetTitle>
+            <SheetDescription>{t.cartDescription}</SheetDescription>
           </SheetHeader>
 
           <div className="my-5 space-y-3">
@@ -131,15 +133,15 @@ export default function TableOrderLayout() {
               <div key={item.productId} className="rounded-2xl border border-border/80 bg-card p-3.5">
                 <div className="flex items-start gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold" title={item.name.vn || item.name.en}>{item.name.vn || item.name.en}</p>
+                    <p className="truncate text-sm font-semibold" title={itemName(item)}>{itemName(item)}</p>
                     <p className="mt-0.5 text-sm font-semibold text-primary">{formatVND(item.price)}</p>
                   </div>
                   <QuantityStepper value={item.quantity} onChange={(quantity) => updateQty(item.productId, quantity)} max={99} />
                 </div>
                 <Input
                   className="mt-3 min-h-10 bg-background text-sm"
-                  aria-label={`Ghi chú cho ${item.name.vn || item.name.en}`}
-                  placeholder="Ví dụ: không cay, không hành…"
+                  aria-label={t.itemNote.replace('{item}', itemName(item) ?? '')}
+                  placeholder={t.itemNotePlaceholder}
                   value={item.notes}
                   onChange={(event) => setCart((current) => current.map((cartItem) => cartItem.productId === item.productId ? { ...cartItem, notes: event.target.value } : cartItem))}
                 />
@@ -148,27 +150,27 @@ export default function TableOrderLayout() {
           </div>
 
           <Input
-            aria-label="Ghi chú chung cho đơn hàng"
-            placeholder="Ghi chú chung cho đơn hàng…"
+            aria-label={t.orderNote}
+            placeholder={t.orderNotePlaceholder}
             value={orderNotes}
             onChange={(event) => setOrderNotes(event.target.value)}
           />
           <div className="my-4 flex items-center justify-between rounded-2xl bg-primary/10 px-4 py-3.5 font-bold">
-            <span>Tổng cộng</span>
+            <span>{t.total}</span>
             <span className="tabular-nums text-primary">{formatVND(cartTotal)}</span>
           </div>
           <Button className="w-full" size="lg" onClick={submitOrder} disabled={submitting || cart.length === 0}>
             {submitting && <LoaderCircle className="animate-spin" />}
-            {submitting ? "Đang gửi bếp…" : `Xác nhận gọi món · ${formatVND(cartTotal)}`}
+            {submitting ? t.sendingKitchen : t.confirmOrder.replace('{total}', formatVND(cartTotal))}
           </Button>
         </SheetContent>
       </Sheet>
 
-      <nav className="absolute inset-x-0 bottom-0 z-20 border-t border-border/80 bg-card/95 pb-safe-bottom shadow-[0_-12px_32px_-24px_rgba(0,0,0,.45)] backdrop-blur-xl" aria-label="Điều hướng gọi món">
+      <nav className="absolute inset-x-0 bottom-0 z-20 border-t border-border/80 bg-card/95 pb-safe-bottom shadow-[0_-12px_32px_-24px_rgba(0,0,0,.45)] backdrop-blur-xl" aria-label={t.orderNavigation}>
         {activeTab === "chat" && (
           <form className="flex items-center gap-2 border-b border-border/70 px-3 py-2" onSubmit={handleSendChat}>
-            <Input value={chatInput} onChange={(event) => setChatInput(event.target.value)} placeholder="Nhắn cho nhân viên…" aria-label="Tin nhắn cho nhân viên" className="min-h-10" />
-            <Button type="submit" size="icon" className="h-10 min-h-10 w-10 shrink-0" disabled={!chatInput.trim()} aria-label="Gửi tin nhắn">
+            <Input value={chatInput} onChange={(event) => setChatInput(event.target.value)} placeholder={t.messageStaffPlaceholder} aria-label={t.messageStaffLabel} className="min-h-10" />
+            <Button type="submit" size="icon" className="h-10 min-h-10 w-10 shrink-0" disabled={!chatInput.trim()} aria-label={t.sendMessage}>
               <Send />
             </Button>
           </form>
@@ -181,7 +183,7 @@ export default function TableOrderLayout() {
             className={cn("flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-semibold", pendingCallTypes.has("CALL_STAFF") ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}
           >
             <ConciergeBell className="h-3.5 w-3.5" />
-            {pendingCallTypes.has("CALL_STAFF") ? "Đã gọi nhân viên" : "Gọi nhân viên"}
+            {pendingCallTypes.has("CALL_STAFF") ? t.staffCalled : t.callStaff}
           </button>
           <button
             type="button"
@@ -189,7 +191,7 @@ export default function TableOrderLayout() {
             className={cn("flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl text-xs font-semibold", pendingCallTypes.has("REQUEST_BILL") ? "bg-warning/15 text-warning-foreground" : "bg-muted text-muted-foreground")}
           >
             <BellRing className="h-3.5 w-3.5" />
-            {pendingCallTypes.has("REQUEST_BILL") ? "Đang xử lý" : "Xin hóa đơn"}
+            {pendingCallTypes.has("REQUEST_BILL") ? t.processing : t.requestBill}
           </button>
         </div>
 

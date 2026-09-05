@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { io, type Socket } from 'socket.io-client';
 import { toast } from '@/components/ui/sonner';
 import { useTableSession } from '@/contexts/TableSessionContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   createOrder,
   cancelOrder as cancelOrderRequest,
@@ -132,6 +133,7 @@ export function TableOrderProvider({
   initialPaymentPaid = false,
 }: TableOrderProviderProps) {
   const { session, clearSession } = useTableSession();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   // ── Data state ──────────────────────────────────────────────────────────────
@@ -176,11 +178,11 @@ export function TableOrderProvider({
         } catch {
           setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
         }
-        toast.info('Đơn hàng của bạn vừa được cập nhật. Xem tin nhắn để biết chi tiết.');
+        toast.info(t.orderUpdated);
         return;
       }
       if (status === 'CANCELLED') {
-        toast.info('Đơn hàng của bạn vừa được cập nhật. Xem tin nhắn để biết chi tiết.');
+        toast.info(t.orderUpdated);
       }
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
     });
@@ -205,8 +207,7 @@ export function TableOrderProvider({
       socket.disconnect();
       socketRef.current = null;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken, session?.id]);
+  }, [sessionToken, session?.id, t]);
 
   // ── Scroll chat to bottom when messages change ──────────────────────────────
 
@@ -280,7 +281,7 @@ export function TableOrderProvider({
         clearSession();
         onSessionEnded();
       } else {
-        toast.error(message || 'Đặt món thất bại. Vui lòng thử lại.');
+        toast.error(message || t.orderFailed);
       }
     }
     setSubmitting(false);
@@ -293,9 +294,9 @@ export function TableOrderProvider({
     try {
       await cancelOrderRequest(sessionToken, orderId);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: 'CANCELLED' } : o)));
-      toast.success('Đã hủy đơn hàng.');
+      toast.success(t.orderCancelledSuccess);
     } catch (err: unknown) {
-      toast.error(getApiError(err).message || 'Không thể hủy đơn hàng này. Vui lòng nhắn tin cho nhân viên.');
+      toast.error(getApiError(err).message || t.orderCancelFailed);
     }
   };
 
@@ -314,7 +315,7 @@ export function TableOrderProvider({
       }
       setMessages((prev) => [...prev, { ...msg, senderType: 'CUSTOMER' }]);
     } catch (err: unknown) {
-      toast.error(getApiError(err).message || 'Gửi tin nhắn thất bại. Vui lòng thử lại.');
+      toast.error(getApiError(err).message || t.messageFailed);
     }
   };
 
@@ -331,18 +332,18 @@ export function TableOrderProvider({
       ]);
       toast.success(
         call.isReminder
-          ? 'Đã nhắc lại nhân viên. Vui lòng chờ trong giây lát.'
-          : 'Nhân viên đã nhận được yêu cầu của bạn!',
+          ? t.staffReminder
+          : t.staffNotified,
       );
     } catch (err: unknown) {
       const { code, message, retryAfterSeconds } = getApiError(err);
       if (code === 'STAFF_CALL_COOLDOWN') {
         toast.info(
           message ||
-            `Nhân viên đã nhận được yêu cầu. Bạn có thể gọi lại sau ${retryAfterSeconds ?? 30} giây nếu vẫn cần hỗ trợ.`,
+            t.staffCooldown.replace('{seconds}', String(retryAfterSeconds ?? 30)),
         );
       } else {
-        toast.error(message || 'Gọi nhân viên thất bại. Vui lòng thử lại.');
+        toast.error(message || t.staffCallFailed);
       }
     } finally {
       staffCallInFlightRef.current.delete(type);
@@ -364,13 +365,13 @@ export function TableOrderProvider({
     } catch (err: unknown) {
       const { code, message } = getApiError(err);
       if (code === 'NO_ORDERS') {
-        toast.error('Chưa có đơn hàng nào để thanh toán.');
+        toast.error(t.noOrdersForPayment);
       } else if (code === 'SESSION_NOT_ACTIVE') {
         setSessionEnded(true);
         clearSession();
         onSessionEnded();
       } else {
-        toast.error(message || 'Không thể yêu cầu thanh toán. Vui lòng thử lại.');
+        toast.error(message || t.paymentRequestFailed);
       }
     }
     setRequestingPayment(false);

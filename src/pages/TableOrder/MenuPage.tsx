@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { QuantityStepper } from '@/components/ui/quantity-stepper';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useTableOrder } from './TableOrderContext';
 import { formatVND } from './helpers';
 
@@ -27,6 +28,7 @@ function normalize(text: string) {
 }
 
 export default function MenuPage() {
+  const { t, lang } = useLanguage();
   const { menu, cart, addToCart, updateQty } = useTableOrder();
   const [query, setQuery] = useState('');
   const [activeCategoryId, setActiveCategoryId] = useState<string>('all');
@@ -54,26 +56,28 @@ export default function MenuPage() {
   }, [menu, normalizedQuery, activeCategoryId]);
 
   const isEmpty = filteredMenu.length === 0;
+  const productName = (product: { name: { vn?: string; en?: string } }) => lang === 'vn' ? product.name.vn || product.name.en : product.name.en || product.name.vn;
+  const categoryName = (category: { name: { vn?: string; en?: string } }) => lang === 'vn' ? category.name.vn || category.name.en : category.name.en || category.name.vn;
 
   return (
-    <div className="flex flex-col" aria-label="Thực đơn tại bàn">
+    <div className="flex flex-col" aria-label={t.tableMenu}>
       {/* Search + filter bar */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm p-4 pb-3 space-y-2.5 border-b border-border/60">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="search"
-            aria-label="Tìm món ăn"
+            aria-label={t.searchDish}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Tìm món ăn…"
+            placeholder={t.searchDish}
             className="w-full h-11 pl-10 pr-9 rounded-2xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-              aria-label="Xóa tìm kiếm"
+              aria-label={t.clearSearch}
             >
               <X className="w-4 h-4" />
             </button>
@@ -83,13 +87,13 @@ export default function MenuPage() {
         {categoriesWithItems.length > 1 && (
           <Select value={activeCategoryId} onValueChange={setActiveCategoryId}>
             <SelectTrigger className="h-9 rounded-xl text-sm bg-card border-border">
-              <SelectValue placeholder="Danh mục" />
+              <SelectValue placeholder={t.category} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả danh mục</SelectItem>
+              <SelectItem value="all">{t.allCategories}</SelectItem>
               {categoriesWithItems.map((category) => (
                 <SelectItem key={category.id} value={String(category.id)}>
-                  {category.name.vn || category.name.en}
+                  {categoryName(category)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -102,7 +106,7 @@ export default function MenuPage() {
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
             <Search className="w-10 h-10 mb-3 opacity-40" />
-            <p className="text-sm">Không tìm thấy món ăn phù hợp</p>
+            <p className="text-sm">{t.noMatchingDishes}</p>
             {(query || activeCategoryId !== 'all') && (
               <button
                 onClick={() => {
@@ -111,7 +115,7 @@ export default function MenuPage() {
                 }}
                 className="mt-3 text-sm text-primary font-medium"
               >
-                Xóa bộ lọc
+                {t.clearFilters}
               </button>
             )}
           </div>
@@ -119,7 +123,7 @@ export default function MenuPage() {
           filteredMenu.map((category) => (
             <div key={category.id}>
               <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                {category.name.vn || category.name.en}
+                {categoryName(category)}
               </h2>
               <div className="space-y-2.5">
                 {category.products.map((product) => {
@@ -134,7 +138,7 @@ export default function MenuPage() {
                       {product.image ? (
                         <img
                           src={product.image}
-                          alt={product.name.vn || product.name.en || 'Món ăn'}
+                          alt={productName(product) || t.dish}
                           loading="lazy"
                           decoding="async"
                           className="w-16 h-16 rounded-xl object-cover shrink-0"
@@ -145,8 +149,8 @@ export default function MenuPage() {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-sm font-medium text-foreground" title={product.name.vn || product.name.en || 'Món chưa đặt tên'}>
-                            {product.name.vn || product.name.en || 'Món chưa đặt tên'}
+                        <p className="truncate text-sm font-medium text-foreground" title={productName(product) || t.unnamedDish}>
+                            {productName(product) || t.unnamedDish}
                         </p>
                         <p className="text-primary font-semibold text-sm">
                           {formatVND(product.price)}
@@ -162,7 +166,7 @@ export default function MenuPage() {
                       ) : (
                         <button
                           type="button"
-                          aria-label={`Thêm ${product.name.vn || product.name.en} vào giỏ`}
+                          aria-label={t.addToCart.replace('{item}', productName(product) || t.unnamedDish)}
                           className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
                           onClick={() => addToCart(product)}
                         >

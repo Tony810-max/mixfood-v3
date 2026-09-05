@@ -18,10 +18,12 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useTableOrder } from './TableOrderContext';
-import { formatVND, ORDER_STATUS_LABEL, ORDER_STATUS_STYLE } from './helpers';
+import { formatVND, ORDER_STATUS_STYLE } from './helpers';
 
 export default function OrdersPage() {
+  const { t, lang } = useLanguage();
   const { orders, cancelOrder } = useTableOrder();
   const navigate = useNavigate();
   const [cancelTarget, setCancelTarget] = useState<number | null>(null);
@@ -29,6 +31,8 @@ export default function OrdersPage() {
 
   const nonCancelledOrders = orders.filter((o) => o.status !== 'CANCELLED');
   const sessionTotal = nonCancelledOrders.reduce((sum, o) => sum + o.total, 0);
+  const itemName = (item: { productNameSnapshot: { vn?: string; en?: string } }) => lang === 'vn' ? item.productNameSnapshot.vn || item.productNameSnapshot.en : item.productNameSnapshot.en || item.productNameSnapshot.vn;
+  const orderStatusLabels: Record<string, string> = { PENDING: t.orderPending, CONFIRMED: t.orderConfirmed, PREPARING: t.orderPreparing, READY: t.orderReady, SERVED: t.orderServed, COMPLETED: t.orderCompleted, CANCELLED: t.orderCancelled };
 
   const handleConfirmCancel = async () => {
     if (cancelTarget == null) return;
@@ -43,9 +47,9 @@ export default function OrdersPage() {
       {nonCancelledOrders.length === 0 && (
         <div className="text-center py-14 text-muted-foreground">
           <ClipboardList className="mx-auto mb-3 h-10 w-10 opacity-40" />
-          <p className="text-sm">Chưa có món nào được gọi</p>
+          <p className="text-sm">{t.noOrdersYet}</p>
           <Button className="mt-4" size="sm" onClick={() => navigate('../menu', { relative: 'path' })}>
-            Xem thực đơn
+            {t.viewMenu}
           </Button>
         </div>
       )}
@@ -57,10 +61,10 @@ export default function OrdersPage() {
             className={`rounded-2xl border border-l-4 ${style.border} border-border bg-card shadow-layered p-4 space-y-2`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-foreground">Đơn #{order.id}</span>
+              <span className="text-sm font-bold text-foreground">{t.orderNumber.replace('{number}', String(order.id))}</span>
               <div className="flex items-center gap-2">
                 <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${style.badge}`}>
-                  {ORDER_STATUS_LABEL[order.status] ?? order.status}
+                  {orderStatusLabels[order.status] ?? order.status}
                 </span>
                 {order.status === 'PENDING' && (
                   <button
@@ -68,7 +72,7 @@ export default function OrdersPage() {
                     className="flex min-h-9 items-center gap-1 rounded-lg px-2 text-xs font-medium text-destructive hover:bg-destructive/10"
                   >
                     <Ban className="w-3.5 h-3.5" />
-                    Hủy
+                    {t.cancel}
                   </button>
                 )}
               </div>
@@ -80,9 +84,9 @@ export default function OrdersPage() {
                   key={item.id}
                   className={`flex gap-3 text-sm ${cancelled ? 'text-muted-foreground/50 line-through' : 'text-muted-foreground'}`}
                 >
-                  <span className="min-w-0 flex-1 truncate" title={`${item.quantity}× ${item.productNameSnapshot.vn || item.productNameSnapshot.en}${item.notes ? ` (${item.notes})` : ''}`}>
+                  <span className="min-w-0 flex-1 truncate" title={`${item.quantity}× ${itemName(item)}${item.notes ? ` (${item.notes})` : ''}`}>
                     {item.quantity}×{' '}
-                    {item.productNameSnapshot.vn || item.productNameSnapshot.en}
+                    {itemName(item)}
                     {item.notes && (
                       <span className="italic ml-1 text-xs">({item.notes})</span>
                     )}
@@ -92,7 +96,7 @@ export default function OrdersPage() {
               );
             })}
             <div className="flex justify-between text-sm font-semibold pt-1 border-t border-border">
-              <span>Tổng đơn</span>
+              <span>{t.orderTotal}</span>
               <span className="text-primary">{formatVND(order.total)}</span>
             </div>
           </div>
@@ -100,7 +104,7 @@ export default function OrdersPage() {
       })}
       {nonCancelledOrders.length > 0 && (
         <div className="rounded-2xl bg-muted p-4 flex justify-between font-bold sticky bottom-0">
-          <span>Tổng cộng</span>
+          <span>{t.total}</span>
           <span className="text-primary">{formatVND(sessionTotal)}</span>
         </div>
       )}
@@ -108,13 +112,13 @@ export default function OrdersPage() {
       <AlertDialog open={cancelTarget !== null} onOpenChange={(open) => !open && setCancelTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Hủy đơn hàng?</AlertDialogTitle>
+            <AlertDialogTitle>{t.cancelOrderTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              Đơn hàng này sẽ bị hủy hoàn toàn. Nếu gọi nhầm món, bạn có thể đặt lại ngay sau đó.
+              {t.cancelOrderDescription}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={cancelling}>Không</AlertDialogCancel>
+            <AlertDialogCancel disabled={cancelling}>{t.no}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -123,7 +127,7 @@ export default function OrdersPage() {
               disabled={cancelling}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {cancelling ? 'Đang hủy…' : 'Hủy đơn'}
+              {cancelling ? t.cancelling : t.cancelOrder}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
