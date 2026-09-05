@@ -78,16 +78,16 @@ export default function OrdersPage() {
               return (
                 <div
                   key={item.id}
-                  className={`flex justify-between text-sm ${cancelled ? 'text-muted-foreground/50 line-through' : 'text-muted-foreground'}`}
+                  className={`flex gap-3 text-sm ${cancelled ? 'text-muted-foreground/50 line-through' : 'text-muted-foreground'}`}
                 >
-                  <span>
+                  <span className="min-w-0 flex-1 truncate" title={`${item.quantity}× ${item.productNameSnapshot.vn || item.productNameSnapshot.en}${item.notes ? ` (${item.notes})` : ''}`}>
                     {item.quantity}×{' '}
                     {item.productNameSnapshot.vn || item.productNameSnapshot.en}
                     {item.notes && (
                       <span className="italic ml-1 text-xs">({item.notes})</span>
                     )}
                   </span>
-                  <span>{formatVND(item.subtotal)}</span>
+                  <span className="shrink-0">{formatVND(item.subtotal)}</span>
                 </div>
               );
             })}

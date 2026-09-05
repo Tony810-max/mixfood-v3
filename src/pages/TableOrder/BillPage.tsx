@@ -28,12 +28,12 @@ export default function BillPage() {
         ) : (
           nonCancelledOrders.map((order) =>
             order.items.map((item) => (
-              <div key={item.id} className="flex justify-between text-sm">
-                <span className="text-muted-foreground">
+              <div key={item.id} className="flex gap-3 text-sm">
+                <span className="min-w-0 flex-1 truncate text-muted-foreground" title={`${item.quantity}× ${item.productNameSnapshot.vn || item.productNameSnapshot.en}`}>
                   {item.quantity}×{' '}
                   {item.productNameSnapshot.vn || item.productNameSnapshot.en}
                 </span>
-                <span className="text-foreground">{formatVND(item.subtotal)}</span>
+                <span className="shrink-0 text-foreground">{formatVND(item.subtotal)}</span>
               </div>
             )),
           )

@@ -109,7 +109,7 @@ export default function TableOrderLayout() {
           <button
             type="button"
             onClick={() => setCartOpen(true)}
-            className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-background shadow-layered-hover transition-transform hover:-translate-y-0.5"
+            className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-full bg-primary-gradient px-4 text-sm font-semibold text-primary-foreground shadow-layered-hover transition-transform hover:-translate-y-0.5"
             aria-label={`Mở giỏ hàng, ${cartCount} món, tổng ${formatVND(cartTotal)}`}
           >
             <span className="grid h-7 min-w-7 place-items-center rounded-full bg-primary px-1 text-xs text-white">{cartCount}</span>
@@ -131,7 +131,7 @@ export default function TableOrderLayout() {
               <div key={item.productId} className="rounded-2xl border border-border/80 bg-card p-3.5">
                 <div className="flex items-start gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{item.name.vn || item.name.en}</p>
+                    <p className="truncate text-sm font-semibold" title={item.name.vn || item.name.en}>{item.name.vn || item.name.en}</p>
                     <p className="mt-0.5 text-sm font-semibold text-primary">{formatVND(item.price)}</p>
                   </div>
                   <QuantityStepper value={item.quantity} onChange={(quantity) => updateQty(item.productId, quantity)} max={99} />
@@ -153,7 +153,7 @@ export default function TableOrderLayout() {
             value={orderNotes}
             onChange={(event) => setOrderNotes(event.target.value)}
           />
-          <div className="my-4 flex items-center justify-between rounded-2xl bg-muted px-4 py-3.5 font-bold">
+          <div className="my-4 flex items-center justify-between rounded-2xl bg-primary/10 px-4 py-3.5 font-bold">
             <span>Tổng cộng</span>
             <span className="tabular-nums text-primary">{formatVND(cartTotal)}</span>
           </div>

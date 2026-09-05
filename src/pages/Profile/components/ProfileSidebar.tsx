@@ -28,17 +28,17 @@ export const ProfileSidebar = ({
       transition={{ duration: 0.5, delay: 0.3 }}
       className="w-full lg:w-64 shrink-0"
     >
-      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-5 lg:sticky lg:top-24">
+      <div className="rounded-2xl border border-primary/25 bg-card/95 p-5 shadow-layered backdrop-blur-sm lg:sticky lg:top-24">
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-          <Shield className="h-5 w-5 text-orange-500" />
+          <Shield className="h-5 w-5 text-primary" />
           {labels.accountSettings}
         </h3>        <nav className="space-y-2">
           <Button
             variant={activeSection === "info" ? "default" : "ghost"}
             className={`w-full justify-start h-12 transition-all duration-300 ${
               activeSection === "info"
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
-                : "hover:bg-orange-100 dark:hover:bg-orange-900/30 text-foreground"
+                ? "bg-primary-gradient text-primary-foreground shadow-lg shadow-primary/25"
+                : "text-foreground hover:bg-primary/10"
             }`}
             onClick={() => onSectionChange("info")}
           >
@@ -49,8 +49,8 @@ export const ProfileSidebar = ({
             variant={activeSection === "password" ? "default" : "ghost"}
             className={`w-full justify-start h-12 transition-all duration-300 ${
               activeSection === "password"
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
-                : "hover:bg-orange-100 dark:hover:bg-orange-900/30 text-foreground"
+                ? "bg-primary-gradient text-primary-foreground shadow-lg shadow-primary/25"
+                : "text-foreground hover:bg-primary/10"
             }`}
             onClick={() => onSectionChange("password")}
           >
@@ -61,15 +61,15 @@ export const ProfileSidebar = ({
             variant={activeSection === "reservations" ? "default" : "ghost"}
             className={`w-full justify-start h-12 transition-all duration-300 ${
               activeSection === "reservations"
-                ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
-                : "hover:bg-orange-100 dark:hover:bg-orange-900/30 text-foreground"
+                ? "bg-primary-gradient text-primary-foreground shadow-lg shadow-primary/25"
+                : "text-foreground hover:bg-primary/10"
             }`}
             onClick={() => onSectionChange("reservations")}
           >
             <Clock className="mr-3 h-5 w-5" />
             <span className="font-medium">{labels.reservationsTitle}</span>
           </Button>
-          <div className="border-t border-orange-200 dark:border-orange-900/50 my-4" />
+          <div className="my-4 border-t border-primary/20" />
           <Button
             variant="ghost"
             className="w-full justify-start h-12 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 hover:text-red-700 dark:text-red-400 transition-all duration-300"

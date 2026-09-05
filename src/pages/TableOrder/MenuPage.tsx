@@ -145,7 +145,7 @@ export default function MenuPage() {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-foreground truncate">
+                        <p className="truncate text-sm font-medium text-foreground" title={product.name.vn || product.name.en || 'Món chưa đặt tên'}>
                             {product.name.vn || product.name.en || 'Món chưa đặt tên'}
                         </p>
                         <p className="text-primary font-semibold text-sm">

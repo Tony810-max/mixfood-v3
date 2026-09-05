@@ -30,7 +30,7 @@ const ProfilePage = () => {
   const cancelReservation = useCancelReservation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-background">
       <Header />
       <div className="min-h-[calc(100vh-80px)] pt-[80px]">
         <ProfileHeader user={user} />
@@ -123,7 +123,7 @@ const ProfilePage = () => {
                     onRefresh={refreshReservations}
                     onCancel={(id, reason) => cancelReservation.mutate({ id, reason })}
                     isCancelling={cancelReservation.isPending}
-                    labels={{ title: t.reservationsTitle, subtitle: t.reservationsSubtitle, total: t.reservationsTotal, pending: t.reservationsStatusPending, confirmed: t.reservationsStatusConfirmed, arrived: t.reservationsStatusArrived, cancelled: t.reservationsStatusCancelled, search: t.reservationsSearch, all: t.reservationsTabAll, newest: t.reservationsSortNewest, oldest: t.reservationsSortOldest, byStatus: t.reservationsSortStatus, refresh: t.reservationsRefresh, refreshSuccess: t.reservationsRefreshSuccess, refreshError: t.reservationsRefreshError, customer: t.reservationsCustomer, date: t.reservationsDate, guests: t.reservationsGuests, status: t.reservationsStatus, actions: t.reservationsActions, cancel: t.reservationsCancel, empty: t.reservationsEmpty, cancelTitle: t.reservationCancelDialogTitle, cancelDescription: t.reservationCancelDialogDescription, keep: t.reservationCancelDialogKeep, cancelling: t.reservationCancelDialogConfirming, cancelledBy: t.reservationsCancelledBy, cancelledByUser: t.reservationsCancelledByUser, cancelledByAdmin: t.reservationsCancelledByAdmin, reason: t.reservationsCancellationReason, reasonPlaceholder: t.reservationsCancellationReasonPlaceholder, reasonHint: t.reservationsCancellationReasonHint, unknown: t.reservationsUnknown, locale: t.locale }}
+                    labels={{ title: t.reservationsTitle, subtitle: t.reservationsSubtitle, total: t.reservationsTotal, pending: t.reservationsStatusPending, confirmed: t.reservationsStatusConfirmed, arrived: t.reservationsStatusArrived, cancelled: t.reservationsStatusCancelled, search: t.reservationsSearch, all: t.reservationsTabAll, newest: t.reservationsSortNewest, oldest: t.reservationsSortOldest, byStatus: t.reservationsSortStatus, refresh: t.reservationsRefresh, refreshSuccess: t.reservationsRefreshSuccess, refreshError: t.reservationsRefreshError, customer: t.reservationsCustomer, date: t.reservationsDate, guests: t.reservationsGuests, status: t.reservationsStatus, actions: t.reservationsActions, cancel: t.reservationsCancel, empty: t.reservationsEmpty, cancelTitle: t.reservationCancelDialogTitle, cancelDescription: t.reservationCancelDialogDescription, keep: t.reservationCancelDialogKeep, cancelling: t.reservationCancelDialogConfirming, cancelledBy: t.reservationsCancelledBy, cancelledByUser: t.reservationsCancelledByUser, cancelledByAdmin: t.reservationsCancelledByAdmin, cancelledBySystem: t.reservationsCancelledBySystem, automaticCancellationReason: t.reservationsAutomaticCancellationReason, reason: t.reservationsCancellationReason, reasonPlaceholder: t.reservationsCancellationReasonPlaceholder, reasonHint: t.reservationsCancellationReasonHint, unknown: t.reservationsUnknown, locale: t.locale }}
                   />
                 </motion.div>
               )}

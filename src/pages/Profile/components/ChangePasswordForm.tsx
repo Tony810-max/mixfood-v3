@@ -32,10 +32,10 @@ export const ChangePasswordForm = ({
   labels,
 }: ChangePasswordFormProps) => {
   return (
-    <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-orange-200 dark:border-orange-900/50 p-6">
+    <div className="rounded-2xl border border-primary/25 bg-card/95 p-6 shadow-layered backdrop-blur-sm">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 rounded-lg">
-          <Lock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+        <div className="rounded-lg bg-primary/10 p-2">
+          <Lock className="h-5 w-5 text-primary" />
         </div>
         <h2 className="text-xl font-semibold text-foreground">{labels.title}</h2>
       </div>
@@ -49,7 +49,7 @@ export const ChangePasswordForm = ({
             value={formData.currentPassword}
             onChange={(e) => onInputChange('currentPassword', e.target.value)}
             placeholder={labels.currentPasswordPlaceholder}
-            className={`h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.currentPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+            className={`h-11 border-primary/25 focus:border-primary focus:ring-primary ${errors.currentPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {errors.currentPassword && <p className="text-sm text-red-500">{errors.currentPassword}</p>}
         </div>
@@ -62,7 +62,7 @@ export const ChangePasswordForm = ({
             value={formData.newPassword}
             onChange={(e) => onInputChange('newPassword', e.target.value)}
             placeholder={labels.newPasswordPlaceholder}
-            className={`h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.newPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+            className={`h-11 border-primary/25 focus:border-primary focus:ring-primary ${errors.newPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {errors.newPassword && <p className="text-sm text-red-500">{errors.newPassword}</p>}
         </div>
@@ -75,14 +75,14 @@ export const ChangePasswordForm = ({
             value={formData.confirmPassword}
             onChange={(e) => onInputChange('confirmPassword', e.target.value)}
             placeholder={labels.confirmPasswordPlaceholder}
-            className={`h-11 border-orange-200 dark:border-orange-900 focus:border-orange-500 focus:ring-orange-500 ${errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+            className={`h-11 border-primary/25 focus:border-primary focus:ring-primary ${errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
           />
           {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
         </div>
 
         <Button
           type="submit"
-          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all mt-2"
+          className="mt-2 h-11 w-full"
           disabled={isLoading}
         >
           <Lock className="h-4 w-4 mr-2" />
