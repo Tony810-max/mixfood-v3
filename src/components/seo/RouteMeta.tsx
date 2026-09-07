@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const SITE_URL = "https://mixfood.vn";
+const SHARE_IMAGE_URL = `${SITE_URL}/social-share.jpg`;
+const SHARE_IMAGE_ALT = "Các món ăn Thái tại Mix Food Đà Nẵng";
 
 const metadata = {
   "/": {
@@ -47,6 +49,19 @@ export default function RouteMeta() {
     upsertMeta('meta[property="og:title"]', "property", "og:title", page.title);
     upsertMeta('meta[property="og:description"]', "property", "og:description", page.description);
     upsertMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
+    upsertMeta('meta[property="og:type"]', "property", "og:type", "website");
+    upsertMeta('meta[property="og:image"]', "property", "og:image", SHARE_IMAGE_URL);
+    upsertMeta('meta[property="og:image:secure_url"]', "property", "og:image:secure_url", SHARE_IMAGE_URL);
+    upsertMeta('meta[property="og:image:type"]', "property", "og:image:type", "image/jpeg");
+    upsertMeta('meta[property="og:image:width"]', "property", "og:image:width", "1200");
+    upsertMeta('meta[property="og:image:height"]', "property", "og:image:height", "630");
+    upsertMeta('meta[property="og:image:alt"]', "property", "og:image:alt", SHARE_IMAGE_ALT);
+    upsertMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
+    upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", page.title);
+    upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", page.description);
+    upsertMeta('meta[name="twitter:url"]', "name", "twitter:url", canonicalUrl);
+    upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", SHARE_IMAGE_URL);
+    upsertMeta('meta[name="twitter:image:alt"]', "name", "twitter:image:alt", SHARE_IMAGE_ALT);
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
