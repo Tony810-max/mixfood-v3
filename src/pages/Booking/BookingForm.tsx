@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/contexts/AuthContext"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useCreateReservation } from "@/hooks/api/useReservations"
+import { BOOKING_WINDOW, VALIDATION } from "@/constants"
 import { ROUTES } from "@/utils/const"
 import { logger } from "@/utils/logger"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,7 +26,7 @@ export const BookingForm = () => {
   const { user } = useAuth()
   const createReservation = useCreateReservation()
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
-  const [minTime, setMinTime] = useState<string>("09:00")
+  const [minTime, setMinTime] = useState<string>(BOOKING_WINDOW.OPEN)
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -42,10 +43,11 @@ export const BookingForm = () => {
   // Calculate initial minTime when component mounts
   useEffect(() => {
     const now = new Date()
-    const minReservationTime = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+    const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
     const hours = minReservationTime.getHours().toString().padStart(2, '0')
     const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
-    setMinTime(`${hours}:${minutes}`)
+    const earliest = `${hours}:${minutes}`
+    setMinTime(earliest < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : earliest)
   }, [])
 
   const onSubmit = async (data: BookingFormValues) => {
@@ -57,7 +59,9 @@ export const BookingForm = () => {
         name: data.name,
         phone: data.phone,
         email: data.email || undefined,
-        reservationDate: data.date.toISOString(),
+        // Send a calendar date, not a browser-timezone timestamp. The booking
+        // date must remain the same business day on every server timezone.
+        reservationDate: format(data.date, 'yyyy-MM-dd'),
         reservationTime: data.time,
         numberOfGuests: Number(data.guests), // Convert to number for API
         note: data.specialRequests || undefined,
@@ -90,27 +94,28 @@ export const BookingForm = () => {
       today.setHours(0, 0, 0, 0)
       
       if (selectedDate.getTime() === today.getTime()) {
-        // If today, minimum time is current time + 3 hours
-        const minReservationTime = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+        // If today, minimum time is current time + advance booking window
+        const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
         const hours = minReservationTime.getHours().toString().padStart(2, '0')
         const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
-        setMinTime(`${hours}:${minutes}`)
+        const earliest = `${hours}:${minutes}`
+        setMinTime(earliest < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : earliest)
       } else {
         // If future date, minimum time is opening time (09:00)
-        setMinTime("09:00")
+        setMinTime(BOOKING_WINDOW.OPEN)
       }
     }
   }
 
   return (
-    <Card className="border-amber-200 bg-white/90 backdrop-blur shadow-xl">
-      <CardHeader className="bg-primary-gradient text-white rounded-t-lg">
+    <Card className="border-amber-200 dark:border-amber-800/50 bg-white/90 dark:bg-slate-800/80 backdrop-blur shadow-xl">
+      <CardHeader className="bg-primary-gradient text-white rounded-t-xl pb-5">
         <CardTitle className="text-xl md:text-2xl">{t.bookingFormTitle}</CardTitle>
         <CardDescription className="text-amber-100 text-sm md:text-base">
           {t.bookingFormDesc}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-4 md:pt-6">
+      <CardContent className="pt-5 md:pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
             <div className="grid md:grid-cols-2 gap-4 md:gap-6">
@@ -126,7 +131,7 @@ export const BookingForm = () => {
                     <FormControl>
                       <Input
                         placeholder={t.fullNamePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                         {...field}
                       />
                     </FormControl>
@@ -147,7 +152,7 @@ export const BookingForm = () => {
                     <FormControl>
                       <Input
                         placeholder={t.phonePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                         {...field}
                       />
                     </FormControl>
@@ -169,7 +174,7 @@ export const BookingForm = () => {
                   <FormControl>
                     <Input
                       placeholder={t.emailPlaceholder}
-                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                       {...field}
                     />
                   </FormControl>
@@ -184,7 +189,7 @@ export const BookingForm = () => {
                 name="date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                    <FormLabel className="flex items-center gap-2">
                       <CalendarIcon className="h-4 w-4" />
                       {t.bookingDate}
                     </FormLabel>
@@ -193,7 +198,7 @@ export const BookingForm = () => {
                         <FormControl>
                           <Button
                             variant="outline"
-                            className={`w-full pl-3 text-left font-normal border-amber-200 focus:border-amber-500 focus:ring-amber-500 hover:bg-primary-gradient hover:text-white hover:border-transparent ${
+                            className={`w-full pl-3 h-11 text-left font-normal border-amber-200 focus:border-amber-500 focus:ring-amber-500 hover:bg-primary-gradient hover:text-white hover:border-transparent ${
                               !field.value && "text-muted-foreground"
                             }`}
                           >
@@ -245,14 +250,14 @@ export const BookingForm = () => {
                       <Input
                         type="time"
                         min={minTime}
-                        max="21:50"
+                        max={BOOKING_WINDOW.LAST_BOOKING}
                         placeholder={t.bookingTimePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription className="text-xs text-amber-600">
-                      Giờ mở cửa: 09:00 - 21:50 (Đặt bàn trước ít nhất 3 tiếng)
+                      {t.bookingTimeHelp}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -275,7 +280,7 @@ export const BookingForm = () => {
                       min="1"
                       max="50"
                       placeholder={t.bookingGuestsPlaceholder}
-                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-10 md:h-auto"
+                      className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
                       {...field}
                     />
                   </FormControl>
@@ -308,7 +313,7 @@ export const BookingForm = () => {
 
             <Button
               type="submit"
-              className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold py-3 md:py-6 text-base md:text-lg min-h-[44px] md:min-h-[56px]"
+              className="w-full bg-primary-gradient hover:opacity-90 text-white font-semibold h-12 text-base shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition-all mt-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? t.bookingSubmitting : t.bookingSubmitButton}

@@ -32,6 +32,7 @@ export const API_CONFIG = {
 export const RESERVATION_STATUS = {
   PENDING: "PENDING" as const,
   CONFIRMED: "CONFIRMED" as const,
+  ARRIVED: "ARRIVED" as const,
   CANCELLED: "CANCELLED" as const,
 } as const;
 
@@ -44,6 +45,10 @@ export const STATUS_COLORS = {
   CONFIRMED: {
     bg: "bg-green-100 dark:bg-green-900/30",
     text: "text-green-700 dark:text-green-400",
+  },
+  ARRIVED: {
+    bg: "bg-blue-100 dark:bg-blue-900/30",
+    text: "text-blue-700 dark:text-blue-400",
   },
   CANCELLED: {
     bg: "bg-red-100 dark:bg-red-900/30",
@@ -77,7 +82,14 @@ export const VALIDATION = {
   PASSWORD_MIN_LENGTH: 6,
   VERIFICATION_CODE_LENGTH: 6,
   MAX_GUESTS_PER_RESERVATION: 10,
-  MIN_ADVANCE_BOOKING_HOURS: 3,
+  MIN_ADVANCE_BOOKING_MINUTES: 30,
+} as const;
+
+// Restaurant booking window (24h format, local time).
+export const BOOKING_WINDOW = {
+  OPEN: "09:00",
+  CLOSE: "21:50",
+  LAST_BOOKING: "21:50",
 } as const;
 
 // Error messages

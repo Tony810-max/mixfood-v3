@@ -56,7 +56,7 @@ const Location = () => {
               </div>
               <div>
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                  {lang === "vi" ? "Địa Chỉ" : "Address"}
+                  {lang === "vn" ? "Địa Chỉ" : "Address"}
                 </h3>
                 <p className="text-muted-foreground">{INFORMATION_RESTAURANT.address}</p>
               </div>
@@ -80,7 +80,7 @@ const Location = () => {
               </div>
               <div>
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
-                  {lang === "vi" ? "Điện Thoại" : "Phone"}
+                  {lang === "vn" ? "Điện Thoại" : "Phone"}
                 </h3>
                 <p className="text-muted-foreground">{INFORMATION_RESTAURANT.phone}</p>
               </div>
@@ -92,7 +92,9 @@ const Location = () => {
             >
               {t.reserveTable}
             </a> */}
-            <ReserveButton content={t.reserveTable} />
+            <div className="pt-2">
+              <ReserveButton content={t.reserveTable} className="h-11 px-8 shadow-md shadow-orange-500/20 hover:shadow-orange-500/30 transition-all" />
+            </div>
           </motion.div>
         </div>
       </div>

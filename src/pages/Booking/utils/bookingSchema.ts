@@ -1,5 +1,6 @@
 import { LucideIcon } from "lucide-react";
 import { z } from "zod";
+import { BOOKING_WINDOW, VALIDATION } from "@/constants";
 
 export const bookingSchema = z.object({
   name: z.string().min(2, "Tên phải có ít nhất 2 ký tự").max(50, "Tên không được quá 50 ký tự"),
@@ -9,16 +10,11 @@ export const bookingSchema = z.object({
     required_error: "Vui lòng chọn ngày đặt bàn",
   }),
   time: z.string().min(1, "Vui lòng chọn giờ"),
-  guests: z.string().min(1, "Vui lòng nhập số lượng khách").transform((val) => {
-    const num = parseInt(val);
-    if (isNaN(num) || num < 1) {
-      throw new Error("Số lượng khách phải ít nhất 1");
-    }
-    if (num > 50) {
-      throw new Error("Số lượng khách tối đa 50");
-    }
-    return num;
-  }),
+  guests: z.coerce
+    .number({ required_error: "Vui lòng nhập số lượng khách", invalid_type_error: "Vui lòng nhập số lượng khách" })
+    .int()
+    .min(1, "Số lượng khách phải ít nhất 1")
+    .max(50, "Số lượng khách tối đa 50"),
   specialRequests: z.string().max(500, "Yêu cầu đặc biệt không được quá 500 ký tự").optional(),
 }).refine((data) => {
   // Combine date and time to create full datetime
@@ -26,25 +22,34 @@ export const bookingSchema = z.object({
   const reservationDateTime = new Date(data.date);
   reservationDateTime.setHours(hours, minutes, 0, 0);
   
-  // Check if reservation is at least 3 hours in the future
+  // Check if reservation is at least 30 minutes in the future
   const now = new Date();
-  const minTime = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 tiếng sau
+  const minTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000);
   
   if (reservationDateTime < minTime) {
     return false;
   }
+
+  const [openingHours, openingMinutes] = BOOKING_WINDOW.OPEN.split(':').map(Number);
+  const openingTime = new Date(reservationDateTime);
+  openingTime.setHours(openingHours, openingMinutes, 0, 0);
+
+  if (reservationDateTime < openingTime) {
+    return false;
+  }
   
-  // Check if reservation is before closing time (21:50)
-  const closingTime = new Date(reservationDateTime);
-  closingTime.setHours(21, 50, 0, 0);
+  // Enforce the restaurant's final booking time.
+  const [lastBookingHours, lastBookingMinutes] = BOOKING_WINDOW.LAST_BOOKING.split(':').map(Number);
+  const lastBookingTime = new Date(reservationDateTime);
+  lastBookingTime.setHours(lastBookingHours, lastBookingMinutes, 0, 0);
   
-  if (reservationDateTime > closingTime) {
+  if (reservationDateTime > lastBookingTime) {
     return false;
   }
   
   return true;
 }, {
-  message: "Đặt bàn phải trước ít nhất 3 tiếng và trước 21:50 (giờ đóng cửa)",
+  message: `Giờ đặt bàn phải trong khung ${BOOKING_WINDOW.OPEN} - ${BOOKING_WINDOW.LAST_BOOKING} và trước ít nhất ${VALIDATION.MIN_ADVANCE_BOOKING_MINUTES} phút`,
   path: ["date"]
 })
 

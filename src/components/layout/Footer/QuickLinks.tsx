@@ -8,13 +8,13 @@ const QuickLinks = () => {
     { label: t.home, href: ROUTES.HOME },
     { label: t.menu, href: ROUTES.MENU },
     { label: t.reserveTable, href: ROUTES.RESERVE },
-    { label: "Về chúng tôi", href: ROUTES.ABOUT },
-    { label: "Liên hệ", href: ROUTES.CONTACT },
+    { label: t.footerAboutUs, href: ROUTES.ABOUT },
+    { label: t.footerContactUs, href: ROUTES.CONTACT },
   ];
 
   return (
     <div className="space-y-3 md:space-y-4">
-      <h4 className="text-base md:text-lg font-semibold">Liên kết nhanh</h4>
+      <h4 className="text-base md:text-lg font-semibold">{t.footerQuickLinks}</h4>
       <ul className="space-y-1.5 md:space-y-2">
         {quickLinks.map((link) => (
           <li key={link.href}>

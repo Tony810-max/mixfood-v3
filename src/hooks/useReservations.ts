@@ -31,6 +31,7 @@ export const useReservations = () => {
       total: safeReservations.length,
       pending: safeReservations.filter(r => r.status === RESERVATION_STATUS.PENDING).length,
       confirmed: safeReservations.filter(r => r.status === RESERVATION_STATUS.CONFIRMED).length,
+      arrived: safeReservations.filter(r => r.status === RESERVATION_STATUS.ARRIVED).length,
       cancelled: safeReservations.filter(r => r.status === RESERVATION_STATUS.CANCELLED).length,
     };
   }, [safeReservations]);

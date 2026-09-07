@@ -36,7 +36,6 @@ export interface AuthResponse {
 
 export interface UpdateProfilePayload {
   name?: string;
-  email?: string;
   phone?: string;
 }
 
@@ -75,19 +74,24 @@ export interface Reservation {
   numberOfGuests: number;
   note: string | null;
   status: ReservationStatus;
+  rejectionReason: string | null;
+  cancelledBy: {
+    name: string;
+    role: "USER" | "ADMIN";
+  } | null;
   createdAt: string;
   updatedAt: string;
   userId: number | null;
 }
 
-export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+export type ReservationStatus = "PENDING" | "CONFIRMED" | "ARRIVED" | "CANCELLED";
 
 // Menu Types
 export interface MenuItem {
-  id: string;
+  id: number;
   name: {
     en: string;
-    vi: string;
+    vn: string;
   };
   price: number;
   image: string | null;
@@ -99,7 +103,7 @@ export type MenuItemTag = "spicy" | "veggie" | "popular";
 export interface Category {
   id: string;
   en: string;
-  vi: string;
+  vn: string;
   items: MenuItem[];
 }
 

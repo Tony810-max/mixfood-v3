@@ -14,7 +14,7 @@ interface MobileNavProps {
   setMobileOpen: (open: boolean) => void;
 }
 
-const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
+const MobileNav = ({ navItems: _navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
   const { t } = useLanguage();
   const { user, isAuthenticated, setUser } = useAuth();
   const logoutMutation = useLogout();
@@ -30,7 +30,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
       <button
         className="md:hidden text-foreground p-2 -mr-2 rounded-lg hover:bg-secondary/80 transition-colors active:scale-95"
         onClick={() => setMobileOpen(!mobileOpen)}
-        aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        aria-label={mobileOpen ? t.ariaMenuClose : t.ariaMenuOpen}
       >
         {mobileOpen ? <X size={28} /> : <Menu size={28} />}
       </button>
@@ -57,7 +57,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
               className="fixed inset-0 bg-gradient-to-b from-background via-background to-secondary/20 z-[60] md:hidden flex flex-col"
             >
               {/* Safe Area Top */}
-              <div className="safe-area-top" />
+              <div className="pt-safe-top" />
 
               {/* Header */}
               <div className="flex items-center justify-between p-4 pt-6 border-b border-border/50 bg-background/80 backdrop-blur-lg">
@@ -70,7 +70,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                 <button
                   onClick={() => setMobileOpen(false)}
                   className="p-3 rounded-full bg-secondary hover:bg-secondary/80 transition-colors active:scale-95"
-                  aria-label="Close menu"
+                  aria-label={t.ariaMenuClose}
                 >
                   <X size={24} />
                 </button>
@@ -88,20 +88,19 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                   {menuItems.map((item, index) => {
                     const Icon = item.icon;
                     return (
-                      <motion.a
+                      <motion.div
                         key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileOpen(false)}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all active:scale-[0.98] group"
                       >
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 group-hover:from-primary/30 group-hover:to-primary/10 transition-all">
-                          <Icon className="w-5 h-5 text-primary" />
-                        </div>
-                        <span className="text-base font-medium text-foreground group-hover:text-primary transition-colors">{item.label}</span>
-                      </motion.a>
+                        <Link to={item.href} onClick={() => setMobileOpen(false)} className="group flex items-center gap-4 rounded-2xl border border-border/50 bg-card p-4 transition-all hover:border-primary/50 hover:shadow-lg active:scale-[0.98]">
+                          <div className="rounded-xl bg-primary/10 p-3 transition-all group-hover:bg-primary/20">
+                            <Icon className="w-5 h-5 text-primary" />
+                          </div>
+                          <span className="text-base font-medium text-foreground transition-colors group-hover:text-primary">{item.label}</span>
+                        </Link>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -122,14 +121,15 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                 </div>
 
                 {/* Auth Section */}
-                <div className="p-4 pt-6">
+                <div className="px-4 pb-4 pt-2">
+                  <div className="border-t border-border/40 mb-5" />
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
                     {isAuthenticated ? (
-                      <div className="space-y-3">
+                      <div className="flex flex-col gap-4">
                         {/* User Profile Card */}
                         <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/50 rounded-2xl border border-primary/20">
                           <div className="p-3 rounded-xl bg-primary-gradient">
@@ -161,23 +161,23 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                             logoutMutation.mutate();
                             setMobileOpen(false);
                           }}
-                          className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-50 border border-red-200 hover:bg-red-100 transition-all active:scale-[0.98]"
+                          className="w-full flex items-center gap-4 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 transition-all hover:bg-destructive/15 active:scale-[0.98]"
                         >
-                          <LogOut className="w-5 h-5 text-red-500" />
-                          <span className="text-base font-medium text-red-500">{t.headerLogout}</span>
+                          <LogOut className="w-5 h-5 text-destructive" />
+                          <span className="text-base font-medium text-destructive">{t.headerLogout}</span>
                         </button>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="flex flex-col gap-4">
                         <Link to={ROUTES.AUTH.LOGIN} onClick={() => setMobileOpen(false)}>
-                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:bg-secondary/50 transition-all active:scale-[0.98]">
-                            <User className="w-5 h-5 text-foreground/70" />
+                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-orange-200 dark:border-orange-800/60 hover:border-orange-300 dark:hover:border-orange-700 hover:bg-orange-50/50 dark:hover:bg-orange-950/30 transition-all active:scale-[0.98]">
+                            <User className="w-5 h-5 text-orange-500" />
                             <span className="text-base font-medium text-foreground/80">{t.headerSignIn}</span>
                           </button>
                         </Link>
 
                         <Link to={ROUTES.AUTH.REGISTER} onClick={() => setMobileOpen(false)}>
-                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-primary-gradient text-white shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-[0.98]">
+                          <button className="w-full flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:opacity-90 transition-all active:scale-[0.98]">
                             <User className="w-5 h-5" />
                             <span className="text-base font-medium">{t.headerSignUp}</span>
                           </button>
@@ -189,7 +189,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
               </div>
 
               {/* Footer Contact */}
-              <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-border/50 bg-background/95 backdrop-blur-lg">
+              <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe-bottom border-t border-border/50 bg-background/95 backdrop-blur-lg">
                 <motion.a
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -201,7 +201,7 @@ const MobileNav = ({ navItems, mobileOpen, setMobileOpen }: MobileNavProps) => {
                     <Phone className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs text-muted-foreground">Hotline</p>
+                    <p className="text-xs text-muted-foreground">{t.hotline}</p>
                     <p className="font-semibold text-primary">{INFORMATION_RESTAURANT.phone}</p>
                   </div>
                 </motion.a>

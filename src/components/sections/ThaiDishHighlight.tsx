@@ -16,6 +16,7 @@ const ThaiDishHighlight = () => {
       rating: 4.9,
       time: "20 phút",
       spicy: 3,
+      image: "/images/tomyum-hs.webp",
     },
     "pad-thai": {
       name: t.padThai,
@@ -25,6 +26,7 @@ const ThaiDishHighlight = () => {
       rating: 4.8,
       time: "15 phút",
       spicy: 1,
+      image: "/images/pad-thai.webp",
     },
     "som-tam": {
       name: t.somTam,
@@ -34,6 +36,7 @@ const ThaiDishHighlight = () => {
       rating: 4.7,
       time: "5 phút",
       spicy: 4,
+      image: "/images/son-tam.webp",
     },
     "mango-sticky-rice": {
       name: t.mangoStickyRice,
@@ -43,6 +46,7 @@ const ThaiDishHighlight = () => {
       rating: 4.9,
       time: "5 phút",
       spicy: 0,
+      image: "/images/xoi-xoai.webp",
     },
   };
 
@@ -61,7 +65,11 @@ const ThaiDishHighlight = () => {
           </p>
         </div>
 
-        <TabNavigation dishes={dishes} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <TabNavigation
+          dishes={dishes}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
 
         {/* Dish Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 items-center max-w-5xl mx-auto">
@@ -69,17 +77,11 @@ const ThaiDishHighlight = () => {
 
           {/* Right Content - Image */}
           <div className="relative order-first lg:order-last">
-            <div className="aspect-square bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl flex flex-col items-center justify-center p-6 md:p-8">
-              <div className="w-24 h-24 md:w-32 md:h-32 bg-white rounded-full flex items-center justify-center shadow-lg mb-3 md:mb-4">
-                <span className="text-4xl md:text-6xl">🍜</span>
-              </div>
-              <p className="text-lg md:text-xl font-semibold text-gray-800 mb-1">
-                {currentDish.name}
-              </p>
-              <p className="text-sm text-gray-600">
-                {t.dishImageCaption}
-              </p>
-            </div>
+            <img
+              src={currentDish.image}
+              alt={currentDish.name}
+              className="w-full h-auto rounded-2xl"
+            />
           </div>
         </div>
       </div>

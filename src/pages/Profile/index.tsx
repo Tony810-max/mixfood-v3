@@ -1,15 +1,15 @@
 import Header from "@/components/layout/Header";
-import { ROUTES } from "@/utils/const";
+import { useCancelReservation } from "@/hooks/api/useReservations";
+import { useReservations } from "@/hooks/useReservations";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { ChangePasswordForm } from "./components/ChangePasswordForm";
 import { ProfileHeader } from "./components/ProfileHeader";
 import { ProfileSidebar } from "./components/ProfileSidebar";
 import { UpdateProfileForm } from "./components/UpdateProfileForm";
 import { useProfile } from "./hooks/useProfile";
+import { ReservationHistoryTable } from "./components/ReservationHistoryTable";
 
 const ProfilePage = () => {
-  const navigate = useNavigate();
   const {
     t,
     user,
@@ -26,27 +26,25 @@ const ProfilePage = () => {
     handleChangePassword,
     handleLogout,
   } = useProfile();
-
-  const handleNavigateToReservations = () => {
-    navigate(ROUTES.RESERVATIONS);
-  };
+  const { reservations, isLoading: reservationsLoading, stats, refreshReservations } = useReservations();
+  const cancelReservation = useCancelReservation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-background">
       <Header />
-      <div className="min-h-[calc(100vh-72px)] pt-[72px]">
+      <div className="min-h-[calc(100vh-80px)] pt-[80px]">
         <ProfileHeader user={user} />
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col xl:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* Sidebar Navigation */}
             <ProfileSidebar
               activeSection={activeSection}
               onSectionChange={setActiveSection}
-              onNavigateToReservations={handleNavigateToReservations}
               onLogout={handleLogout}
               labels={{
+                accountSettings: t.profileAccountSettings,
                 profileUpdateInfo: t.profileUpdateInfo,
                 profileChangePassword: t.profileChangePassword,
                 reservationsTitle: t.reservationsTitle,
@@ -74,12 +72,14 @@ const ProfilePage = () => {
                     onInputChange={(field, value) => setUpdateInfoForm(prev => ({ ...prev, [field]: value }))}
                     onSubmit={handleUpdateInfo}
                     labels={{
+                      title: t.profilePersonalInfoTitle,
                       fullName: t.registerFullName,
                       email: t.email,
                       phone: t.phoneNumber,
                       fullNamePlaceholder: t.fullNamePlaceholder,
                       emailPlaceholder: t.emailPlaceholder,
                       phonePlaceholder: t.phonePlaceholder,
+                      emailNote: t.profileEmailNote,
                       save: t.profileUpdateButton,
                       saving: t.profileUpdating,
                     }}
@@ -100,15 +100,30 @@ const ProfilePage = () => {
                     onInputChange={(field, value) => setChangePasswordForm(prev => ({ ...prev, [field]: value }))}
                     onSubmit={handleChangePassword}
                     labels={{
+                      title: t.profileChangePasswordTitle,
                       currentPassword: t.profileCurrentPassword,
                       newPassword: t.profileNewPassword,
-                      confirmPassword: t.registerConfirmPassword,
+                      confirmPassword: t.profileConfirmNewPassword,
                       currentPasswordPlaceholder: t.profileCurrentPasswordPlaceholder,
                       newPasswordPlaceholder: t.registerPasswordPlaceholder,
                       confirmPasswordPlaceholder: t.registerConfirmPasswordPlaceholder,
-                      save: t.profileUpdateButton,
+                      save: t.profileChangePasswordButton,
                       saving: t.profileUpdating,
                     }}
+                  />
+                </motion.div>
+              )}
+
+              {activeSection === "reservations" && (
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                  <ReservationHistoryTable
+                    reservations={reservations}
+                    isLoading={reservationsLoading}
+                    stats={stats}
+                    onRefresh={refreshReservations}
+                    onCancel={(id, reason) => cancelReservation.mutate({ id, reason })}
+                    isCancelling={cancelReservation.isPending}
+                    labels={{ title: t.reservationsTitle, subtitle: t.reservationsSubtitle, total: t.reservationsTotal, pending: t.reservationsStatusPending, confirmed: t.reservationsStatusConfirmed, arrived: t.reservationsStatusArrived, cancelled: t.reservationsStatusCancelled, search: t.reservationsSearch, all: t.reservationsTabAll, newest: t.reservationsSortNewest, oldest: t.reservationsSortOldest, byStatus: t.reservationsSortStatus, refresh: t.reservationsRefresh, refreshSuccess: t.reservationsRefreshSuccess, refreshError: t.reservationsRefreshError, customer: t.reservationsCustomer, date: t.reservationsDate, guests: t.reservationsGuests, status: t.reservationsStatus, actions: t.reservationsActions, cancel: t.reservationsCancel, empty: t.reservationsEmpty, cancelTitle: t.reservationCancelDialogTitle, cancelDescription: t.reservationCancelDialogDescription, keep: t.reservationCancelDialogKeep, cancelling: t.reservationCancelDialogConfirming, cancelledBy: t.reservationsCancelledBy, cancelledByUser: t.reservationsCancelledByUser, cancelledByAdmin: t.reservationsCancelledByAdmin, cancelledBySystem: t.reservationsCancelledBySystem, automaticCancellationReason: t.reservationsAutomaticCancellationReason, reason: t.reservationsCancellationReason, reasonPlaceholder: t.reservationsCancellationReasonPlaceholder, reasonHint: t.reservationsCancellationReasonHint, unknown: t.reservationsUnknown, locale: t.locale }}
                   />
                 </motion.div>
               )}

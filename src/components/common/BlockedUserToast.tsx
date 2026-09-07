@@ -11,7 +11,7 @@ export const BlockedUserToast = () => {
       
       // Show toast with a small delay to ensure app is fully loaded
       setTimeout(() => {
-        showErrorToast('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ hỗ trợ để được trợ giúp.');
+        showErrorToast('Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ hỗ trợ để được trợ giúp.');
         // Clear the flag after showing toast
         localStorage.removeItem('mixfood.showBlockedToast');
       }, 500);

@@ -1,4 +1,4 @@
-import { AuthCard, AuthFormLayout, AuthHeader, AuthLogo, CountdownTimer, FORGOT_PASSWORD_STEPS, OTPInput, StepProgress } from "@/components/auth";
+import { AuthCard, AuthFormLayout, AuthHeader, AuthLogo, CountdownTimer, OTPInput, StepProgress } from "@/components/auth";
 import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,10 +33,26 @@ const ForgotPasswordPage = () => {
     handleResetPassword,
     handleResendOTP,
     reset,
-  } = useForgotPassword();
+  } = useForgotPassword({
+    sendSuccess: t.fpSendSuccess,
+    sendError: t.fpSendError,
+    resendSuccess: t.fpResendSuccess,
+    resendError: t.fpResendError,
+    otpLengthError: t.fpOtpLengthError,
+    otpVerifySuccess: t.fpOtpVerifySuccess,
+    otpVerifyError: t.fpOtpVerifyError,
+    resetSuccess: t.fpResetSuccess,
+    resetError: t.fpResetError,
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const steps = [
+    { id: 1, label: t.fpStepEmail, icon: <Mail className="w-6 h-6" /> },
+    { id: 2, label: t.fpStepOtp, icon: <Key className="w-6 h-6" /> },
+    { id: 3, label: t.fpStepNewPassword, icon: <Lock className="w-6 h-6" /> },
+  ];
 
   const getStepNumber = () => {
     switch (step) {
@@ -68,32 +84,32 @@ const ForgotPasswordPage = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <AuthLogo icon={<Mail className="w-full h-full text-orange-600 dark:text-orange-400 p-4" />} />
+      <AuthLogo icon={<Mail className="w-full h-full text-primary p-4" />} />
       <AuthHeader
-        title={t.forgotPasswordTitle || "Quên Mật Khẩu"}
-        subtitle={t.forgotPasswordSubtitle || "Nhập email của bạn để nhận mã OTP đặt lại mật khẩu"}
+        title={t.forgotPasswordTitle}
+        subtitle={t.forgotPasswordSubtitle}
       />
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm font-medium">
-            {t.loginEmailAddress || "Email"}
+            {t.loginEmailAddress}
           </Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               id="email"
               type="email"
-              placeholder={t.loginEmailPlaceholderAddress || "email@example.com"}
-              className={`pl-10 h-11 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              placeholder={t.loginEmailPlaceholderAddress}
+              className={`pl-10 h-11 ${error ? 'border-destructive focus:border-destructive focus:ring-destructive' : 'border-primary/30 focus:border-primary focus:ring-primary'}`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <Button
-          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="w-full h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
           size="lg"
           onClick={handleSendOTP}
           disabled={isLoading || !email}
@@ -101,22 +117,22 @@ const ForgotPasswordPage = () => {
           {isLoading ? (
             <>
               <Key className="mr-2 h-4 w-4 animate-spin" />
-              {t.forgotPasswordSending || "Đang gửi..."}
+              {t.forgotPasswordSending}
             </>
           ) : (
             <>
               <Key className="mr-2 h-4 w-4" />
-              {t.forgotPasswordButton || "Gửi mã OTP"}
+              {t.forgotPasswordButton}
             </>
           )}
         </Button>
         <Button
           variant="ghost"
-          className="w-full text-muted-foreground hover:text-foreground"
+          className="w-full border border-border bg-secondary/70 text-secondary-foreground hover:bg-secondary hover:text-secondary-foreground"
           onClick={() => navigate(ROUTES.AUTH.LOGIN)}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          {t.forgotPasswordBackToLogin || "Quay lại đăng nhập"}
+          {t.forgotPasswordBackToLogin}
         </Button>
       </div>
     </motion.div>
@@ -131,19 +147,19 @@ const ForgotPasswordPage = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <AuthLogo icon={<ShieldCheck className="w-full h-full text-orange-600 dark:text-orange-400 p-4" />} />
+      <AuthLogo icon={<ShieldCheck className="w-full h-full text-primary p-4" />} />
       <AuthHeader
-        title="Xác thực OTP"
-        subtitle={`Nhập mã OTP đã gửi đến ${email}`}
+        title={t.fpStepOtp}
+        subtitle={`${t.fpOtpSubtitle} ${email}`}
       />
       <div className="space-y-4">
-        <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-          <p className="text-sm text-orange-800 dark:text-orange-200">
-            Mã OTP gồm 6 số đã được gửi đến email của bạn. Mã có hiệu lực trong 5 phút.
+        <div className="bg-primary/10 p-4 rounded-lg border border-primary/25">
+          <p className="text-sm text-foreground">
+            {t.fpOtpNote}
           </p>
         </div>
         <div className="space-y-2">
-          <Label className="text-sm font-medium">Mã OTP</Label>
+          <Label className="text-sm font-medium">{t.fpOtpLabel}</Label>
           <OTPInput
             length={6}
             value={otp}
@@ -160,27 +176,27 @@ const ForgotPasswordPage = () => {
         <div className="flex gap-3">
           <Button
             variant="outline"
-            className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50"
+            className="flex-1 border-primary/30 text-primary hover:bg-primary/10"
             onClick={handleBack}
             disabled={isLoading}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Quay lại
+            {t.registerBack}
           </Button>
           <Button
-            className="flex-1 h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+            className="flex-1 h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
             onClick={handleVerifyOTP}
             disabled={isLoading || otp.length !== 6}
           >
             {isLoading ? (
               <>
                 <Key className="mr-2 h-4 w-4 animate-spin" />
-                Đang xác thực...
+                {t.fpVerifying}
               </>
             ) : (
               <>
                 <CheckCircle2 className="mr-2 h-4 w-4" />
-                Xác nhận
+                {t.fpVerifyButton}
               </>
             )}
           </Button>
@@ -198,15 +214,15 @@ const ForgotPasswordPage = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <AuthLogo icon={<Lock className="w-full h-full text-orange-600 dark:text-orange-400 p-4" />} />
+      <AuthLogo icon={<Lock className="w-full h-full text-primary p-4" />} />
       <AuthHeader
-        title="Đặt lại mật khẩu"
-        subtitle="Nhập mật khẩu mới của bạn"
+        title={t.fpNewPasswordTitle}
+        subtitle={t.fpNewPasswordSubtitle}
       />
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="newPassword" className="text-sm font-medium">
-            Mật khẩu mới
+            {t.fpNewPasswordLabel}
           </Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -214,7 +230,7 @@ const ForgotPasswordPage = () => {
               id="newPassword"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              className={`pl-10 pr-10 h-11 ${errors.newPassword || error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 pr-10 h-11 ${errors.newPassword || error ? 'border-destructive focus:border-destructive focus:ring-destructive' : 'border-primary/30 focus:border-primary focus:ring-primary'}`}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               disabled={isLoading}
@@ -227,11 +243,11 @@ const ForgotPasswordPage = () => {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          {errors.newPassword && <p className="text-sm text-red-500">{errors.newPassword}</p>}
+          {errors.newPassword && <p className="text-sm text-destructive">{errors.newPassword}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirmPassword" className="text-sm font-medium">
-            Xác nhận mật khẩu
+            {t.fpConfirmNewPasswordLabel}
           </Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -239,7 +255,7 @@ const ForgotPasswordPage = () => {
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
-              className={`pl-10 pr-10 h-11 ${errors.confirmPassword || error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-orange-200 dark:border-orange-900 focus:border-orange-400 focus:ring-orange-400'}`}
+              className={`pl-10 pr-10 h-11 ${errors.confirmPassword || error ? 'border-destructive focus:border-destructive focus:ring-destructive' : 'border-primary/30 focus:border-primary focus:ring-primary'}`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
@@ -252,32 +268,32 @@ const ForgotPasswordPage = () => {
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
         </div>
         <div className="flex gap-3">
           <Button
             variant="outline"
-            className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50"
+            className="flex-1 border-primary/30 text-primary hover:bg-primary/10"
             onClick={handleBack}
             disabled={isLoading}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Quay lại
+            {t.registerBack}
           </Button>
           <Button
-            className="flex-1 h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+            className="flex-1 h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
             onClick={handleResetPassword}
             disabled={isLoading || !newPassword || !confirmPassword}
           >
             {isLoading ? (
               <>
                 <Key className="mr-2 h-4 w-4 animate-spin" />
-                Đang xử lý...
+                {t.fpResetting}
               </>
             ) : (
               <>
                 <CheckCircle2 className="mr-2 h-4 w-4" />
-                Đặt lại mật khẩu
+                {t.fpResetButton}
               </>
             )}
           </Button>
@@ -303,22 +319,22 @@ const ForgotPasswordPage = () => {
         <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
       </motion.div>
       <AuthHeader
-        title="Mật khẩu đã đặt lại!"
-        subtitle="Bạn có thể đăng nhập bằng mật khẩu mới"
+        title={t.fpSuccessTitle}
+        subtitle={t.fpSuccessSubtitle}
       />
       <div className="space-y-4">
         <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
           <p className="text-sm text-green-800 dark:text-green-200">
-            Mật khẩu của bạn đã được thay đổi thành công. Vui lòng đăng nhập lại để tiếp tục.
+            {t.fpSuccessMessage}
           </p>
         </div>
         <Button
-          className="w-full h-11 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-md hover:shadow-lg transition-all"
+          className="w-full h-11 bg-primary-gradient font-semibold shadow-md hover:shadow-lg hover:brightness-95 transition-all"
           size="lg"
           onClick={() => navigate(ROUTES.AUTH.LOGIN)}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Đăng nhập ngay
+          {t.fpLoginNow}
         </Button>
       </div>
     </motion.div>
@@ -334,7 +350,7 @@ const ForgotPasswordPage = () => {
       >
         <AuthFormLayout>
           {step !== 'success' && (
-            <StepProgress currentStep={getStepNumber()} steps={FORGOT_PASSWORD_STEPS} />
+            <StepProgress currentStep={getStepNumber()} steps={steps} />
           )}
           <AnimatePresence mode="wait">
             {step === 'email' && renderEmailStep()}

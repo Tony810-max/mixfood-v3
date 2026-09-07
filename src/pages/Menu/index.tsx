@@ -1,11 +1,5 @@
-import { LanguageProvider } from "@/contexts/LanguageContext";
-
 import MenuContent from "./components/Menu/Menucontent";
 
-const MenuPage = () => (
-  <LanguageProvider>
-    <MenuContent />
-  </LanguageProvider>
-);
+const MenuPage = () => <MenuContent />;
 
 export default MenuPage;

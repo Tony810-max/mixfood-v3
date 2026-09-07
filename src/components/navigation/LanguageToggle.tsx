@@ -30,11 +30,11 @@ const LanguageToggle = ({ variant = "desktop" }: LanguageToggleProps) => {
           EN
         </motion.button>
         <motion.button
-          onClick={() => setLang("vi")}
+          onClick={() => setLang("vn")}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={`relative z-10 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-            lang === "vi" ? "text-primary" : "text-muted-foreground"
+            lang === "vn" ? "text-primary" : "text-muted-foreground"
           }`}
         >
           VI
@@ -65,11 +65,11 @@ const LanguageToggle = ({ variant = "desktop" }: LanguageToggleProps) => {
         EN
       </motion.button>
       <motion.button
-        onClick={() => setLang("vi")}
+        onClick={() => setLang("vn")}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         className={`relative z-10 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
-          lang === "vi" ? "text-primary" : "text-muted-foreground"
+          lang === "vn" ? "text-primary" : "text-muted-foreground"
         }`}
       >
         VI

@@ -29,6 +29,14 @@ const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
+// Keep token refresh independent from the authenticated client so a 401 from
+// the refresh endpoint cannot recurse through the response interceptor.
+const refreshClient = axios.create({
+  baseURL: API_CONFIG.BASE_URL,
+  timeout: API_CONFIG.TIMEOUT,
+  headers: { 'Content-Type': 'application/json' },
+});
+
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -99,7 +107,7 @@ axiosInstance.interceptors.response.use(
     
     const messageString = Array.isArray(blockCheckMessage) ? blockCheckMessage.join(' ') : String(blockCheckMessage);
     
-    if (messageString.toLowerCase().includes('blocked')) {
+    if (messageString.toLowerCase().includes('blocked') || messageString.toLowerCase().includes('deactivated')) {
       console.log('[Axios] User is blocked, forcing logout');
       // Set flag for toast notification (BlockedUserToast component will handle showing it)
       localStorage.setItem('mixfood.showBlockedToast', 'true');
@@ -117,8 +125,17 @@ axiosInstance.interceptors.response.use(
 
     // Handle 401 Unauthorized - try to refresh token
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // Skip refresh token for auth endpoints (login, register, etc.) to avoid redirecting on invalid credentials
-      if (originalRequest.url?.includes('/auth/')) {
+      // /auth/me and /auth/change-password are authenticated endpoints and
+      // must be retryable after the access token expires.
+      const publicAuthEndpoints = [
+        '/auth/login',
+        '/auth/register',
+        '/auth/otp',
+        '/auth/verify-otp',
+        '/auth/forgot-password',
+        '/auth/reset-password',
+      ];
+      if (publicAuthEndpoints.some((endpoint) => originalRequest.url?.startsWith(endpoint))) {
         console.log('[Axios] 401 error on auth endpoint, skipping token refresh:', originalRequest.url);
         const authErrorMessage = error.response?.data
           ? (error.response.data as { message?: string | string[] }).message
@@ -126,7 +143,7 @@ axiosInstance.interceptors.response.use(
         
         // Check if it's a blocked user message (in case the first check missed it)
         const authMessageString = Array.isArray(authErrorMessage) ? authErrorMessage.join(' ') : String(authErrorMessage);
-        if (authMessageString.toLowerCase().includes('blocked')) {
+        if (authMessageString.toLowerCase().includes('blocked') || authMessageString.toLowerCase().includes('deactivated')) {
           localStorage.setItem('mixfood.showBlockedToast', 'true');
         }
         
@@ -161,7 +178,7 @@ axiosInstance.interceptors.response.use(
             throw new Error("No refresh token available");
           }
 
-          const response = await axios.post<{ accessToken: string; refreshToken: string }>("/auth/refresh-token", { refreshToken });
+          const response = await refreshClient.post<{ accessToken: string; refreshToken: string }>("/auth/refresh-token", { refreshToken });
           console.log('[Axios] Token refresh successful');
 
           // Update stored tokens

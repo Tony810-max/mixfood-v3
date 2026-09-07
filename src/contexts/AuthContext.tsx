@@ -28,15 +28,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (token) {
           console.log('[AuthContext] Validating token with server...');
-          const response = await axios.get<{ user: User }>('/auth/me');
-          console.log('[AuthContext] User validated:', response.data.user);
+          const response = await axios.get<User>('/auth/me');
+          console.log('[AuthContext] User validated:', response.data);
           
           // Update user data from server
-          setUser(response.data.user);
+          setUser(response.data);
           
           // Update stored user with fresh data
           const location: 'local' | 'session' = localStorage.getItem('mixfood.access-token') ? 'local' : 'session';
-          authStorage.setUser(response.data.user, location);
+          authStorage.setUser(response.data, location);
         }
       } catch (error) {
         console.error('[AuthContext] Auth validation error:', error);
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Handle both string and array message formats
         const messageString = Array.isArray(errorMessage) ? errorMessage.join(' ') : String(errorMessage);
         
-        if (messageString.toLowerCase().includes('blocked')) {
+        if (messageString.toLowerCase().includes('blocked') || messageString.toLowerCase().includes('deactivated')) {
           console.log('[AuthContext] User is blocked, setting flag for toast');
           // Set localStorage flag to show toast after app is fully loaded
           localStorage.setItem('mixfood.showBlockedToast', 'true');

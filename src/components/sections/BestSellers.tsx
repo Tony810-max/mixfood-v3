@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
 
 interface Dish {
   nameKey: keyof ReturnType<typeof useLanguage>["t"];
@@ -11,27 +11,32 @@ const dishes: Dish[] = [
   {
     nameKey: "padThai",
     price: "145,000 VND",
-    image: "/image-blank.png",
+    image: "/images/pad-thai.webp",
   },
   {
     nameKey: "greenCurry",
     price: "165,000 VND",
-    image: "/image-blank.png",
+    image: "/image-blank.webp",
   },
   {
     nameKey: "tomYum",
     price: "175,000 VND",
-    image: "/image-blank.png",
+    image: "/images/tomyum-hs.webp",
   },
   {
     nameKey: "somTum",
     price: "95,000 VND",
-    image: "/image-blank.png",
+    image: "/images/som-tam.webp",
   },
   {
     nameKey: "mangoRice",
     price: "85,000 VND",
-    image: "/image-blank.png",
+    image: "/images/xoi-xoai.webp",
+  },
+  {
+    nameKey: "hotPot",
+    price: "",
+    image: "/images/ho-tien-hs.webp",
   },
 ];
 
@@ -73,7 +78,7 @@ const BestSellers = () => {
                 <img
                   src={dish.image}
                   alt={t[dish.nameKey] as string}
-                  className="aspect-square object-cover w-full"
+                  className="aspect-square w-full"
                   loading="lazy"
                 />
               </div>

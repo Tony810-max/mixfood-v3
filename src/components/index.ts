@@ -23,6 +23,6 @@ export { default as RouteProgress } from './common/RouteProgress';
 
 // Navigation Components
 export { default as LanguageToggle } from './navigation/LanguageToggle';
-export { default as NavLink } from './navigation/NavLink';
+export { NavLink } from './navigation/NavLink';
 export { default as ReserveButton } from './navigation/ReserveButton';
 

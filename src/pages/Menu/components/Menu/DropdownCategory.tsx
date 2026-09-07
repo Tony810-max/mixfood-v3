@@ -6,22 +6,30 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
-const items = [
-    { label: "Light", value: "light" },
-    { label: "Dark", value: "dark" },
-    { label: "System", value: "system" },
-]
-export default function DropdownCategory() {
+import { useLanguage } from "@/contexts/LanguageContext"
+import { useMenu } from "@/hooks/api/useMenu"
+
+interface DropdownCategoryProps {
+    onSelectCategory?: (categoryId: string | null) => void
+}
+
+export default function DropdownCategory({ onSelectCategory }: DropdownCategoryProps) {
+    const { lang } = useLanguage()
+    const { data: categories } = useMenu()
+
     return (
-        <Select>
+        <Select onValueChange={(value) => onSelectCategory?.(value === "all" ? null : value)}>
             <SelectTrigger className="md:w-[180px] rounded-xl">
-                <SelectValue placeholder="Theme" />
+                <SelectValue placeholder={lang === "vn" ? "Tất cả danh mục" : "All Categories"} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    {items.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                            {item.label}
+                    <SelectItem value="all">
+                        {lang === "vn" ? "Tất cả" : "All"}
+                    </SelectItem>
+                    {categories?.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                            {lang === "vn" ? category.vn : category.en}
                         </SelectItem>
                     ))}
                 </SelectGroup>

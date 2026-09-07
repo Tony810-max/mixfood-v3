@@ -10,7 +10,7 @@ const Booking = () => {
   const { t } = useLanguage()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50/30 to-yellow-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <Header />
       <div className="mt-[4.5rem] md:pt-20 py-8 md:py-12 px-4">
         <div className="max-w-4xl mx-auto">
@@ -20,10 +20,10 @@ const Booking = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-6 md:mb-10"
           >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-amber-900 mb-3 md:mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-amber-900 dark:text-amber-100 mb-3 md:mb-4">
               {t.reservePageTitle}
             </h1>
-            <p className="text-base md:text-lg text-amber-700 max-w-2xl mx-auto px-4">
+            <p className="text-base md:text-lg text-amber-700 dark:text-amber-300/80 max-w-2xl mx-auto px-4">
               {t.reservePageSub}
             </p>
           </motion.div>
@@ -56,7 +56,7 @@ const Booking = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="mt-6 md:mt-8 text-center text-xs md:text-sm text-amber-700 px-4"
+            className="mt-6 md:mt-8 text-center text-xs md:text-sm text-amber-700 dark:text-amber-400/80 px-4"
           >
             <p>{t.contactNote} <a href={`tel:${INFORMATION_RESTAURANT.phone.replace(/\s/g, "")}`} className="font-semibold hover:underline">{INFORMATION_RESTAURANT.phone}</a></p>
           </motion.div>

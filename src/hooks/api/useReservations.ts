@@ -3,10 +3,12 @@
  */
 
 import { reservationService } from '@/services/reservation.service';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CreateReservationPayload, Reservation } from '@/types';
 import { logger } from '@/utils/logger';
 import { showApiErrorToast, showOperationSuccess } from '@/utils/toastHelpers';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 type UseQueryResult<T> = {
   data: T | undefined;
@@ -65,6 +67,24 @@ export const useCreateReservation = () => {
     onError: (error) => {
       logger.error('Reservation creation failed', error);
       showApiErrorToast(error, 'Đặt bàn thất bại');
+    },
+  });
+};
+
+export const useCancelReservation = () => {
+  const queryClient = useQueryClient();
+  const { t } = useLanguage();
+
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason: string }) =>
+      reservationService.cancelReservation(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+      toast.success(t.reservationCancelSuccess);
+    },
+    onError: (error) => {
+      logger.error('Reservation cancellation failed', error);
+      showApiErrorToast(error, 'Hủy đặt bàn thất bại');
     },
   });
 };

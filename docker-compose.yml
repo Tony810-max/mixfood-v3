@@ -1,0 +1,24 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Build-time (inlined) API URL for the browser.
+        # Override on the VPS, e.g.:
+        #   VITE_API_BASE_URL=https://api.mix-food.io.vn docker compose build
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
+    image: mixfood-client:latest
+    container_name: mixfood-client
+    restart: unless-stopped
+    networks:
+      - mixfood
+    # Host port 8080 -> container nginx 80.
+    # If you use an nginx reverse proxy on the host, you can map a private
+    # port here and proxy to it instead.
+    ports:
+      - "8080:80"
+
+networks:
+  mixfood:
+    external: true

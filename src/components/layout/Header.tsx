@@ -2,6 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { ROUTES } from "@/utils/const";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DesktopNav from "./Header/DesktopNav";
 import MobileNav from "./Header/MobileNav";
 
@@ -46,16 +47,17 @@ const Header = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }}
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 pt-safe-top transition-all duration-300 ${
           scrolled
             ? "backdrop-blur-md bg-card/80 shadow-layered"
             : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto flex h-[72px] items-center justify-between px-4 md:px-6">
-          <a href={ROUTES.HOME} className="font-serif text-xl md:text-2xl font-bold text-foreground">
-            Mix Food
-          </a>
+        <div className="page-container flex h-[80px] items-center justify-between pb-2">
+          <Link to={ROUTES.HOME} className="group flex items-center gap-2.5" aria-label={t.ariaHome}>
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary-gradient font-serif text-lg font-bold text-white shadow-sm transition-transform group-hover:-rotate-3">M</span>
+            <span className="font-serif text-xl font-bold tracking-tight text-foreground md:text-2xl">Mix Food</span>
+          </Link>
 
           <DesktopNav navItems={navItems} />
           <MobileNav navItems={navItems} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
