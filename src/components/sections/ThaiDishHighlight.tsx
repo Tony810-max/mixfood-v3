@@ -103,7 +103,13 @@ const ThaiDishHighlight = () => {
             aria-busy={isImageLoading}
           >
             {isImageLoading ? (
-              <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100" />
+              <div className="dish-image-skeleton absolute inset-0" aria-label="Loading dish image">
+                <div className="dish-image-skeleton-content">
+                  <div className="dish-image-skeleton-icon" />
+                  <div className="dish-image-skeleton-line w-28" />
+                  <div className="dish-image-skeleton-line w-20" />
+                </div>
+              </div>
             ) : (
               <img
                 key={currentDish.image}
