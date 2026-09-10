@@ -10,40 +10,40 @@ const ThaiDishHighlight = () => {
 
   const dishes = {
     "tom-yum": {
-      name: t.tomYumGoong,
-      vietnamese: t.tomYumVietnamese,
-      description: t.tomYumDesc,
-      price: "250.000đ",
+      name: t.specialtyTomYumName,
+      vietnamese: t.specialtyTomYumVietnamese,
+      description: t.specialtyTomYumDesc,
+      price: "90.000đ",
       rating: 4.9,
       time: "20 phút",
       spicy: 3,
       image: "/images/tomyum-hs.webp",
     },
     "pad-thai": {
-      name: t.padThai,
-      vietnamese: t.padThai,
-      description: t.padThaiDesc,
-      price: "70.000đ",
+      name: t.specialtyPadThaiName,
+      vietnamese: t.specialtyPadThaiVietnamese,
+      description: t.specialtyPadThaiDesc,
+      price: "90.000đ",
       rating: 4.8,
       time: "15 phút",
       spicy: 1,
       image: "/images/pad-thai.webp",
     },
     "som-tam": {
-      name: t.somTam,
-      vietnamese: t.somTamVietnamese,
-      description: t.somTamDesc,
-      price: "40.000đ",
+      name: t.specialtySomTamName,
+      vietnamese: t.specialtySomTamVietnamese,
+      description: t.specialtySomTamDesc,
+      price: "45.000đ",
       rating: 4.7,
       time: "5 phút",
       spicy: 4,
       image: "/images/son-tam.webp",
     },
     "mango-sticky-rice": {
-      name: t.mangoStickyRice,
-      vietnamese: t.mangoStickyRiceVietnamese,
-      description: t.mangoStickyRiceDesc,
-      price: "60.000đ",
+      name: t.specialtyMangoStickyRiceName,
+      vietnamese: t.specialtyMangoStickyRiceVietnamese,
+      description: t.specialtyMangoStickyRiceDesc,
+      price: "50.000đ",
       rating: 4.9,
       time: "5 phút",
       spicy: 0,
@@ -94,12 +94,12 @@ const ThaiDishHighlight = () => {
         />
 
         {/* Dish Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 items-center max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 gap-8 md:gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center max-w-6xl mx-auto">
           <DishCard dish={currentDish} />
 
           {/* Right Content - Image */}
           <div
-            className="relative order-first aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 lg:order-last"
+            className="relative order-first mx-auto w-full max-w-md aspect-[3/4] overflow-hidden rounded-2xl bg-[#fff7ed] shadow-sm lg:order-last"
             aria-busy={isImageLoading}
           >
             {isImageLoading ? (
@@ -115,7 +115,7 @@ const ThaiDishHighlight = () => {
                 key={currentDish.image}
                 src={currentDish.image}
                 alt={currentDish.name}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             )}
           </div>
