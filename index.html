@@ -3,26 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=yes" />
 
     <title>Mix Food | Nhà hàng Thái chuẩn vị tại Đà Nẵng</title>
     <meta
       name="description"
-      content="Khám phá ẩm thực Thái đậm vị tại Mix Food Đà Nẵng. Xem thực đơn và đặt bàn trực tuyến nhanh chóng."
+      content="Thưởng thức ẩm thực Thái chuẩn vị tại Mix Food Đà Nẵng. Khám phá thực đơn và đặt bàn trực tuyến nhanh chóng."
     />
     <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="theme-color" content="#bd3e1a" />
     <meta name="application-name" content="Mix Food" />
     <meta name="apple-mobile-web-app-title" content="Mix Food" />
     <link rel="canonical" href="https://mixfood.vn/" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/favicon.jpg" />
 
-    <!-- Social crawlers read these tags from the initial HTML and do not run React. -->
+    <!-- Social crawlers use these initial tags because they do not execute the SPA. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Mix Food" />
     <meta property="og:locale" content="vi_VN" />
     <meta property="og:title" content="Mix Food | Nhà hàng Thái chuẩn vị tại Đà Nẵng" />
     <meta
       property="og:description"
-      content="Khám phá ẩm thực Thái đậm vị tại Mix Food Đà Nẵng. Xem thực đơn và đặt bàn trực tuyến nhanh chóng."
+      content="Thưởng thức ẩm thực Thái chuẩn vị tại Mix Food Đà Nẵng. Khám phá thực đơn và đặt bàn trực tuyến nhanh chóng."
     />
     <meta property="og:url" content="https://mixfood.vn/" />
     <meta property="og:image" content="https://mixfood.vn/social-share.jpg" />
@@ -33,29 +38,65 @@
     <meta property="og:image:alt" content="Các món ăn Thái tại Mix Food Đà Nẵng" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@mixfooddanang" />
     <meta name="twitter:title" content="Mix Food | Nhà hàng Thái chuẩn vị tại Đà Nẵng" />
     <meta
       name="twitter:description"
-      content="Khám phá ẩm thực Thái đậm vị tại Mix Food Đà Nẵng. Xem thực đơn và đặt bàn trực tuyến nhanh chóng."
+      content="Thưởng thức ẩm thực Thái chuẩn vị tại Mix Food Đà Nẵng. Khám phá thực đơn và đặt bàn trực tuyến nhanh chóng."
     />
     <meta name="twitter:image" content="https://mixfood.vn/social-share.jpg" />
     <meta name="twitter:image:alt" content="Các món ăn Thái tại Mix Food Đà Nẵng" />
 
-    <link rel="icon" href="/favicon.ico" sizes="any" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Restaurant",
-        "name": "Mix Food",
-        "url": "https://mixfood.vn/",
-        "servesCuisine": ["Thai", "Asian"],
-        "priceRange": "$$",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Đà Nẵng",
-          "addressCountry": "VN"
-        }
+        "@graph": [
+          {
+            "@type": "Restaurant",
+            "@id": "https://mixfood.vn/#restaurant",
+            "name": "Mix Food",
+            "url": "https://mixfood.vn/",
+            "image": "https://mixfood.vn/social-share.jpg",
+            "telephone": "+84905473728",
+            "email": "mixfood1708@gmail.com",
+            "priceRange": "$$",
+            "servesCuisine": ["Thai", "Asian"],
+            "menu": "https://mixfood.vn/menu",
+            "acceptsReservations": "https://mixfood.vn/booking",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "K49 Nguyễn Văn Thoại, Hòa Thuận Tây, Hải Châu",
+              "addressLocality": "Đà Nẵng",
+              "addressCountry": "VN"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 16.0542021,
+              "longitude": 108.2361093
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+              ],
+              "opens": "09:00",
+              "closes": "21:50"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://mixfood.vn/#website",
+            "url": "https://mixfood.vn/",
+            "name": "Mix Food",
+            "inLanguage": "vi-VN",
+            "publisher": { "@id": "https://mixfood.vn/#restaurant" }
+          }
+        ]
       }
     </script>
   </head>
