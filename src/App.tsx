@@ -13,6 +13,12 @@ import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { ROUTES } from "./utils/const.ts";
 
+declare global {
+  interface Window {
+    gtag?: (command: string, eventName: string, parameters?: Record<string, string>) => void;
+  }
+}
+
 const Index = lazy(() => import("./pages/Index.tsx"));
 const MenuPage = lazy(() => import("./pages/Menu/index.tsx"));
 const Booking = lazy(() => import("./pages/Booking/index.tsx"));
@@ -56,6 +62,21 @@ const ScrollToTop = () => {
   return null;
 };
 
+/** Sends a page view whenever this single-page application changes route. */
+const GoogleAnalyticsPageViews = () => {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    window.gtag?.("event", "page_view", {
+      page_location: window.location.href,
+      page_path: `${pathname}${search}`,
+      page_title: document.title,
+    });
+  }, [pathname, search]);
+
+  return null;
+};
+
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
@@ -67,6 +88,7 @@ const App = () => (
               <BlockedUserToast />
               <BrowserRouter>
                 <ScrollToTop />
+                <GoogleAnalyticsPageViews />
                 <RouteProgress />
                 <RouteMeta />
                 <Suspense fallback={<RouteFallback />}>
