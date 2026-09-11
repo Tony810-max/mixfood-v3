@@ -34,6 +34,42 @@
   background-image: linear-gradient(90deg, hsl(var(--primary-gradient-start)), hsl(var(--primary-gradient-end)));
 }
 
+@keyframes dish-image-shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+.dish-image-skeleton {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(110deg, #f1f5f9 10%, #fed7aa 32%, #fff7ed 46%, #fecaca 61%, #f1f5f9 82%);
+  background-size: 250% 100%;
+  animation: dish-image-shimmer 1.25s ease-in-out infinite;
+}
+
+.dish-image-skeleton-content {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+
+.dish-image-skeleton-icon,
+.dish-image-skeleton-line {
+  background-color: rgb(255 255 255 / 0.78);
+  box-shadow: 0 1px 2px rgb(154 52 18 / 0.12);
+}
+
+.dish-image-skeleton-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+}
+
+.dish-image-skeleton-line {
+  height: 0.625rem;
+  border-radius: 9999px;
+}
+
 
 @layer base {
   :root {

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useAuth } from "@/contexts/AuthContext"
 import { useLanguage } from "@/contexts/LanguageContext"
@@ -18,6 +19,31 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { BookingFormValues, bookingSchema } from "./utils/bookingSchema"
+
+// Keep the time selection inside the application instead of delegating it to
+// the browser's native time control. Native controls have no placeholder and
+// their mobile picker UI can exceed the page viewport.
+const BOOKING_TIME_OPTIONS = Array.from({ length: 78 }, (_, index) => {
+  const totalMinutes = 9 * 60 + index * 10
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`
+})
+
+const minimumBookingTimeForDate = (date: Date) => {
+  const selectedDate = new Date(date)
+  selectedDate.setHours(0, 0, 0, 0)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (selectedDate.getTime() !== today.getTime()) return BOOKING_WINDOW.OPEN
+
+  const minimumDateTime = new Date(
+    Date.now() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000,
+  )
+  const time = `${String(minimumDateTime.getHours()).padStart(2, '0')}:${String(minimumDateTime.getMinutes()).padStart(2, '0')}`
+  return time < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : time
+}
 
 export const BookingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,12 +68,7 @@ export const BookingForm = () => {
 
   // Calculate initial minTime when component mounts
   useEffect(() => {
-    const now = new Date()
-    const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
-    const hours = minReservationTime.getHours().toString().padStart(2, '0')
-    const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
-    const earliest = `${hours}:${minutes}`
-    setMinTime(earliest < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : earliest)
+    setMinTime(minimumBookingTimeForDate(form.getValues('date')))
   }, [])
 
   const onSubmit = async (data: BookingFormValues) => {
@@ -86,23 +107,12 @@ export const BookingForm = () => {
       form.setValue('date', date)
       setIsCalendarOpen(false)
       
-      // Calculate minimum time based on selected date
-      const now = new Date()
-      const selectedDate = new Date(date)
-      selectedDate.setHours(0, 0, 0, 0)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      
-      if (selectedDate.getTime() === today.getTime()) {
-        // If today, minimum time is current time + advance booking window
-        const minReservationTime = new Date(now.getTime() + VALIDATION.MIN_ADVANCE_BOOKING_MINUTES * 60 * 1000)
-        const hours = minReservationTime.getHours().toString().padStart(2, '0')
-        const minutes = minReservationTime.getMinutes().toString().padStart(2, '0')
-        const earliest = `${hours}:${minutes}`
-        setMinTime(earliest < BOOKING_WINDOW.OPEN ? BOOKING_WINDOW.OPEN : earliest)
-      } else {
-        // If future date, minimum time is opening time (09:00)
-        setMinTime(BOOKING_WINDOW.OPEN)
+      const nextMinTime = minimumBookingTimeForDate(date)
+      setMinTime(nextMinTime)
+
+      // A time that was valid for another date may be too soon today.
+      if (form.getValues('time') && form.getValues('time') < nextMinTime) {
+        form.setValue('time', '', { shouldValidate: true })
       }
     }
   }
@@ -246,16 +256,20 @@ export const BookingForm = () => {
                       <Clock className="h-4 w-4" />
                       {t.bookingTime}
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="time"
-                        min={minTime}
-                        max={BOOKING_WINDOW.LAST_BOOKING}
-                        placeholder={t.bookingTimePlaceholder}
-                        className="border-amber-200 focus:border-amber-500 focus:ring-amber-500 h-11"
-                        {...field}
-                      />
-                    </FormControl>
+                    <Select value={field.value || undefined} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger className="h-11 rounded-xl border-amber-200 bg-card px-3.5 text-base focus:border-amber-500 focus:ring-amber-500 md:text-sm">
+                          <SelectValue placeholder={t.bookingTimePlaceholder} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="max-h-[min(20rem,var(--radix-select-content-available-height))] overflow-y-auto">
+                        {BOOKING_TIME_OPTIONS.map((time) => (
+                          <SelectItem key={time} value={time} disabled={time < minTime}>
+                            {time}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormDescription className="text-xs text-amber-600">
                       {t.bookingTimeHelp}
                     </FormDescription>

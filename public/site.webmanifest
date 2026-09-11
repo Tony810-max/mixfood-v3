@@ -1,0 +1,15 @@
+{
+  "name": "Mix Food Đà Nẵng",
+  "short_name": "Mix Food",
+  "lang": "vi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffaf5",
+  "theme_color": "#bd3e1a",
+  "icons": [
+    {
+      "src": "/favicon.jpg",
+      "type": "image/jpeg"
+    }
+  ]
+}

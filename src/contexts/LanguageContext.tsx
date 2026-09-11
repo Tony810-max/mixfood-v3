@@ -141,6 +141,22 @@ const translations = {
     mangoStickyRiceVietnamese: "Sweet Mango Rice",
     mangoStickyRiceDesc:
       "Sweet dessert with ripe mango combined with sticky coconut rice and fresh shredded coconut.",
+    specialtyTomYumName: "Tomyum with Seafood",
+    specialtyTomYumVietnamese: "Tomyum Hải sản",
+    specialtyTomYumDesc:
+      "Hot and sour Tomyum broth with fresh seafood, mushrooms, lemongrass and Thai herbs.",
+    specialtyPadThaiName: "Pad Thai with Seafood",
+    specialtyPadThaiVietnamese: "Pad Thai Hải sản",
+    specialtyPadThaiDesc:
+      "Thai stir-fried rice noodles with fresh seafood, egg, bean sprouts, peanuts and tamarind sauce.",
+    specialtySomTamName: "Papaya Salad with Tiny Shrimp",
+    specialtySomTamVietnamese: "Sontam tép",
+    specialtySomTamDesc:
+      "Crisp green papaya salad tossed with tiny shrimp, tomato, peanuts, chili and fish sauce.",
+    specialtyMangoStickyRiceName: "Mango Sticky Rice",
+    specialtyMangoStickyRiceVietnamese: "Xôi Xoài",
+    specialtyMangoStickyRiceDesc:
+      "Sweet sticky rice with creamy coconut milk, served with ripe mango and toasted mung beans.",
     rating: "Rating",
     time: "Time",
     spicyLevel: "Spicy Level",
@@ -527,6 +543,22 @@ const translations = {
     mangoStickyRiceVietnamese: "Xôi xoài ngọt",
     mangoStickyRiceDesc:
       "Món tráng miệng ngọt với xoài chín kết hợp cùng xôi dừa và dừa nạo tươi.",
+    specialtyTomYumName: "Tomyum Hải sản",
+    specialtyTomYumVietnamese: "Canh Tomyum hải sản",
+    specialtyTomYumDesc:
+      "Nước dùng Tomyum chua cay cùng hải sản tươi, nấm, sả và các loại thảo mộc Thái.",
+    specialtyPadThaiName: "Pad Thai Hải sản",
+    specialtyPadThaiVietnamese: "Phở xào Thái hải sản",
+    specialtyPadThaiDesc:
+      "Sợi phở xào kiểu Thái cùng hải sản tươi, trứng, giá đỗ, đậu phộng và sốt me.",
+    specialtySomTamName: "Sontam tép",
+    specialtySomTamVietnamese: "Gỏi đu đủ tép",
+    specialtySomTamDesc:
+      "Gỏi đu đủ xanh giòn trộn tép, cà chua, đậu phộng, ớt và nước mắm đậm vị Thái.",
+    specialtyMangoStickyRiceName: "Xôi Xoài",
+    specialtyMangoStickyRiceVietnamese: "Xôi nếp xoài",
+    specialtyMangoStickyRiceDesc:
+      "Xôi nếp dẻo thơm nước cốt dừa, dùng cùng xoài chín và đậu xanh rang.",
 
     rating: "Đánh giá",
     time: "Thời gian",
