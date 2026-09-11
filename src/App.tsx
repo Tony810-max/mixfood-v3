@@ -53,11 +53,15 @@ const RouteFallback = () => (
 
 /** Keep page navigation predictable, including when moving between long menu sections. */
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { hash, pathname } = useLocation();
 
   useEffect(() => {
+    if (hash) {
+      requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' }));
+      return;
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  }, [pathname]);
+  }, [hash, pathname]);
 
   return null;
 };
